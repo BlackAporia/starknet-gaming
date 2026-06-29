@@ -14,7 +14,7 @@ MVP stage — currently a single static page with live search/filter. Live oncha
 
 ## Maintained by
 
-[@StarknetGaming](https://x.com/StarknetGaming) on X · Telegram community for Starknet gaming players, builders, and founders.
+[@StarknetGaming](https://x.com/StarknetGaming) on X · Telegram community https://t.me/Starknet_Gaming for Starknet gaming players, builders, and founders.
 
 ## Contributing
 
