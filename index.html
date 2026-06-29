@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Starknet Game Registry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16130f;
+    --ink-raised:#1f1b15;
+    --ink-raised-2:#262019;
+    --paper:#f4eee2;
+    --ember:#ff5a36;
+    --ember-dim:#7a2c1c;
+    --amber:#ffb627;
+    --amber-dim:#7a5b14;
+    --sage:#6fa287;
+    --sage-dim:#33473d;
+    --line:rgba(244,238,226,0.10);
+    --line-strong:rgba(244,238,226,0.18);
+    --muted:rgba(244,238,226,0.56);
+    --muted-2:rgba(244,238,226,0.38);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .disp{font-family:'Space Grotesk',system-ui,sans-serif;}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace;}
+  a{color:inherit;}
+  :focus-visible{outline:2px solid var(--ember);outline-offset:2px;border-radius:4px;}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+
+  /* ---------- Header ---------- */
+  header{padding:56px 0 28px;border-bottom:1px solid var(--line);}
+  .boot-line{
+    font-size:12.5px;color:var(--sage);letter-spacing:0.02em;margin:0 0 18px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .boot-line .dot{width:6px;height:6px;border-radius:50%;background:var(--sage);flex-shrink:0;}
+  .cursor{display:inline-block;width:7px;height:14px;background:var(--sage);margin-left:2px;vertical-align:-2px;animation:blink 1.1s steps(1) infinite;}
+  @media (prefers-reduced-motion:reduce){.cursor{animation:none;opacity:1;}}
+  @keyframes blink{50%{opacity:0;}}
+
+  h1{
+    font-size:40px;font-weight:700;margin:0 0 10px;letter-spacing:-0.01em;line-height:1.1;
+  }
+  .sub{font-size:15.5px;color:var(--muted);margin:0 0 28px;max-width:560px;}
+
+  .stat-strip{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    border:1px solid var(--line-strong);border-radius:10px;overflow:hidden;
+  }
+  .stat{padding:14px 18px;border-right:1px solid var(--line);}
+  .stat:last-child{border-right:none;}
+  .stat-num{font-size:20px;font-weight:500;}
+  .stat-num.accent{color:var(--ember);}
+  .stat-lbl{font-size:11px;color:var(--muted-2);text-transform:uppercase;letter-spacing:0.07em;margin-top:3px;}
+
+  /* ---------- Controls ---------- */
+  .controls{
+    display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+    padding:22px 0;border-bottom:1px solid var(--line);position:sticky;top:0;
+    background:var(--ink);z-index:5;
+  }
+  .search{
+    flex:1;min-width:180px;background:var(--ink-raised);border:1px solid var(--line-strong);
+    border-radius:8px;padding:9px 12px;color:var(--paper);font-size:13.5px;font-family:inherit;
+  }
+  .search::placeholder{color:var(--muted-2);}
+  .pill{
+    font-size:12.5px;font-family:'JetBrains Mono',monospace;letter-spacing:0.02em;
+    padding:7px 13px;border-radius:20px;border:1px solid var(--line-strong);
+    background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap;
+    transition:border-color .12s, color .12s, background .12s;
+  }
+  .pill:hover{border-color:var(--muted);color:var(--paper);}
+  .pill[data-active="true"]{background:var(--paper);color:var(--ink);border-color:var(--paper);}
+
+  /* ---------- Categories & grid ---------- */
+  .cat-block{padding:30px 0 6px;}
+  .cat-head{
+    display:flex;align-items:baseline;gap:10px;margin-bottom:14px;
+  }
+  .cat-name{font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:var(--paper);font-weight:500;}
+  .cat-line{flex:1;height:1px;background:var(--line);}
+  .cat-count{font-size:12px;color:var(--muted-2);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;}
+
+  .card{
+    position:relative;background:var(--ink-raised);border:1px solid var(--line-strong);
+    border-radius:4px 4px 12px 12px;padding:16px 16px 14px;
+    transition:border-color .12s, transform .12s;
+  }
+  .card:hover{border-color:var(--muted-2);}
+  .teeth{display:flex;gap:4px;position:absolute;top:0;left:16px;transform:translateY(-1px);}
+  .teeth span{width:10px;height:4px;background:var(--ink);border-radius:0 0 2px 2px;}
+
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:11px;}
+  .badge{
+    width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;flex-shrink:0;
+  }
+  .led{display:flex;align-items:center;gap:6px;}
+  .led-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .led-dot.live{background:var(--ember);box-shadow:0 0 0 0 rgba(255,90,54,.5);animation:pulse 2s infinite;}
+  @media (prefers-reduced-motion:reduce){.led-dot.live{animation:none;}}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,90,54,.45);}70%{box-shadow:0 0 0 5px rgba(255,90,54,0);}100%{box-shadow:0 0 0 0 rgba(255,90,54,0);}}
+  .led-dot.new{background:var(--amber);}
+  .led-dot.soon{background:var(--muted-2);}
+  .led-lbl{font-size:10.5px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;}
+  .led-lbl.live{color:var(--ember);}
+  .led-lbl.new{color:var(--amber);}
+  .led-lbl.soon{color:var(--muted-2);}
+
+  .game-name{font-size:15.5px;font-weight:700;margin:0 0 6px;line-height:1.25;}
+  .game-desc{font-size:12.5px;color:var(--muted);margin:0 0 12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:32px;}
+
+  .card-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:10px;}
+  .tag{font-size:10.5px;font-family:'JetBrains Mono',monospace;color:var(--muted-2);}
+  .link-btn{font-size:11.5px;color:var(--paper);text-decoration:none;display:flex;align-items:center;gap:4px;opacity:.85;}
+  .link-btn:hover{opacity:1;}
+  .link-pending{font-size:11px;color:var(--muted-2);font-family:'JetBrains Mono',monospace;}
+
+  .empty-state{padding:50px 0;text-align:center;color:var(--muted-2);font-size:13.5px;display:none;}
+
+  /* ---------- Pending section ---------- */
+  .pending-card{border-style:dashed;}
+  .pending-note{font-size:11.5px;color:var(--amber);font-family:'JetBrains Mono',monospace;margin-top:2px;}
+
+  /* ---------- Infra ---------- */
+  .infra{padding:34px 0 10px;border-top:1px solid var(--line);margin-top:18px;}
+  .infra-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .infra-card{
+    background:var(--ink-raised-2);border:1px solid var(--line-strong);border-radius:10px;
+    padding:16px 18px;
+  }
+  .infra-eyebrow{font-size:10.5px;color:var(--sage);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;}
+  .infra-name{font-size:15px;font-weight:700;margin:0 0 4px;}
+  .infra-desc{font-size:12.5px;color:var(--muted);margin:0;}
+
+  footer{
+    padding:36px 0 56px;margin-top:20px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;
+  }
+  .foot-left p{margin:0;font-size:12px;color:var(--muted-2);}
+  .foot-left p.maintained{color:var(--muted);margin-bottom:4px;}
+  .foot-links{display:flex;gap:14px;}
+  .foot-links a{font-size:12.5px;color:var(--paper);text-decoration:none;border-bottom:1px solid var(--line-strong);padding-bottom:2px;}
+  .foot-links a:hover{border-color:var(--paper);}
+
+  @media (max-width:640px){
+    h1{font-size:30px;}
+    .stat-strip{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(2){border-right:none;}
+    .stat:nth-child(odd){border-right:1px solid var(--line);}
+    .controls{position:static;}
+    footer{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <p class="boot-line"><span class="dot"></span>scanning starknet mainnet for game contracts<span class="cursor"></span></p>
+    <h1 class="disp">Starknet Game Registry</h1>
+    <p class="sub">Every onchain game shipping on Starknet, tracked in one place. Maintained by Starknet Gaming, updated as the ecosystem moves.</p>
+    <div class="stat-strip mono">
+      <div class="stat"><div class="stat-num accent" id="stat-games">–</div><div class="stat-lbl">Games tracked</div></div>
+      <div class="stat"><div class="stat-num" id="stat-cats">–</div><div class="stat-lbl">Categories</div></div>
+      <div class="stat"><div class="stat-num" id="stat-live">–</div><div class="stat-lbl">Live now</div></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-lbl">Onchain</div></div>
+    </div>
+  </header>
+
+  <div class="controls">
+    <input class="search mono" id="search" type="text" placeholder="Search a game...">
+    <button class="pill" data-filter="all" data-active="true">ALL</button>
+    <button class="pill" data-filter="live">LIVE</button>
+    <button class="pill" data-filter="new">NEW</button>
+    <button class="pill" data-filter="soon">SOON</button>
+  </div>
+
+  <main id="registry"></main>
+
+  <p class="empty-state" id="empty-state">No games match that search. Try another term, or check back — this registry is updated regularly.</p>
+
+  <section class="pending-card-section" id="pending-section"></section>
+
+  <section class="infra">
+    <p class="infra-eyebrow mono">Powering the ecosystem</p>
+    <div class="infra-grid">
+      <div class="infra-card">
+        <p class="infra-eyebrow mono">Infrastructure</p>
+        <p class="infra-name disp">Dojo Engine</p>
+        <p class="infra-desc">The game engine most fully onchain Starknet games are built on, written in Cairo.</p>
+      </div>
+      <div class="infra-card">
+        <p class="infra-eyebrow mono">Infrastructure</p>
+        <p class="infra-name disp">Cartridge</p>
+        <p class="infra-desc">Wallet and session-key layer that lets players jump into a game without bridging or seed phrases.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot-left">
+      <p class="maintained mono">maintained by Starknet Gaming</p>
+      <p>Logos shown are stylized placeholders pending official assets · last updated <span id="last-updated"></span></p>
+    </div>
+    <div class="foot-links">
+      <a href="https://x.com/StarknetGaming" target="_blank" rel="noopener">X / Twitter</a>
+      <a href="#" target="_blank" rel="noopener">Telegram</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const GAMES = [
+  {name:"Realms Blitz", cat:"Strategy / MMO", status:"new", desc:"Fast 2-hour matches running on the same mechanics as Realms Eternum.", twitter:"RealmsEternum"},
+  {name:"Ponziland", cat:"Strategy / MMO", status:"live", desc:"Land, neighbors, taxes, and a nuclear button. Pure onchain chaos.", twitter:null},
+  {name:"Influence", cat:"Strategy / MMO", status:"live", desc:"Strategic MMO set across 250,000 procedurally generated asteroids.", twitter:"influenceth"},
+
+  {name:"Loot Survivor", cat:"Roguelike / Dungeon", status:"live", desc:"Rogue-like dungeon crawler with real permadeath, no respawns.", twitter:"LootSurvivor"},
+  {name:"Dark Shuffle", cat:"Roguelike / Dungeon", status:"live", desc:"Deck-building roguelike fought across procedurally generated maps.", twitter:"DarkShuffleGG"},
+  {name:"Abyss", cat:"Roguelike / Dungeon", status:"soon", desc:"Dungeon crawler from an independent Starknet-native team.", twitter:null},
+
+  {name:"Jokers of Neon", cat:"Card Games", status:"live", desc:"Poker-driven strategy with a combo system and weekly leagues.", twitter:"jokers_of_neon"},
+  {name:"Dope Wars", cat:"Card Games", status:"live", desc:"Street trading and empire-building, fully onchain.", twitter:null},
+
+  {name:"Blob Arena", cat:"Action / PvP", status:"live", desc:"Pokemon-style creature battles with real community tournaments.", twitter:"Blobarena"},
+  {name:"Pistols at Dawn", cat:"Action / PvP", status:"live", desc:"Commit-reveal PvP duels: pistol and sabre, your choice.", twitter:null},
+  {name:"Corsair", cat:"Action / PvP", status:"live", desc:"Sea-faring adventure with daily challenges from its creator.", twitter:null},
+  {name:"Brove Royale", cat:"Action / PvP", status:"new", desc:"Battle royale built by an independent team in the community.", twitter:null},
+
+  {name:"zKube", cat:"Puzzle / Casual", status:"live", desc:"Onchain Tetris with special abilities and combo bonuses.", twitter:"zKube_game"},
+  {name:"Guess My NFT", cat:"Puzzle / Casual", status:"live", desc:"Casual guessing game built around the community's own NFTs.", twitter:null},
+  {name:"Nums", cat:"Puzzle / Casual", status:"live", desc:"Quick-fire number puzzle game, easy to learn and replay.", twitter:null},
+
+  {name:"Art/Peace", cat:"Creative / Social", status:"live", desc:"Collaborative onchain pixel canvas. Millions of transactions, one shared drawing.", twitter:"art_peace_sn"},
+];
+
+const PENDING = [
+  {name:"ZAP", cat:"Sports / Strategy", desc:"Football strategy game with real onchain gameplay, recently spotted."},
+  {name:"Armored MMA", cat:"Action / PvP", desc:"Building serious onchain energy with combat tournaments, tracking for confirmation."},
+];
+
+const initials = n => n.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();
+const colorFor = i => ["#ff5a36","#ffb627","#6fa287","#ff5a36","#ffb627","#6fa287"][i%6];
+
+function render(filterStatus, searchTerm){
+  const root = document.getElementById('registry');
+  root.innerHTML = "";
+  const term = searchTerm.trim().toLowerCase();
+  const cats = [...new Set(GAMES.map(g=>g.cat))];
+  let totalVisible = 0;
+
+  cats.forEach(cat=>{
+    const items = GAMES.filter(g=>{
+      const matchesStatus = filterStatus === "all" || g.status === filterStatus;
+      const matchesSearch = !term || g.name.toLowerCase().includes(term) || g.desc.toLowerCase().includes(term);
+      return g.cat === cat && matchesStatus && matchesSearch;
+    });
+    if(items.length === 0) return;
+    totalVisible += items.length;
+
+    const block = document.createElement('div');
+    block.className = "cat-block";
+    block.innerHTML = `
+      <div class="cat-head">
+        <span class="cat-name disp">${cat}</span>
+        <span class="cat-line"></span>
+        <span class="cat-count mono">${items.length}</span>
+      </div>
+      <div class="grid">
+        ${items.map((g,i)=>cardHTML(g,i)).join("")}
+      </div>
+    `;
+    root.appendChild(block);
+  });
+
+  document.getElementById('empty-state').style.display = totalVisible === 0 ? "block" : "none";
+}
+
+function cardHTML(g,i){
+  const ledClass = g.status;
+  const ledLabel = g.status === "live" ? "LIVE" : g.status === "new" ? "NEW" : "SOON";
+  const color = colorFor(i + g.cat.length);
+  const link = g.twitter
+    ? `<a class="link-btn" href="https://x.com/${g.twitter}" target="_blank" rel="noopener">@${g.twitter} ↗</a>`
+    : `<span class="link-pending">link pending</span>`;
+  return `
+    <div class="card">
+      <div class="teeth"><span></span><span></span><span></span></div>
+      <div class="card-top">
+        <div class="badge" style="background:${color}1a;color:${color};border:1px solid ${color}40;">${initials(g.name)}</div>
+        <div class="led"><span class="led-dot ${ledClass}"></span><span class="led-lbl ${ledClass} mono">${ledLabel}</span></div>
+      </div>
+      <p class="game-name disp">${g.name}</p>
+      <p class="game-desc">${g.desc}</p>
+      <div class="card-foot">
+        <span class="tag">${g.cat.split(" / ")[0].toUpperCase()}</span>
+        ${link}
+      </div>
+    </div>
+  `;
+}
+
+function renderPending(){
+  const el = document.getElementById('pending-section');
+  if(PENDING.length === 0){ el.innerHTML = ""; return; }
+  el.innerHTML = `
+    <div class="cat-block">
+      <div class="cat-head">
+        <span class="cat-name disp">Recently spotted · pending verification</span>
+        <span class="cat-line"></span>
+        <span class="cat-count mono">${PENDING.length}</span>
+      </div>
+      <div class="grid">
+        ${PENDING.map(p=>`
+          <div class="card pending-card">
+            <div class="teeth"><span></span><span></span><span></span></div>
+            <div class="card-top">
+              <div class="badge" style="background:#ffb6271a;color:#ffb627;border:1px solid #ffb62740;">${initials(p.name)}</div>
+            </div>
+            <p class="game-name disp">${p.name}</p>
+            <p class="game-desc">${p.desc}</p>
+            <div class="card-foot">
+              <span class="tag">${p.cat.toUpperCase()}</span>
+              <span class="pending-note">verifying ↻</span>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function updateStats(){
+  document.getElementById('stat-games').textContent = GAMES.length;
+  document.getElementById('stat-cats').textContent = new Set(GAMES.map(g=>g.cat)).size;
+  document.getElementById('stat-live').textContent = GAMES.filter(g=>g.status==="live").length;
+  document.getElementById('last-updated').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+}
+
+let activeFilter = "all";
+document.querySelectorAll('.pill').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.pill').forEach(b=>b.setAttribute('data-active','false'));
+    btn.setAttribute('data-active','true');
+    activeFilter = btn.dataset.filter;
+    render(activeFilter, document.getElementById('search').value);
+  });
+});
+document.getElementById('search').addEventListener('input', e=>{
+  render(activeFilter, e.target.value);
+});
+
+updateStats();
+render("all","");
+renderPending();
+</script>
+
+</body>
+</html>
