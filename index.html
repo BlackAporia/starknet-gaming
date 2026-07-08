@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="The home of Starknet gaming: a hub for players, builders, projects, news, recaps, updates, and community.">
+<meta name="theme-color" content="#11100d">
+<title>Starknet Gaming | Players, Builders, Projects & Community</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050712;
+    --bg-soft:#0b0d21;
+    --panel:#11132b;
+    --panel-2:#19133a;
+    --paper:#f7f2ff;
+    --muted:rgba(247,242,255,.72);
+    --muted-soft:rgba(247,242,255,.48);
+    --line:rgba(189,154,255,.16);
+    --line-strong:rgba(255,125,28,.28);
+    --ember:#ff6a00;
+    --amber:#ffb000;
+    --sage:#49f0ff;
+    --sky:#6aa8ff;
+    --violet:#9d4dff;
+    --magenta:#d63cff;
+    --shadow:0 28px 90px rgba(0,0,0,.48);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      linear-gradient(180deg, rgba(3,5,15,.68) 0%, rgba(5,7,18,.88) 44%, rgba(3,4,10,.98) 100%),
+      radial-gradient(circle at 18% 8%, rgba(255,106,0,.3), transparent 30rem),
+      radial-gradient(circle at 78% 10%, rgba(157,77,255,.32), transparent 34rem),
+      radial-gradient(circle at 88% 72%, rgba(73,240,255,.12), transparent 28rem),
+      url("assets/brand/background.png");
+    background-attachment:fixed;
+    background-position:center top;
+    background-repeat:no-repeat;
+    background-size:cover;
+    color:var(--paper);
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background-image:
+      linear-gradient(rgba(157,77,255,.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(73,240,255,.045) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:linear-gradient(to bottom, #000 0%, transparent 70%);
+  }
+  a{color:inherit;}
+  button,input{font:inherit;}
+  :focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:8px;}
+  .wrap{width:min(1160px, calc(100% - 40px));margin:0 auto;}
+  .display{font-family:"Space Grotesk",Inter,sans-serif;}
+  .mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,monospace;}
+
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    backdrop-filter:blur(18px);
+    background:rgba(9,8,12,.76);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:16px 0;}
+  .brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:800;letter-spacing:-.03em;}
+  .brand-mark{
+    width:38px;height:38px;border-radius:12px;
+    display:grid;place-items:center;
+    color:#140f0b;
+    background:linear-gradient(135deg,var(--ember),var(--violet));
+    box-shadow:0 12px 36px rgba(157,77,255,.32);
+  }
+  .brand span:last-child{font-size:15px;}
+  .nav-links{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+  .nav-links a{
+    color:var(--muted);
+    text-decoration:none;
+    font-size:13px;
+    font-weight:700;
+    padding:9px 12px;
+    border-radius:999px;
+    transition:background .15s,color .15s;
+  }
+  .nav-links a:hover{background:rgba(255,244,223,.08);color:var(--paper);}
+  .nav-links .cta{background:var(--paper);color:#15120f;}
+  .nav-links .cta:hover{background:#fff;color:#15120f;}
+
+  .hero{padding:82px 0 56px;}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(340px,.72fr);gap:42px;align-items:center;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    margin:0 0 18px;
+    color:var(--sage);
+    font-size:12px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    font-weight:700;
+  }
+  .eyebrow::before{content:"";width:8px;height:8px;border-radius:99px;background:var(--sage);box-shadow:0 0 0 6px rgba(73,240,255,.12);}
+  h1{margin:0;font-size:clamp(44px,8vw,92px);line-height:.92;letter-spacing:-.075em;max-width:820px;}
+  .hero-copy{max-width:660px;margin:24px 0 0;color:var(--muted);font-size:18px;}
+  .hero-kicker{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px;}
+  .hero-kicker span{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:rgba(255,244,223,.045);color:var(--muted);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;}
+  .hero-kicker span::before{content:"";width:7px;height:7px;border-radius:99px;background:linear-gradient(135deg,var(--ember),var(--violet));}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px;}
+  .button{
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    min-height:46px;
+    padding:0 18px;
+    border-radius:14px;
+    border:1px solid var(--line-strong);
+    text-decoration:none;
+    font-weight:800;
+    font-size:14px;
+    transition:transform .15s,background .15s,border-color .15s;
+  }
+  .button:hover{transform:translateY(-2px);}
+  .button.primary{background:linear-gradient(135deg,var(--ember),var(--violet));border-color:transparent;color:#fff;box-shadow:0 16px 42px rgba(255,106,0,.2);}
+  .button.secondary{background:rgba(255,244,223,.06);color:var(--paper);}
+  .button.secondary:hover{background:rgba(255,244,223,.1);border-color:var(--line-strong);}
+
+  .terminal-card{
+    position:relative;
+    overflow:hidden;
+    border:1px solid var(--line-strong);
+    border-radius:28px;
+    background:linear-gradient(180deg,rgba(28,22,33,.9),rgba(13,11,17,.94));
+    backdrop-filter:blur(14px);
+    box-shadow:var(--shadow);
+  }
+  .terminal-card::before{content:"";position:absolute;inset:auto -30% -45% -30%;height:260px;background:radial-gradient(circle,rgba(255,90,54,.22),transparent 64%);}
+  .terminal-top{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;border-bottom:1px solid var(--line);}
+  .dots{display:flex;gap:7px;}
+  .dots span{width:10px;height:10px;border-radius:50%;background:var(--muted-soft);}
+  .dots span:nth-child(1){background:var(--ember);}.dots span:nth-child(2){background:var(--amber);}.dots span:nth-child(3){background:var(--sage);}
+  .terminal-label{font-size:11px;color:var(--muted-soft);}
+  .terminal-body{position:relative;padding:24px;}
+  .brand-visual{position:relative;overflow:hidden;border:1px solid rgba(255,106,0,.28);border-radius:22px;margin-bottom:16px;background:#070816;box-shadow:0 18px 50px rgba(157,77,255,.16);}
+  .brand-visual img{display:block;width:100%;height:auto;aspect-ratio:3.7/1;object-fit:cover;}
+  .brand-visual::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,7,18,.08),rgba(5,7,18,.5));pointer-events:none;}
+  .hub-card{display:grid;gap:12px;margin-bottom:18px;}
+  .hub-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 14px;border:1px solid var(--line);border-radius:16px;background:rgba(255,244,223,.045);}
+  .hub-row strong{font-size:13px;}
+  .hub-row span{color:var(--muted-soft);font-size:11px;text-transform:uppercase;letter-spacing:.08em;}
+  .scan-line{margin:0 0 18px;color:var(--sage);font-size:12px;}
+  .scan-line span{color:var(--muted-soft);}
+  .featured-stack{display:grid;gap:12px;}
+  .featured-game{
+    display:grid;
+    grid-template-columns:44px 1fr auto;
+    gap:12px;
+    align-items:center;
+    padding:13px;
+    border:1px solid var(--line);
+    border-radius:16px;
+    background:rgba(17,16,13,.42);
+  }
+  .game-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-weight:800;color:#11100d;}
+  .game-icon img{display:block;width:100%;height:100%;object-fit:contain;padding:4px;}
+  .featured-game strong{display:block;font-size:14px;}
+  .featured-game small{display:block;color:var(--muted-soft);font-size:12px;margin-top:2px;}
+  .status-chip{font-size:10px;font-weight:800;letter-spacing:.08em;border-radius:999px;padding:6px 8px;}
+  .status-chip.live{color:var(--ember);background:rgba(255,90,54,.12);}
+  .status-chip.new{color:var(--amber);background:rgba(255,189,61,.12);}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:34px;}
+  .stat{padding:18px;border:1px solid var(--line);border-radius:18px;background:rgba(12,10,16,.62);backdrop-filter:blur(10px);}
+  .stat strong{display:block;font-size:30px;line-height:1;letter-spacing:-.06em;}
+  .stat span{display:block;margin-top:9px;color:var(--muted-soft);font-size:12px;text-transform:uppercase;letter-spacing:.08em;}
+
+  .section{padding:64px 0;}
+  .section-head{display:flex;align-items:end;justify-content:space-between;gap:28px;margin-bottom:24px;}
+  .section-title{margin:0;font-size:clamp(30px,5vw,54px);line-height:1;letter-spacing:-.055em;}
+  .section-copy{margin:0;max-width:540px;color:var(--muted);font-size:15px;}
+
+  .value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .value-card{padding:22px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(18,14,24,.72),rgba(13,11,17,.56));backdrop-filter:blur(10px);}
+  .value-card b{display:block;font-size:17px;margin-bottom:8px;}
+  .value-card p{margin:0;color:var(--muted);font-size:14px;}
+  .value-num{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:11px;margin-bottom:20px;background:rgba(255,189,61,.13);color:var(--amber);font-weight:900;}
+
+  .mission-panel{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px;border:1px solid var(--line-strong);border-radius:30px;background:linear-gradient(135deg,rgba(255,90,54,.16),rgba(117,52,255,.12) 44%,rgba(255,244,223,.055));padding:24px;box-shadow:var(--shadow);backdrop-filter:blur(16px);}
+  .mission-card{border:1px solid var(--line);border-radius:24px;background:rgba(10,8,14,.62);padding:22px;}
+  .mission-card h3{margin:0 0 12px;font-size:26px;line-height:1.05;letter-spacing:-.04em;}
+  .mission-card p{margin:0;color:var(--muted);font-size:15px;}
+  .mission-list{display:grid;gap:12px;}
+  .mission-item{display:grid;grid-template-columns:42px 1fr;gap:13px;padding:16px;border:1px solid var(--line);border-radius:18px;background:rgba(255,244,223,.04);}
+  .mission-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:rgba(255,189,61,.12);color:var(--amber);font-weight:900;}
+  .mission-item strong{display:block;margin-bottom:4px;font-size:15px;}
+  .mission-item span{display:block;color:var(--muted);font-size:13px;}
+
+  .world-strip{position:relative;overflow:hidden;border:1px solid rgba(157,77,255,.36);border-radius:30px;min-height:260px;margin-top:18px;background:#070816;box-shadow:var(--shadow);}
+  .world-strip img{display:block;width:100%;height:100%;min-height:260px;object-fit:cover;}
+  .world-strip::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,7,18,.84) 0%,rgba(5,7,18,.32) 48%,rgba(255,106,0,.12) 100%);}
+  .world-copy{position:absolute;left:24px;bottom:24px;z-index:1;max-width:520px;}
+  .world-copy span{display:inline-flex;margin-bottom:10px;color:var(--sage);font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:900;}
+  .world-copy h3{margin:0 0 8px;font-size:34px;line-height:1;letter-spacing:-.05em;}
+  .world-copy p{margin:0;color:var(--muted);font-size:14px;}
+
+  .media-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .media-card{position:relative;overflow:hidden;min-height:210px;padding:20px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,rgba(18,14,24,.72),rgba(13,11,17,.56));backdrop-filter:blur(10px);}
+  .media-card::after{content:"";position:absolute;right:-54px;bottom:-64px;width:150px;height:150px;border-radius:50%;background:var(--media-accent);opacity:.14;}
+  .media-card span{display:inline-flex;margin-bottom:44px;color:var(--media-accent);font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:900;}
+  .media-card h3{margin:0 0 9px;font-size:22px;line-height:1;letter-spacing:-.04em;}
+  .media-card p{margin:0;color:var(--muted);font-size:13px;}
+
+  .registry-panel{border:1px solid var(--line-strong);border-radius:30px;background:rgba(12,10,16,.78);box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(16px);}
+  .controls{display:grid;grid-template-columns:1fr auto;gap:16px;padding:18px;border-bottom:1px solid var(--line);background:rgba(255,244,223,.035);}
+  .search-wrap{position:relative;}
+  .search-wrap::before{content:"/";position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted-soft);}
+  .search{width:100%;height:48px;border:1px solid var(--line);border-radius:15px;background:rgba(17,16,13,.78);color:var(--paper);padding:0 16px 0 36px;outline:none;}
+  .search::placeholder{color:var(--muted-soft);}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+  .pill{height:48px;border:1px solid var(--line);border-radius:15px;background:transparent;color:var(--muted);padding:0 14px;cursor:pointer;font-weight:800;font-size:12px;letter-spacing:.06em;}
+  .pill:hover{border-color:var(--line-strong);color:var(--paper);}
+  .pill[aria-pressed="true"]{background:var(--paper);border-color:var(--paper);color:#15120f;}
+  .registry-body{padding:24px;}
+  .category{margin-bottom:30px;}
+  .category:last-child{margin-bottom:0;}
+  .category-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .category-head h3{margin:0;font-size:13px;text-transform:uppercase;letter-spacing:.11em;color:var(--paper);}
+  .category-line{height:1px;background:var(--line);flex:1;}
+  .category-count{color:var(--muted-soft);font-size:12px;}
+  .game-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .game-card{position:relative;min-height:220px;padding:18px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,rgba(31,24,39,.9),rgba(13,11,17,.94));overflow:hidden;transition:transform .16s,border-color .16s,background .16s;}
+  .game-card::after{content:"";position:absolute;inset:auto -24px -54px auto;width:140px;height:140px;border-radius:50%;background:var(--accent);opacity:.1;pointer-events:none;}
+  .game-card:hover{transform:translateY(-3px);border-color:rgba(157,77,255,.68);background:linear-gradient(180deg,rgba(59,32,95,.95),rgba(19,13,38,.96));box-shadow:0 18px 48px rgba(157,77,255,.26),0 0 0 1px rgba(214,60,255,.14) inset;}
+  .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px;}
+  .badge{width:56px;height:56px;border-radius:17px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--accent) 42%,transparent);background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:900;overflow:hidden;}
+  .badge img{display:block;width:100%;height:100%;object-fit:contain;padding:4px;}
+  .led{display:inline-flex;align-items:center;gap:7px;color:var(--muted-soft);font-size:10px;font-weight:900;letter-spacing:.09em;}
+  .led-dot{width:8px;height:8px;border-radius:99px;background:var(--muted-soft);}
+  .led.live{color:var(--ember);}.led.live .led-dot{background:var(--ember);box-shadow:0 0 0 6px rgba(255,90,54,.1);}
+  .led.new{color:var(--amber);}.led.new .led-dot{background:var(--amber);box-shadow:0 0 0 6px rgba(255,189,61,.1);}
+  .led.soon{color:var(--sky);}.led.soon .led-dot{background:var(--sky);box-shadow:0 0 0 6px rgba(140,167,255,.1);}
+  .game-card h4{margin:0 0 8px;font-size:20px;line-height:1.12;letter-spacing:-.035em;}
+  .game-card p{margin:0;color:var(--muted);font-size:14px;min-height:66px;}
+  .card-foot{position:relative;z-index:2;display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line);}
+  .tag{font-size:10px;color:var(--muted-soft);letter-spacing:.08em;text-transform:uppercase;}
+  .project-links{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:8px;width:100%;}
+  .project-link{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 10px;border:1px solid rgba(247,242,255,.18);border-radius:999px;background:rgba(247,242,255,.06);font-size:11px;text-decoration:none;color:var(--paper);font-weight:900;letter-spacing:.02em;line-height:1;transition:background .15s,border-color .15s,transform .15s;}
+  .project-link.site-link{justify-self:end;}
+  .project-link:hover{background:rgba(157,77,255,.18);border-color:rgba(157,77,255,.72);transform:translateY(-1px);}
+  .x-icon{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:6px;background:var(--paper);color:#11100d;font-size:10px;font-weight:900;line-height:1;}
+  .site-icon{position:relative;display:inline-grid;place-items:center;width:18px;height:18px;border:1.8px solid currentColor;border-radius:50%;color:var(--sage);}
+  .site-icon::before{content:"";position:absolute;width:6px;height:14px;border:1px solid currentColor;border-radius:50%;}
+  .site-icon::after{content:"";position:absolute;width:14px;height:1px;border-radius:99px;background:currentColor;box-shadow:0 -4px 0 rgba(73,240,255,.7),0 4px 0 rgba(73,240,255,.7);}
+  .missing-link{font-size:11px;color:var(--muted-soft);}
+  .empty{display:none;padding:52px 16px;text-align:center;color:var(--muted);}
+
+  .pending-grid,.infra-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .pending-card,.infra-card{padding:22px;border:1px dashed var(--line-strong);border-radius:24px;background:rgba(12,10,16,.66);backdrop-filter:blur(10px);}
+  .infra-head{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .infra-logo{width:46px;height:46px;border-radius:14px;object-fit:contain;padding:4px;background:rgba(247,242,255,.07);border:1px solid var(--line);}
+  .pending-card strong,.infra-card strong{display:block;font-size:20px;margin-bottom:8px;}
+  .pending-card p,.infra-card p{margin:0;color:var(--muted);font-size:14px;}
+  .pending-meta{display:inline-flex;margin-bottom:14px;color:var(--amber);font-size:11px;letter-spacing:.08em;text-transform:uppercase;}
+
+  .footer{padding:38px 0 58px;border-top:1px solid var(--line);}
+  .footer-inner{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+  .footer p{margin:0;color:var(--muted-soft);font-size:13px;}
+  .footer strong{display:block;color:var(--paper);font-size:14px;margin-bottom:6px;}
+  .footer-links{display:flex;gap:10px;flex-wrap:wrap;}
+  .footer-links a{color:var(--paper);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:9px 12px;font-size:13px;font-weight:800;}
+  .footer-links a:hover{background:rgba(255,244,223,.08);}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important;}
+  }
+  @media (max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .terminal-card{max-width:640px;}
+    .stats,.value-grid{grid-template-columns:repeat(2,1fr);}
+    .game-grid,.media-grid{grid-template-columns:repeat(2,1fr);}
+    .section-head{align-items:flex-start;flex-direction:column;}
+  }
+  @media (max-width:720px){
+    .wrap{width:min(100% - 28px,1160px);}
+    .nav{align-items:flex-start;}
+    .nav-links a:not(.cta){display:none;}
+    .hero{padding:56px 0 40px;}
+    .controls{grid-template-columns:1fr;}
+    .filters{justify-content:flex-start;}
+    .game-grid,.pending-grid,.infra-grid,.stats,.value-grid,.mission-panel,.media-grid{grid-template-columns:1fr;}
+    .featured-game{grid-template-columns:40px 1fr;}
+    .featured-game .status-chip{grid-column:2;justify-self:start;}
+    body{background-attachment:scroll;}
+    .world-copy{left:18px;right:18px;bottom:18px;}
+    .world-copy h3{font-size:26px;}
+  }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="wrap nav" aria-label="Primary navigation">
+      <a class="brand display" href="#top" aria-label="Starknet Gaming home">
+        <span class="brand-mark">SG</span>
+        <span>Starknet Gaming</span>
+      </a>
+      <div class="nav-links">
+        <a href="#why">Why it exists</a>
+        <a href="#community">Community</a>
+        <a href="#updates">Updates</a>
+        <a href="#registry">Registry</a>
+        <a href="https://t.me/channel_starknet_gaming" target="_blank" rel="noopener">Telegram Channel</a>
+        <a href="https://x.com/StarknetGaming" target="_blank" rel="noopener">Official X</a>
+        <a href="https://t.me/Starknet_Gaming" target="_blank" rel="noopener" class="cta">Telegram Group</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="wrap hero">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow mono">The home of Starknet gaming</p>
+          <h1 class="display">One hub for players, builders, projects, and onchain games.</h1>
+          <p class="hero-copy">Starknet Gaming brings the ecosystem together: discover games, follow project updates, join community conversations, and track the news, recaps, and moments that move Starknet gaming forward.</p>
+          <div class="hero-kicker" aria-label="Starknet Gaming focus areas">
+            <span>News</span>
+            <span>Recaps</span>
+            <span>Updates</span>
+            <span>Community</span>
+          </div>
+          <div class="hero-actions">
+            <a class="button primary" href="https://t.me/Starknet_Gaming" target="_blank" rel="noopener">Join the community</a>
+            <a class="button secondary" href="#registry">Explore games</a>
+            <a class="button secondary" href="https://x.com/StarknetGaming" target="_blank" rel="noopener">Follow X updates</a>
+          </div>
+          <div class="stats" aria-label="Registry statistics">
+            <div class="stat"><strong id="stat-games">0</strong><span>Games tracked</span></div>
+            <div class="stat"><strong id="stat-categories">0</strong><span>Categories</span></div>
+            <div class="stat"><strong id="stat-live">0</strong><span>Live now</span></div>
+            <div class="stat"><strong>Hub</strong><span>News & community</span></div>
+          </div>
+        </div>
+
+        <aside class="terminal-card" aria-label="Starknet Gaming hub overview">
+          <div class="terminal-top">
+            <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+            <span class="terminal-label mono">ecosystem hub</span>
+          </div>
+          <div class="terminal-body">
+            <div class="brand-visual" aria-label="Web3 gaming on Starknet visual">
+              <img src="assets/brand/hero-brand.png" alt="Web3 gaming on Starknet banner with orange gaming headset logo">
+            </div>
+            <div class="hub-card">
+              <div class="hub-row"><strong>Players</strong><span>discover + compete</span></div>
+              <div class="hub-row"><strong>Builders</strong><span>updates + feedback</span></div>
+              <div class="hub-row"><strong>Projects</strong><span>visibility + playtests</span></div>
+              <div class="hub-row"><strong>Community</strong><span>news + recaps</span></div>
+            </div>
+            <p class="scan-line mono">$ hub.featured_games <span>--status live --limit 4</span></p>
+            <div class="featured-stack" id="featured-stack"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="wrap section" id="why">
+      <div class="section-head">
+        <h2 class="section-title display">Built as the front door for Starknet gaming.</h2>
+        <p class="section-copy">The ecosystem needs more than a list. It needs one recognizable home where games, communities, updates, playtests, and ecosystem stories can be found together.</p>
+      </div>
+      <div class="value-grid">
+        <article class="value-card">
+          <span class="value-num mono">01</span>
+          <b>For players</b>
+          <p>Find games, communities, news, and people who care about onchain gaming without hunting through scattered chats.</p>
+        </article>
+        <article class="value-card">
+          <span class="value-num mono">02</span>
+          <b>For builders</b>
+          <p>Share announcements, launch updates, playtest calls, and product feedback with an audience that is already gaming-focused.</p>
+        </article>
+        <article class="value-card">
+          <span class="value-num mono">03</span>
+          <b>For communities</b>
+          <p>Turn Starknet gaming into a visible, coordinated movement with recaps, reviews, ecosystem digests, and shared momentum.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap section" id="community">
+      <div class="section-head">
+        <h2 class="section-title display">Starknet Gamers is where the ecosystem talks.</h2>
+        <p class="section-copy">A Telegram group for players, builders, founders, influencers, and curious newcomers to coordinate around Starknet gaming.</p>
+      </div>
+      <div class="mission-panel">
+        <article class="mission-card">
+          <p class="eyebrow mono">Community mission</p>
+          <h3 class="display">Respect, hype, competition, and real gamer energy.</h3>
+          <p>The group exists to make the ecosystem louder, more useful, and easier to enter. Players discover games and people. Developers share updates, find playtesters, and get real reactions from real players. No gatekeeping - just a shared place for Starknet gaming to grow.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="https://t.me/Starknet_Gaming" target="_blank" rel="noopener">Join Telegram Group</a>
+            <a class="button secondary" href="https://t.me/channel_starknet_gaming" target="_blank" rel="noopener">Read Announcements</a>
+          </div>
+        </article>
+        <div class="mission-list" aria-label="Community plans">
+          <div class="mission-item">
+            <span class="mission-icon mono">01</span>
+            <div><strong>Centralize activity</strong><span>A single hub for Starknet game news, communities, project announcements, and player conversations.</span></div>
+          </div>
+          <div class="mission-item">
+            <span class="mission-icon mono">02</span>
+            <div><strong>Help projects find players</strong><span>Teams can share updates, request playtesters, collect feedback, and build real community momentum.</span></div>
+          </div>
+          <div class="mission-item">
+            <span class="mission-icon mono">03</span>
+            <div><strong>Make onboarding easier</strong><span>Newcomers get one clear place to understand what to play, who to follow, and where to ask questions.</span></div>
+          </div>
+          <div class="mission-item">
+            <span class="mission-icon mono">04</span>
+            <div><strong>Grow ecosystem media</strong><span>The outlook includes X recaps, project reviews, weekly or monthly gaming digests, and broader ecosystem support.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="world-strip">
+        <img src="assets/brand/community-world.png" alt="Purple and orange Starknet gaming landscape with a glowing portal">
+        <div class="world-copy">
+          <span class="mono">Shared world</span>
+          <h3 class="display">A visible home for every Starknet gaming community.</h3>
+          <p>Players, builders, founders, and creators need one place to meet before the next playtest, recap, launch, or tournament moment.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap section" id="updates">
+      <div class="section-head">
+        <h2 class="section-title display">News, recaps, updates, and community signal.</h2>
+        <p class="section-copy">The goal is to make Starknet gaming easier to follow: project drops, ecosystem summaries, playtest opportunities, reviews, and the conversations around them.</p>
+      </div>
+      <div class="media-grid">
+        <article class="media-card" style="--media-accent:var(--ember)">
+          <span class="mono">News</span>
+          <h3 class="display">Fresh launches and announcements</h3>
+          <p>Surface what teams are shipping so players and builders do not miss important moments.</p>
+        </article>
+        <article class="media-card" style="--media-accent:var(--amber)">
+          <span class="mono">Recaps</span>
+          <h3 class="display">Weekly and monthly ecosystem summaries</h3>
+          <p>Turn scattered updates into readable snapshots of what changed across Starknet gaming.</p>
+        </article>
+        <article class="media-card" style="--media-accent:var(--sage)">
+          <span class="mono">Updates</span>
+          <h3 class="display">Project progress and playtests</h3>
+          <p>Give games a focused channel to find testers, collect feedback, and keep momentum visible.</p>
+        </article>
+        <article class="media-card" style="--media-accent:var(--sky)">
+          <span class="mono">Community</span>
+          <h3 class="display">A real gamer coordination layer</h3>
+          <p>Connect players, developers, founders, influencers, and newcomers around shared goals.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap section" id="registry">
+      <div class="section-head">
+        <h2 class="section-title display">Registry</h2>
+        <p class="section-copy">Search by game name or description, then filter by launch status. Entries are grouped by genre so the directory stays easy to scan.</p>
+      </div>
+
+      <div class="registry-panel">
+        <div class="controls">
+          <label class="search-wrap" aria-label="Search games">
+            <input class="search mono" id="search" type="search" placeholder="Search games, mechanics, categories..." autocomplete="off">
+          </label>
+          <div class="filters" aria-label="Filter games by status">
+            <button class="pill mono" type="button" data-filter="all" aria-pressed="true">ALL</button>
+            <button class="pill mono" type="button" data-filter="live" aria-pressed="false">LIVE</button>
+            <button class="pill mono" type="button" data-filter="new" aria-pressed="false">NEW</button>
+            <button class="pill mono" type="button" data-filter="soon" aria-pressed="false">SOON</button>
+          </div>
+        </div>
+        <div class="registry-body">
+          <div id="game-list"></div>
+          <p class="empty" id="empty-state">No games match this search yet. Try another keyword or send Starknet Gaming an update.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap section" id="pending" hidden>
+      <div class="section-head">
+        <h2 class="section-title display">Recently spotted</h2>
+        <p class="section-copy">Projects below are being tracked while details are verified. They are intentionally separated from the confirmed registry.</p>
+      </div>
+      <div class="pending-grid" id="pending-list"></div>
+    </section>
+
+    <section class="wrap section" id="infra">
+      <div class="section-head">
+        <h2 class="section-title display">Ecosystem rails</h2>
+        <p class="section-copy">Most fully onchain Starknet games share infrastructure that makes Cairo gameplay, wallets, and session-based onboarding practical.</p>
+      </div>
+      <div class="infra-grid">
+        <article class="infra-card">
+          <span class="pending-meta mono">Infrastructure</span>
+          <div class="infra-head">
+            <img class="infra-logo" src="assets/logos/dojo.jpg" alt="Dojo Engine logo" loading="lazy" decoding="async">
+            <strong class="display">Dojo Engine</strong>
+          </div>
+          <p>The game engine many fully onchain Starknet teams use to build worlds, systems, and provable gameplay in Cairo.</p>
+          <div class="card-foot">
+            <span class="tag mono">Onchain gaming</span>
+            <span class="project-links">
+              <a class="project-link" href="https://x.com/ohayo_dojo" target="_blank" rel="noopener"><span class="x-icon" aria-hidden="true">X</span><span>@ohayo_dojo</span></a>
+              <a class="project-link site-link" href="https://dojoengine.org" target="_blank" rel="noopener"><span class="site-icon" aria-hidden="true"></span><span>Website</span></a>
+            </span>
+          </div>
+        </article>
+        <article class="infra-card">
+          <span class="pending-meta mono">Player onboarding</span>
+          <div class="infra-head">
+            <img class="infra-logo" src="assets/logos/cartridge.jpg" alt="Cartridge logo" loading="lazy" decoding="async">
+            <strong class="display">Cartridge</strong>
+          </div>
+          <p>Wallet and session-key tooling that helps players enter games with smoother interactions and fewer crypto-native interruptions.</p>
+          <div class="card-foot">
+            <span class="tag mono">Wallet tooling</span>
+            <span class="project-links">
+              <a class="project-link" href="https://x.com/cartridge_gg" target="_blank" rel="noopener"><span class="x-icon" aria-hidden="true">X</span><span>@cartridge_gg</span></a>
+              <a class="project-link site-link" href="https://cartridge.gg/" target="_blank" rel="noopener"><span class="site-icon" aria-hidden="true"></span><span>Website</span></a>
+            </span>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div>
+        <strong class="mono">maintained by Starknet Gaming</strong>
+        <p>Living directory. Last refreshed <span id="last-updated"></span>. Links and statuses should be reported when outdated.</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://t.me/channel_starknet_gaming" target="_blank" rel="noopener">Telegram Channel</a>
+        <a href="https://x.com/StarknetGaming" target="_blank" rel="noopener">Official X</a>
+        <a href="https://t.me/Starknet_Gaming" target="_blank" rel="noopener">Telegram Group</a>
+        <a href="https://starknet-ecosystem.com/" target="_blank" rel="noopener">Starknet Ecosystem</a>
+      </div>
+    </div>
+  </footer>
+
+<script>
+const GAMES = [
+  {name:"ZAP Football", cat:"Strategy / MMO", status:"live", desc:"Football strategy game with real onchain gameplay and squad-level decisions.", twitter:"playzapfc", website:"https://playzap.vercel.app/", logo:"assets/logos/zap-football.jpg"},
+  {name:"Realms Blitz", cat:"Strategy / MMO", status:"new", desc:"Fast two-hour matches running on the same mechanics as Realms Eternum.", twitter:"LootRealms", website:"https://realms.world/blitz", logo:"assets/logos/realms-blitz.svg"},
+  {name:"Ponziland", cat:"Strategy / MMO", status:"live", desc:"Land, neighbors, taxes, and a nuclear button. Pure onchain chaos.", twitter:"ponzidotland", website:"https://play.ponzi.land/", logo:"assets/logos/ponziland.jpg"},
+  {name:"Influence", cat:"Strategy / MMO", status:"live", desc:"Strategic MMO set across 250,000 procedurally generated asteroids.", twitter:"influenceth", website:"https://www.influenceth.io/", logo:"assets/logos/influence.jpg"},
+  {name:"Loot Survivor", cat:"Roguelike / Dungeon", status:"live", desc:"Rogue-like dungeon crawler with real permadeath and no respawns.", twitter:"LootSurvivor", website:"https://www.deathmountain.gg/", logo:"assets/logos/loot-survivor.png"},
+  {name:"Dark Shuffle", cat:"Roguelike / Dungeon", status:"live", desc:"Deck-building roguelike fought across procedurally generated maps.", twitter:"darkshuffle_gg", website:"https://darkshuffle.gg/", logo:"assets/logos/dark-shuffle.png"},
+  {name:"Abyss", cat:"Roguelike / Dungeon", status:"soon", desc:"Dungeon crawler from an independent Starknet-native team.", twitter:"abyssdotfun", website:"https://play.abyssgame.fun/", logo:"assets/logos/abyss.jpg"},
+  {name:"Jokers of Neon", cat:"Card Games", status:"live", desc:"Poker-driven strategy with a combo system and weekly leagues.", twitter:"jokers_of_neon", website:"https://jokersofneon.com/", logo:"assets/logos/jokers-of-neon.jpg"},
+  {name:"Dope Wars", cat:"Card Games", status:"live", desc:"Street trading and empire-building, fully onchain.", twitter:"Dopewarsx", website:"https://dopewars.game/", logo:"assets/logos/dope-wars.jpg"},
+  {name:"Blob Arena", cat:"Action / PvP", status:"live", desc:"Pokemon-style creature battles with real community tournaments.", twitter:"Blobarena", website:"https://onelink.to/5bhgdh", logo:"assets/logos/blob-arena.jpg"},
+  {name:"Pistols at Dawn", cat:"Action / PvP", status:"live", desc:"Commit-reveal PvP duels: pistol and sabre, your choice.", twitter:"Pistols_gg", website:"https://pistols.gg/", logo:"assets/logos/pistols-at-dawn.jpg"},
+  {name:"Corsair", cat:"Action / PvP", status:"live", desc:"Sea-faring adventure with daily challenges from its creator.", twitter:"PlayCorsair", website:"https://reemjie.github.io/corsair/", logo:"assets/logos/corsair.jpg"},
+  {name:"Brove Royale", cat:"Action / PvP", status:"new", desc:"Battle royale built by an independent team in the community.", twitter:"just_brove_it", website:"https://brove.io/brove-royale", logo:"assets/logos/brove-royale.jpg"},
+  {name:"zKube", cat:"Puzzle / Casual", status:"live", desc:"Onchain Tetris with special abilities and combo bonuses.", twitter:"zKube_game", website:"https://app.zkube.xyz/", logo:"assets/logos/zkube.png"},
+  {name:"GM NFT", cat:"Puzzle / Casual", status:"live", desc:"Casual guessing game built around the community's own NFTs.", twitter:"GuessmyNft", website:"https://www.guessmynft.com/", logo:"assets/logos/gm-nft.jpg"},
+  {name:"Nums", cat:"Puzzle / Casual", status:"live", desc:"Quick-fire number puzzle game, easy to learn and replay.", twitter:"numsgg", website:"https://nums.gg/", logo:"assets/logos/nums.jpg"},
+  {name:"ART/PEACE", cat:"Creative / Social", status:"live", desc:"Collaborative onchain pixel canvas. Millions of transactions, one shared drawing.", twitter:"art_peace_sn", website:"https://art-peace.ne/", logo:"assets/logos/art-peace.jpg"}
+];
+
+const PENDING = [];
+
+const accents = ["#ff5a36", "#ffbd3d", "#74b694", "#8ca7ff", "#c68cff"];
+const initials = name => name.split(" ").map(part => part[0]).slice(0, 2).join("").toUpperCase();
+const escapeHTML = value => value.replace(/[&<>'"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
+
+function statusLabel(status){
+  return status === "live" ? "Live" : status === "new" ? "New" : "Soon";
+}
+
+function projectCard(game, index){
+  const accent = accents[(index + game.cat.length) % accents.length];
+  const safeName = escapeHTML(game.name);
+  const badge = game.logo
+    ? `<div class="badge" aria-hidden="true"><img src="${escapeHTML(game.logo)}" alt="" loading="lazy" decoding="async"></div>`
+    : `<div class="badge display" aria-hidden="true">${initials(game.name)}</div>`;
+  const xLink = game.twitter
+    ? `<a class="project-link" href="https://x.com/${encodeURIComponent(game.twitter)}" target="_blank" rel="noopener" aria-label="Open ${safeName} on X"><span class="x-icon" aria-hidden="true">X</span><span>@${escapeHTML(game.twitter)}</span></a>`
+    : `<span class="missing-link mono">link pending</span>`;
+  const siteLink = game.website
+    ? `<a class="project-link site-link" href="${escapeHTML(game.website)}" target="_blank" rel="noopener" aria-label="Open ${safeName} website"><span class="site-icon" aria-hidden="true"></span><span>Website</span></a>`
+    : "";
+
+  return `
+    <article class="game-card" style="--accent:${accent}">
+      <div class="card-top">
+        ${badge}
+        <span class="led ${game.status} mono"><span class="led-dot"></span>${statusLabel(game.status)}</span>
+      </div>
+      <h4 class="display">${safeName}</h4>
+      <p>${escapeHTML(game.desc)}</p>
+      <div class="card-foot">
+        <span class="tag mono">${escapeHTML(game.cat)}</span>
+        <span class="project-links">${xLink}${siteLink}</span>
+      </div>
+    </article>
+  `;
+}
+
+function renderRegistry(filter = "all", term = ""){
+  const list = document.getElementById("game-list");
+  const empty = document.getElementById("empty-state");
+  const query = term.trim().toLowerCase();
+  let visible = 0;
+
+  const categories = [...new Set(GAMES.map(game => game.cat))];
+  list.innerHTML = categories.map(category => {
+    const games = GAMES.filter(game => {
+      const text = `${game.name} ${game.cat} ${game.desc}`.toLowerCase();
+      const matchesFilter = filter === "all" || game.status === filter;
+      const matchesSearch = !query || text.includes(query);
+      return game.cat === category && matchesFilter && matchesSearch;
+    });
+
+    if(!games.length) return "";
+    visible += games.length;
+    return `
+      <section class="category" aria-label="${escapeHTML(category)}">
+        <div class="category-head">
+          <h3 class="display">${escapeHTML(category)}</h3>
+          <span class="category-line"></span>
+          <span class="category-count mono">${games.length}</span>
+        </div>
+        <div class="game-grid">${games.map(projectCard).join("")}</div>
+      </section>
+    `;
+  }).join("");
+
+  empty.style.display = visible ? "none" : "block";
+}
+
+function renderFeatured(){
+  const featured = GAMES.filter(game => game.status === "live").slice(0, 4);
+  document.getElementById("featured-stack").innerHTML = featured.map((game, index) => `
+    <div class="featured-game">
+      <span class="game-icon display" style="background:${accents[index % accents.length]}">${game.logo ? `<img src="${escapeHTML(game.logo)}" alt="" loading="lazy" decoding="async">` : initials(game.name)}</span>
+      <span><strong>${escapeHTML(game.name)}</strong><small>${escapeHTML(game.cat)}</small></span>
+      <span class="status-chip live mono">LIVE</span>
+    </div>
+  `).join("");
+}
+
+function renderPending(){
+  const section = document.getElementById("pending");
+  const list = document.getElementById("pending-list");
+
+  if(!PENDING.length){
+    section.hidden = true;
+    list.innerHTML = "";
+    return;
+  }
+
+  section.hidden = false;
+  list.innerHTML = PENDING.map(item => `
+    <article class="pending-card">
+      <span class="pending-meta mono">Verifying - ${escapeHTML(item.cat)}</span>
+      <strong class="display">${escapeHTML(item.name)}</strong>
+      <p>${escapeHTML(item.desc)}</p>
+    </article>
+  `).join("");
+}
+
+function updateStats(){
+  document.getElementById("stat-games").textContent = GAMES.length;
+  document.getElementById("stat-categories").textContent = new Set(GAMES.map(game => game.cat)).size;
+  document.getElementById("stat-live").textContent = GAMES.filter(game => game.status === "live").length;
+  document.getElementById("last-updated").textContent = new Intl.DateTimeFormat("en", {year:"numeric", month:"short", day:"numeric"}).format(new Date());
+}
+
+let activeFilter = "all";
+const search = document.getElementById("search");
+
+document.querySelectorAll(".pill").forEach(button => {
+  button.addEventListener("click", () => {
+    activeFilter = button.dataset.filter;
+    document.querySelectorAll(".pill").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+    renderRegistry(activeFilter, search.value);
+  });
+});
+
+search.addEventListener("input", event => renderRegistry(activeFilter, event.target.value));
+
+updateStats();
+renderFeatured();
+renderRegistry();
+renderPending();
+</script>
+</body>
+</html>
