@@ -329,7 +329,7 @@
   .contact-button{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border:1px solid rgba(157,77,255,.34);border-radius:999px;background:rgba(157,77,255,.12);color:#fff;text-decoration:none;font-size:13px;font-weight:900;box-shadow:0 0 18px rgba(157,77,255,.14);transition:background .15s,border-color .15s,transform .15s,box-shadow .15s;}
   .contact-button:hover{transform:translateY(-2px);background:rgba(157,77,255,.22);border-color:rgba(214,60,255,.72);box-shadow:0 0 26px rgba(157,77,255,.28);}
 
-  .rocket-button{position:fixed;left:18px;top:74%;z-index:60;width:56px;height:56px;border:1px solid rgba(157,77,255,.46);border-radius:18px;background:linear-gradient(135deg,rgba(17,19,43,.88),rgba(157,77,255,.22));color:#fff;cursor:pointer;box-shadow:0 18px 46px rgba(157,77,255,.28);animation:rocket-float 8s ease-in-out infinite;transition:transform .18s,box-shadow .18s,border-color .18s;}
+  .rocket-button{position:fixed;left:18px;top:74%;z-index:60;width:56px;height:56px;border:1px solid rgba(157,77,255,.46);border-radius:18px;background:linear-gradient(135deg,rgba(17,19,43,.88),rgba(157,77,255,.22));color:#fff;cursor:pointer;box-shadow:0 18px 46px rgba(157,77,255,.28);animation:rocket-float 4.6s ease-in-out infinite;transition:transform .18s,box-shadow .18s,border-color .18s;}
   .rocket-button:hover{transform:scale(1.08) rotate(-6deg);border-color:rgba(73,240,255,.72);box-shadow:0 0 34px rgba(73,240,255,.34),0 18px 46px rgba(157,77,255,.32);}
   .rocket-button span{display:block;font-size:30px;filter:drop-shadow(0 0 12px rgba(73,240,255,.72));}
   .rocket-button::after{content:"Play";position:absolute;left:50%;top:calc(100% + 7px);transform:translateX(-50%);padding:4px 8px;border-radius:999px;background:rgba(5,7,18,.82);color:var(--sage);font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;}
@@ -381,7 +381,7 @@
   .leaderboard-tools{display:grid;grid-template-columns:1fr;gap:8px;}
   .game-help{margin-top:auto;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--muted-soft);}
 
-  @keyframes rocket-float{0%,100%{transform:translate(0,0) rotate(-8deg);}25%{transform:translate(22px,-80px) rotate(8deg);}50%{transform:translate(8px,-150px) rotate(-3deg);}75%{transform:translate(30px,-70px) rotate(10deg);}}
+  @keyframes rocket-float{0%,100%{transform:translate(0,0) rotate(-9deg);}22%{transform:translate(32px,-105px) rotate(11deg);}48%{transform:translate(-6px,-184px) rotate(-5deg);}74%{transform:translate(42px,-76px) rotate(13deg);}}
   @keyframes stars-drift{from{background-position:0 0;}to{background-position:80px 120px;}}
 
   @keyframes card-rise{
@@ -1654,7 +1654,7 @@ function resetGame(){
   jumpGame.melodyStep = 0;
   jumpGame.melodyTimer = 0;
   jumpGame.lastTime = performance.now();
-  jumpGame.player = {x:gameCanvas.width / 2 - 17,y:gameCanvas.height - 140,w:34,h:42,vx:0,vy:-13,onBoost:false};
+  jumpGame.player = {x:gameCanvas.width / 2 - 17,y:gameCanvas.height - 140,w:34,h:42,vx:0,vy:-14.8,onBoost:false};
   jumpGame.platforms = [{x:gameCanvas.width / 2 - 70,y:gameCanvas.height - 70,w:140,h:14,type:"normal",dir:1,speed:0,boost:false,reward:null,rewardCollected:false,hazard:false}];
   for(let y = gameCanvas.height - 150; y > -2200; y -= 82){
     jumpGame.platforms.push(createPlatform(y, y > gameCanvas.height - 420));
@@ -1761,9 +1761,9 @@ function updateGame(now){
   const player = jumpGame.player;
   const previousBottom = player.y + player.h;
   const move = (jumpGame.keys.has("ArrowRight") || jumpGame.keys.has("d") ? 1 : 0) - (jumpGame.keys.has("ArrowLeft") || jumpGame.keys.has("a") ? 1 : 0);
-  player.vx += move * (34 + jumpGame.difficulty * 1.4) * delta;
-  player.vx *= .9;
-  player.vy += (24 + jumpGame.difficulty * .75) * delta;
+  player.vx += move * (50 + jumpGame.difficulty * 1.8) * delta;
+  player.vx *= .92;
+  player.vy += (25 + jumpGame.difficulty * .72) * delta;
   player.x += player.vx;
   player.y += player.vy;
 
@@ -1806,7 +1806,7 @@ function updateGame(now){
             break;
           }
         }
-        player.vy = platform.boost ? -22 : -15.5;
+        player.vy = platform.boost ? -24 : -17;
         player.onBoost = platform.boost;
         if(platform.boost){
           jumpGame.combo = Math.min(9, jumpGame.combo + 1);
