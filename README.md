@@ -1,6 +1,48 @@
 # Starknet Gaming
 
-Starknet Gaming is a static landing page and game directory for the Starknet gaming ecosystem. It helps players discover games, follow project links, join community channels, and explore infrastructure used by onchain games.
+A public community hub and game directory for the Starknet gaming ecosystem.
+
+The site helps players discover games, follow official project links, join Starknet Gaming community channels, and explore infrastructure used by onchain games.
+
+## Live Site
+
+This project is built as a static website and can be hosted on GitHub Pages, Vercel, Netlify, Cloudflare Pages, or any static server.
+
+If GitHub Pages is enabled for this repository, the site will be available at:
+
+```text
+https://blackaporia.github.io/starknet-gaming/
+```
+
+## Features
+
+- Responsive landing page for desktop and mobile.
+- Searchable Starknet game registry.
+- Status filters: `All`, `Live`, `New`, `Soon`.
+- Game cards grouped by category.
+- Official X and Website links for each listed game.
+- Project logos and visual assets.
+- Featured games section.
+- Community and ecosystem mission sections.
+- Dojo and Cartridge infrastructure cards.
+- Language selector with custom translations for selected languages.
+- Fun fullscreen `Rocket Jump` mini game with score, timer, difficulty scaling, melody, and local leaderboard.
+- Public support links for BlackAporia.
+
+## Languages
+
+The site includes a custom language selector for:
+
+- English
+- Chinese
+- Korean
+- Turkish
+- Russian
+- Hindi
+- Ukrainian
+- Spanish
+
+The translation system is local JavaScript. It does not use Google Translate widgets or external translation iframes.
 
 ## Project Structure
 
@@ -8,13 +50,14 @@ Starknet Gaming is a static landing page and game directory for the Starknet gam
 .
 ├── index.html
 ├── README.md
+├── .gitignore
+├── .nojekyll
 ├── assets/
 │   ├── brand/
 │   │   ├── background.png
 │   │   ├── community-world.png
 │   │   └── hero-brand.png
 │   └── logos/
-│       ├── abyss.jpg
 │       ├── art-peace.jpg
 │       ├── blob-arena.jpg
 │       ├── brove-royale.jpg
@@ -31,26 +74,16 @@ Starknet Gaming is a static landing page and game directory for the Starknet gam
 │       ├── pistols-at-dawn.jpg
 │       ├── ponziland.jpg
 │       ├── realms-blitz.svg
+│       ├── starknet-gaming.png
 │       ├── zap-football.jpg
 │       └── zkube.png
 └── docs/
     └── project-links.txt
 ```
 
-## Features
-
-- Responsive static site in `index.html`.
-- Searchable and filterable game registry.
-- Game cards grouped by category.
-- X and Website links for every listed game.
-- Project logos for all listed games.
-- Purple hover highlight on game cards.
-- Community, updates, and infrastructure sections.
-- Footer links for Telegram, X, and the Starknet ecosystem explorer.
-
 ## Run Locally
 
-Open `index.html` directly in a browser, or serve the folder with a static server:
+Open `index.html` directly in a browser, or serve the folder with Python:
 
 ```bash
 python3 -m http.server 8000
@@ -62,11 +95,24 @@ Then open:
 http://127.0.0.1:8000
 ```
 
+## GitHub Pages Setup
+
+To publish this repository with GitHub Pages:
+
+1. Open the repository on GitHub.
+2. Go to `Settings`.
+3. Open `Pages`.
+4. Under `Build and deployment`, choose `Deploy from a branch`.
+5. Select branch `main` and folder `/root`.
+6. Save.
+
+The included `.nojekyll` file keeps GitHub Pages from running Jekyll processing and serves the static assets directly.
+
 ## Updating Games
 
 Game data lives in the `GAMES` array inside `index.html`.
 
-Each game should include:
+Each game entry should include:
 
 - `name`
 - `cat`
@@ -76,11 +122,19 @@ Each game should include:
 - `website`
 - `logo`
 
-Store new logos in `assets/logos/` and use clean lowercase file names with hyphens.
+Store new logos in `assets/logos/` and use clean lowercase file names with hyphens, for example:
+
+```text
+new-game-logo.png
+```
 
 ## Source Links
 
-Original project links are kept in `docs/project-links.txt`.
+The original collected project links are kept in:
+
+```text
+docs/project-links.txt
+```
 
 ## Community Links
 
@@ -88,3 +142,8 @@ Original project links are kept in `docs/project-links.txt`.
 - [Official X](https://x.com/StarknetGaming)
 - [Telegram Group](https://t.me/Starknet_Gaming)
 - [Starknet Ecosystem](https://starknet-ecosystem.com/)
+
+## Support
+
+- [BlackAporia on X](https://x.com/BlackAporia)
+- [BlackAporia on Telegram](https://t.me/BlackAporia)
