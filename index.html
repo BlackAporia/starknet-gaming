@@ -59,6 +59,7 @@
     background-size:44px 44px;
     mask-image:linear-gradient(to bottom, #000 0%, transparent 70%);
   }
+  body.game-open{overflow:hidden;}
   a{color:inherit;}
   button,input{font:inherit;}
   :focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:8px;}
@@ -332,17 +333,19 @@
   .rocket-button:hover{transform:scale(1.08) rotate(-6deg);border-color:rgba(73,240,255,.72);box-shadow:0 0 34px rgba(73,240,255,.34),0 18px 46px rgba(157,77,255,.32);}
   .rocket-button span{display:block;font-size:30px;filter:drop-shadow(0 0 12px rgba(73,240,255,.72));}
   .rocket-button::after{content:"Play";position:absolute;left:50%;top:calc(100% + 7px);transform:translateX(-50%);padding:4px 8px;border-radius:999px;background:rgba(5,7,18,.82);color:var(--sage);font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;}
-  .game-overlay{position:fixed;inset:0;z-index:80;display:none;place-items:center;padding:20px;background:radial-gradient(circle at 50% 20%,rgba(157,77,255,.34),transparent 34rem),rgba(3,4,12,.92);backdrop-filter:blur(18px);}
+  .game-overlay{position:fixed;inset:0;z-index:80;display:none;place-items:center;padding:clamp(10px,2vw,28px);overflow:hidden;background:radial-gradient(circle at 50% 20%,rgba(157,77,255,.34),transparent 34rem),rgba(3,4,12,.92);backdrop-filter:blur(18px);}
   .game-overlay.is-open{display:grid;}
-  .game-shell{width:min(1180px,100%);height:min(780px,calc(100vh - 40px));display:grid;grid-template-columns:minmax(300px,1fr) 310px;gap:16px;}
-  .game-stage{position:relative;overflow:hidden;border:1px solid rgba(157,77,255,.38);border-radius:28px;background:linear-gradient(180deg,#090d28,#110c2d 58%,#080912);box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 70px rgba(157,77,255,.16);}
+  .game-shell{width:min(94vw,1760px);height:min(90dvh,1080px);min-width:0;min-height:0;display:grid;grid-template-columns:minmax(440px,1fr) clamp(290px,22vw,390px);gap:clamp(10px,1.2vw,18px);}
+  .game-stage{position:relative;min-width:0;min-height:0;overflow:hidden;border:1px solid rgba(157,77,255,.38);border-radius:28px;background:linear-gradient(180deg,#090d28,#110c2d 58%,#080912);box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 70px rgba(157,77,255,.16);}
   .game-stage::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.38) 1px,transparent 1px);background-size:34px 34px;opacity:.22;animation:stars-drift 16s linear infinite;pointer-events:none;}
   #jump-game{position:relative;z-index:1;display:block;width:100%;height:100%;touch-action:none;cursor:crosshair;}
   .game-result{position:absolute;z-index:3;left:50%;top:50%;display:none;width:min(320px,calc(100% - 32px));transform:translate(-50%,-50%);padding:20px;border:1px solid rgba(255,106,0,.42);border-radius:20px;background:rgba(8,8,18,.92);box-shadow:0 24px 70px rgba(0,0,0,.5),0 0 38px rgba(255,106,0,.22);text-align:center;backdrop-filter:blur(12px);}
   .game-result.is-visible{display:grid;gap:10px;}
   .game-result strong{font-size:32px;line-height:1;color:#fff;letter-spacing:-.05em;}
   .game-result span{color:var(--muted);font-size:13px;}
-  .game-panel{display:flex;flex-direction:column;gap:12px;border:1px solid rgba(157,77,255,.32);border-radius:28px;background:rgba(10,8,24,.86);padding:18px;box-shadow:0 24px 70px rgba(0,0,0,.38);}
+  .game-overlay:fullscreen{display:grid;padding:14px;background:radial-gradient(circle at 50% 20%,rgba(157,77,255,.34),transparent 34rem),rgba(3,4,12,.96);}
+  .game-overlay:fullscreen .game-shell{width:100%;height:100%;max-width:none;max-height:none;grid-template-columns:minmax(0,1fr) clamp(300px,20vw,390px);}
+  .game-panel{display:flex;flex-direction:column;min-width:0;min-height:0;gap:12px;border:1px solid rgba(157,77,255,.32);border-radius:28px;background:rgba(10,8,24,.86);padding:18px;box-shadow:0 24px 70px rgba(0,0,0,.38);overflow:auto;}
   .game-panel h2{margin:0;font-size:28px;line-height:1;letter-spacing:-.05em;}
   .game-panel p{margin:0;color:var(--muted);font-size:13px;}
   .game-profile{display:grid;gap:8px;padding:12px;border:1px solid rgba(73,240,255,.24);border-radius:16px;background:rgba(73,240,255,.055);}
@@ -359,6 +362,7 @@
   .game-actions{display:grid;gap:9px;margin-top:2px;}
   .game-action{min-height:42px;border:1px solid rgba(157,77,255,.38);border-radius:14px;background:rgba(157,77,255,.13);color:#fff;font-weight:900;cursor:pointer;transition:transform .15s,background .15s,border-color .15s;}
   .game-action:hover{transform:translateY(-2px);background:rgba(157,77,255,.24);border-color:rgba(73,240,255,.56);}
+  .game-action:disabled{opacity:.45;cursor:not-allowed;transform:none;}
   .game-action.primary{background:linear-gradient(135deg,var(--violet),var(--magenta));border-color:transparent;}
   .game-action.compact{min-height:40px;padding:0 12px;border-radius:12px;font-size:12px;}
   .leaderboard{display:grid;gap:7px;margin-top:4px;}
@@ -396,6 +400,7 @@
     .section-head{align-items:flex-start;flex-direction:column;}
     .nav{align-items:flex-start;flex-direction:column;}
     .nav-links{justify-content:flex-start;flex-wrap:wrap;}
+    .game-shell{width:calc(100vw - 24px);height:calc(100dvh - 24px);grid-template-columns:minmax(0,1fr) minmax(260px,320px);}
   }
   @media (max-width:720px){
     .wrap{width:min(100% - 28px,1160px);}
@@ -413,8 +418,39 @@
     .world-copy h3{font-size:26px;}
     .contact-strip{align-items:flex-start;flex-direction:column;}
     .contact-actions{justify-content:flex-start;}
-    .game-shell{height:calc(100vh - 28px);grid-template-columns:1fr;grid-template-rows:1fr auto;}
-    .game-panel{max-height:320px;overflow:auto;}
+    .game-overlay{align-items:start;padding:8px;}
+    .game-shell{width:100%;height:calc(100dvh - 16px);grid-template-columns:1fr;grid-template-rows:minmax(300px,1fr) auto;gap:10px;}
+    .game-stage{border-radius:18px;}
+    .game-panel{max-height:44dvh;padding:12px;border-radius:18px;gap:9px;}
+    .game-panel h2{font-size:22px;}
+    .game-profile{padding:10px;}
+    .game-stats{grid-template-columns:repeat(3,1fr);gap:6px;}
+    .game-stat{padding:9px;border-radius:12px;}
+    .game-stat b{font-size:17px;}
+    .game-stat span{font-size:9px;}
+    .game-actions{grid-template-columns:1fr 1fr;gap:7px;}
+    .game-action{min-height:38px;border-radius:12px;font-size:12px;}
+    .game-action.primary{grid-column:1 / -1;}
+    .leaderboard{gap:6px;}
+  }
+  @media (max-width:520px){
+    .game-shell{grid-template-rows:minmax(260px,1fr) auto;}
+    .game-panel{max-height:48dvh;}
+    .game-name-row{grid-template-columns:1fr;}
+    .leaderboard ol{max-height:120px;overflow:auto;}
+  }
+  @media (max-height:760px) and (min-width:721px){
+    .game-overlay{padding:10px;}
+    .game-shell{width:calc(100vw - 20px);height:calc(100dvh - 20px);grid-template-columns:minmax(0,1fr) minmax(270px,330px);gap:10px;}
+    .game-panel{padding:12px;border-radius:20px;gap:8px;}
+    .game-panel h2{font-size:22px;}
+    .game-profile{padding:10px;}
+    .game-stats{gap:6px;}
+    .game-stat{padding:9px;border-radius:12px;}
+    .game-stat b{font-size:18px;}
+    .game-actions{gap:7px;}
+    .game-action{min-height:36px;font-size:12px;}
+    .leaderboard ol{max-height:28dvh;overflow:auto;}
   }
 </style>
 </head>
@@ -764,6 +800,7 @@
         </div>
         <div class="game-actions">
           <button class="game-action primary" id="game-start" type="button">Start game</button>
+          <button class="game-action" id="game-fullscreen" type="button">Fullscreen</button>
           <button class="game-action" id="game-mute" type="button">Melody: on</button>
           <button class="game-action" id="game-close" type="button">Close</button>
         </div>
@@ -886,13 +923,13 @@ Object.entries(SHARED_EXTRA_TRANSLATIONS).forEach(([language, strings]) => {
 });
 
 const ROCKET_GAME_TRANSLATIONS = {
-  zh:{"Nickname":"昵称","Enter nickname":"输入昵称","Save":"保存","Enter a nickname before launch.":"发射前请输入昵称。","Playing as":"玩家","Combo":"连击","Orbs":"能量球","Shield":"护盾","Local":"本地","Public":"公开","Syncing":"同步中","Offline":"离线","Refresh leaderboard":"刷新排行榜","You lost":"你输了","The rocket touched the floor.":"火箭碰到了底部。"},
-  ko:{"Nickname":"닉네임","Enter nickname":"닉네임 입력","Save":"저장","Enter a nickname before launch.":"시작 전에 닉네임을 입력하세요.","Playing as":"플레이어","Combo":"콤보","Orbs":"오브","Shield":"실드","Local":"로컬","Public":"공개","Syncing":"동기화 중","Offline":"오프라인","Refresh leaderboard":"리더보드 새로고침","You lost":"패배","The rocket touched the floor.":"로켓이 바닥에 닿았습니다."},
-  tr:{"Nickname":"Takma ad","Enter nickname":"Takma ad gir","Save":"Kaydet","Enter a nickname before launch.":"Baslamadan once takma ad gir.","Playing as":"Oyuncu","Combo":"Kombo","Orbs":"Kureler","Shield":"Kalkan","Local":"Yerel","Public":"Herkese acik","Syncing":"Esitleniyor","Offline":"Cevrimdisi","Refresh leaderboard":"Lider tablosunu yenile","You lost":"Kaybettin","The rocket touched the floor.":"Roket zemine dokundu."},
-  ru:{"Nickname":"Никнейм","Enter nickname":"Введите никнейм","Save":"Сохранить","Enter a nickname before launch.":"Введите никнейм перед стартом.","Playing as":"Игрок","Combo":"Комбо","Orbs":"Орбы","Shield":"Щит","Local":"Локально","Public":"Публично","Syncing":"Синхронизация","Offline":"Офлайн","Refresh leaderboard":"Обновить таблицу","You lost":"Вы проиграли","The rocket touched the floor.":"Ракета коснулась дна."},
-  hi:{"Nickname":"निकनेम","Enter nickname":"निकनेम डालें","Save":"सेव","Enter a nickname before launch.":"शुरू करने से पहले निकनेम डालें।","Playing as":"खिलाड़ी","Combo":"कॉम्बो","Orbs":"ऑर्ब्स","Shield":"शील्ड","Local":"लोकल","Public":"पब्लिक","Syncing":"सिंक हो रहा","Offline":"ऑफलाइन","Refresh leaderboard":"लीडरबोर्ड रिफ्रेश करें","You lost":"आप हार गए","The rocket touched the floor.":"रॉकेट फर्श से टकरा गया।"},
-  uk:{"Nickname":"Нікнейм","Enter nickname":"Введи нікнейм","Save":"Зберегти","Enter a nickname before launch.":"Введи нікнейм перед стартом.","Playing as":"Гравець","Combo":"Комбо","Orbs":"Орби","Shield":"Щит","Local":"Локально","Public":"Публічно","Syncing":"Синхронізація","Offline":"Офлайн","Refresh leaderboard":"Оновити таблицю","You lost":"Ви програли","The rocket touched the floor.":"Ракета торкнулася дна."},
-  es:{"Nickname":"Nickname","Enter nickname":"Ingresa nickname","Save":"Guardar","Enter a nickname before launch.":"Ingresa un nickname antes de despegar.","Playing as":"Jugador","Combo":"Combo","Orbs":"Orbes","Shield":"Escudo","Local":"Local","Public":"Publico","Syncing":"Sincronizando","Offline":"Offline","Refresh leaderboard":"Actualizar clasificacion","You lost":"Perdiste","The rocket touched the floor.":"El cohete toco el suelo."}
+  zh:{"Nickname":"昵称","Enter nickname":"输入昵称","Save":"保存","Enter a nickname before launch.":"发射前请输入昵称。","Playing as":"玩家","Combo":"连击","Orbs":"能量球","Shield":"护盾","Local":"本地","Public":"公开","Syncing":"同步中","Offline":"离线","Refresh leaderboard":"刷新排行榜","You lost":"你输了","The rocket touched the floor.":"火箭碰到了底部。","Fullscreen":"全屏","Exit fullscreen":"退出全屏"},
+  ko:{"Nickname":"닉네임","Enter nickname":"닉네임 입력","Save":"저장","Enter a nickname before launch.":"시작 전에 닉네임을 입력하세요.","Playing as":"플레이어","Combo":"콤보","Orbs":"오브","Shield":"실드","Local":"로컬","Public":"공개","Syncing":"동기화 중","Offline":"오프라인","Refresh leaderboard":"리더보드 새로고침","You lost":"패배","The rocket touched the floor.":"로켓이 바닥에 닿았습니다.","Fullscreen":"전체 화면","Exit fullscreen":"전체 화면 종료"},
+  tr:{"Nickname":"Takma ad","Enter nickname":"Takma ad gir","Save":"Kaydet","Enter a nickname before launch.":"Baslamadan once takma ad gir.","Playing as":"Oyuncu","Combo":"Kombo","Orbs":"Kureler","Shield":"Kalkan","Local":"Yerel","Public":"Herkese acik","Syncing":"Esitleniyor","Offline":"Cevrimdisi","Refresh leaderboard":"Lider tablosunu yenile","You lost":"Kaybettin","The rocket touched the floor.":"Roket zemine dokundu.","Fullscreen":"Tam ekran","Exit fullscreen":"Tam ekrandan cik"},
+  ru:{"Nickname":"Никнейм","Enter nickname":"Введите никнейм","Save":"Сохранить","Enter a nickname before launch.":"Введите никнейм перед стартом.","Playing as":"Игрок","Combo":"Комбо","Orbs":"Орбы","Shield":"Щит","Local":"Локально","Public":"Публично","Syncing":"Синхронизация","Offline":"Офлайн","Refresh leaderboard":"Обновить таблицу","You lost":"Вы проиграли","The rocket touched the floor.":"Ракета коснулась дна.","Fullscreen":"На весь экран","Exit fullscreen":"Выйти из полного экрана"},
+  hi:{"Nickname":"निकनेम","Enter nickname":"निकनेम डालें","Save":"सेव","Enter a nickname before launch.":"शुरू करने से पहले निकनेम डालें।","Playing as":"खिलाड़ी","Combo":"कॉम्बो","Orbs":"ऑर्ब्स","Shield":"शील्ड","Local":"लोकल","Public":"पब्लिक","Syncing":"सिंक हो रहा","Offline":"ऑफलाइन","Refresh leaderboard":"लीडरबोर्ड रिफ्रेश करें","You lost":"आप हार गए","The rocket touched the floor.":"रॉकेट फर्श से टकरा गया।","Fullscreen":"फुलस्क्रीन","Exit fullscreen":"फुलस्क्रीन से बाहर"},
+  uk:{"Nickname":"Нікнейм","Enter nickname":"Введи нікнейм","Save":"Зберегти","Enter a nickname before launch.":"Введи нікнейм перед стартом.","Playing as":"Гравець","Combo":"Комбо","Orbs":"Орби","Shield":"Щит","Local":"Локально","Public":"Публічно","Syncing":"Синхронізація","Offline":"Офлайн","Refresh leaderboard":"Оновити таблицю","You lost":"Ви програли","The rocket touched the floor.":"Ракета торкнулася дна.","Fullscreen":"Повний екран","Exit fullscreen":"Вийти з повного екрана"},
+  es:{"Nickname":"Nickname","Enter nickname":"Ingresa nickname","Save":"Guardar","Enter a nickname before launch.":"Ingresa un nickname antes de despegar.","Playing as":"Jugador","Combo":"Combo","Orbs":"Orbes","Shield":"Escudo","Local":"Local","Public":"Publico","Syncing":"Sincronizando","Offline":"Offline","Refresh leaderboard":"Actualizar clasificacion","You lost":"Perdiste","The rocket touched the floor.":"El cohete toco el suelo.","Fullscreen":"Pantalla completa","Exit fullscreen":"Salir de pantalla completa"}
 };
 
 Object.entries(ROCKET_GAME_TRANSLATIONS).forEach(([language, strings]) => {
@@ -1380,6 +1417,7 @@ document.getElementById("language-select").addEventListener("change", event => {
   updatePlayerStatus();
   renderLeaderboard();
   setLeaderboardStatus(jumpGame.leaderboardMode);
+  updateFullscreenButton();
 });
 
 updateStats();
@@ -1419,6 +1457,7 @@ const gameTime = document.getElementById("game-time");
 const gameBest = document.getElementById("game-best");
 const gameState = document.getElementById("game-state");
 const gameStart = document.getElementById("game-start");
+const gameFullscreen = document.getElementById("game-fullscreen");
 const gameMute = document.getElementById("game-mute");
 const gameClose = document.getElementById("game-close");
 const gameLeaderboard = document.getElementById("game-leaderboard");
@@ -1498,6 +1537,30 @@ function stopGameLoop(){
 function queueGameFrame(){
   stopGameLoop();
   jumpGame.frameId = requestAnimationFrame(updateGame);
+}
+
+function redrawGameAfterLayout(){
+  resizeGameCanvas();
+  if(!jumpGame.running) drawGame();
+}
+
+function updateFullscreenButton(){
+  const isFullscreen = document.fullscreenElement === gameOverlay;
+  gameFullscreen.textContent = t(isFullscreen ? "Exit fullscreen" : "Fullscreen");
+  gameFullscreen.disabled = !gameOverlay.requestFullscreen;
+}
+
+async function toggleFullscreen(){
+  if(!gameOverlay.requestFullscreen) return;
+  try{
+    if(document.fullscreenElement === gameOverlay){
+      await document.exitFullscreen?.();
+    }else{
+      await gameOverlay.requestFullscreen();
+    }
+  }catch(error){
+    updateFullscreenButton();
+  }
 }
 
 function showGameResult(title, copy){
@@ -2040,9 +2103,11 @@ function endGame(reason){
 }
 
 function openGame(){
+  document.body.classList.add("game-open");
   gameOverlay.classList.add("is-open");
   gameOverlay.setAttribute("aria-hidden", "false");
   resizeGameCanvas();
+  updateFullscreenButton();
   updatePlayerStatus();
   loadLeaderboard();
   drawGame();
@@ -2054,8 +2119,10 @@ function closeGame(){
   jumpGame.running = false;
   jumpGame.keys.clear();
   jumpGame.pointerDirection = null;
+  document.body.classList.remove("game-open");
   gameOverlay.classList.remove("is-open");
   gameOverlay.setAttribute("aria-hidden", "true");
+  if(document.fullscreenElement === gameOverlay) document.exitFullscreen?.();
 }
 
 rocketButton.addEventListener("click", openGame);
@@ -2066,6 +2133,7 @@ gameProfile.addEventListener("submit", event => {
 });
 leaderboardRefresh.addEventListener("click", loadLeaderboard);
 gameResultRestart.addEventListener("click", resetGame);
+gameFullscreen.addEventListener("click", toggleFullscreen);
 gameClose.addEventListener("click", closeGame);
 gameMute.addEventListener("click", () => {
   jumpGame.muted = !jumpGame.muted;
@@ -2104,10 +2172,19 @@ gameCanvas.addEventListener("pointercancel", clearPointerInput);
 gameCanvas.addEventListener("pointerleave", clearPointerInput);
 window.addEventListener("resize", () => {
   if(!gameOverlay.classList.contains("is-open")) return;
-  resizeGameCanvas();
-  if(!jumpGame.running) drawGame();
+  redrawGameAfterLayout();
+});
+window.addEventListener("orientationchange", () => {
+  if(!gameOverlay.classList.contains("is-open")) return;
+  setTimeout(redrawGameAfterLayout, 120);
+});
+document.addEventListener("fullscreenchange", () => {
+  updateFullscreenButton();
+  if(!gameOverlay.classList.contains("is-open")) return;
+  requestAnimationFrame(redrawGameAfterLayout);
 });
 updatePlayerStatus();
+updateFullscreenButton();
 renderLeaderboard(mergeLeaderboards(readScoreList(PUBLIC_LEADERBOARD_CACHE_KEY), readScoreList(LOCAL_LEADERBOARD_KEY)));
 </script>
 </body>
