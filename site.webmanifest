@@ -1,0 +1,18 @@
+{
+  "name": "Starknet Gaming",
+  "short_name": "Starknet Gaming",
+  "description": "The home of Starknet gaming: a hub for players, builders, projects, news, recaps, updates, and community.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#050712",
+  "theme_color": "#11100d",
+  "icons": [
+    {
+      "src": "/assets/brand/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
