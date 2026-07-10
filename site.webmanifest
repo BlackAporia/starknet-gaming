@@ -9,9 +9,9 @@
   "theme_color": "#11100d",
   "icons": [
     {
-      "src": "/assets/brand/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/assets/logos/starknet-gaming.png",
+      "sizes": "1366x1276",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]
