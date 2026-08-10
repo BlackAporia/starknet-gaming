@@ -6,26 +6,30 @@ The site helps players discover games, follow official project links, join Stark
 
 ## Live Site
 
-This project is built as a static website and can be hosted on GitHub Pages, Vercel, Netlify, Cloudflare Pages, or any static server.
-
-If GitHub Pages is enabled for this repository, the site will be available at:
+The production site is deployed on **Vercel** and auto-updates from the `main` branch:
 
 ```text
-https://blackaporia.github.io/starknet-gaming/
+https://starknet-gaming.com/
 ```
+
+The project is fully static and can also be hosted on GitHub Pages, Netlify, Cloudflare Pages, or any static server.
 
 ## Features
 
 - Responsive landing page for desktop and mobile.
-- Searchable Starknet game registry.
-- Status filters: `All`, `Live`, `New`, `Soon`.
-- Game cards grouped by category.
-- Official X and Website links for each listed game.
-- Project logos and visual assets.
+- Searchable Starknet game registry (**17 games tracked**).
+- Status filters: `All`, `Live`, `New`, `Beta`, `Soon`.
+- Game cards grouped by category (`Strategy / MMO`, `Roguelike / Dungeon`, `Card Games`, `Action / PvP`, `Puzzle / Casual`, `Creative / Social`, `Cross-chain`).
+- Official X and Website links for every listed game.
+- Pending projects section for entries still being verified.
+- Infrastructure cards (Dojo Engine, Cartridge).
+- Partner cards (Aegis, StarkRelayHQ) with X and Website links.
 - Featured games section.
 - Community and ecosystem mission sections.
-- Dojo and Cartridge infrastructure cards.
-- Language selector with custom translations for selected languages.
+- Background music player (SoundCloud embed, "Phantom" by A.e.r.o. + Germind) with a persistent corner toggle, animated equalizer, and auto-loop.
+- Visual polish: scroll progress bar, back-to-top button, scrollspy nav, reveal-on-scroll animations, count-up stats, cursor spotlight, hero orbs, reduced-motion support.
+- Social previews: Open Graph and Twitter Card meta tags with a 1200×630 banner image.
+- Language selector with custom translations for 8 languages.
 - Fun fullscreen `Rocket Jump` mini game with nickname entry, combo bonuses, powerups, hazards, melody, and a shared leaderboard API with local fallback.
 
 ## Languages
@@ -49,6 +53,7 @@ The translation system is local JavaScript. It does not use Google Translate wid
 .
 ├── index.html
 ├── README.md
+├── site.webmanifest
 ├── .gitignore
 ├── .nojekyll
 ├── api/
@@ -59,7 +64,10 @@ The translation system is local JavaScript. It does not use Google Translate wid
 │   │   ├── community-world.png
 │   │   └── hero-brand.png
 │   └── logos/
+│       ├── aegis.jpg
+│       ├── abyss.jpg
 │       ├── art-peace.jpg
+│       ├── axe.jpg
 │       ├── blob-arena.jpg
 │       ├── brove-royale.jpg
 │       ├── cartridge.jpg
@@ -68,6 +76,7 @@ The translation system is local JavaScript. It does not use Google Translate wid
 │       ├── dojo.jpg
 │       ├── dope-wars.jpg
 │       ├── gm-nft.jpg
+│       ├── header.jpeg
 │       ├── influence.jpg
 │       ├── jokers-of-neon.jpg
 │       ├── loot-survivor.png
@@ -75,7 +84,9 @@ The translation system is local JavaScript. It does not use Google Translate wid
 │       ├── pistols-at-dawn.jpg
 │       ├── ponziland.jpg
 │       ├── realms-blitz.svg
+│       ├── social-card-v5.jpg
 │       ├── starknet-gaming.png
+│       ├── StarkRelayHQ.png
 │       ├── zap-football.jpg
 │       └── zkube.png
 ├── data/
@@ -86,7 +97,7 @@ The translation system is local JavaScript. It does not use Google Translate wid
 
 ## Run Locally
 
-Open `index.html` directly in a browser, or serve the folder with Python:
+Serve the folder with Python:
 
 ```bash
 python3 -m http.server 8000
@@ -98,11 +109,11 @@ Then open:
 http://127.0.0.1:8000
 ```
 
-## Rocket Jump Leaderboard
+## Deployment (Vercel)
 
-The mini game reads and posts scores to `api/leaderboard` when the site is deployed with serverless API support. The API stores scores in `data/rocket-jump-leaderboard.json` through the GitHub Contents API.
+The site is connected to Vercel and redeploys automatically on every push to `main`.
 
-Set these environment variables on the host:
+The Rocket Jump leaderboard API needs these environment variables on the host:
 
 ```text
 GITHUB_TOKEN=github fine-grained token with Contents read/write access
@@ -113,7 +124,11 @@ GITHUB_BRANCH=main
 
 If the API is unavailable, the game automatically falls back to a local leaderboard in the browser.
 
-## GitHub Pages Setup
+## Rocket Jump Leaderboard
+
+The mini game reads and posts scores to `api/leaderboard` when the site is deployed with serverless API support. The API stores scores in `data/rocket-jump-leaderboard.json` through the GitHub Contents API.
+
+## GitHub Pages Setup (alternative)
 
 To publish this repository with GitHub Pages:
 
