@@ -57,6 +57,11 @@
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   html,body{overflow-x:hidden;}
+  html{scrollbar-color:var(--violet) transparent;}
+  ::-webkit-scrollbar{width:10px;height:10px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--violet),var(--ember));border-radius:99px;}
+  ::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--magenta),var(--ember));}
   body{
     margin:0;
     background:
@@ -100,7 +105,10 @@
     backdrop-filter:blur(18px);
     background:rgba(9,8,12,.76);
     border-bottom:1px solid var(--line);
+    transition:box-shadow .35s ease,background .35s ease;
   }
+  .topbar.is-scrolled{box-shadow:0 14px 34px rgba(0,0,0,.38);background:rgba(9,8,12,.92);}
+  .scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;z-index:100;background:linear-gradient(90deg,var(--ember),var(--violet),var(--sage));box-shadow:0 0 14px rgba(157,77,255,.55);transition:width .12s ease-out;}
   .nav{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px 0;}
   .brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:800;letter-spacing:-.03em;}
   .brand-mark{
@@ -127,6 +135,7 @@
     transition:background .15s,color .15s;
   }
   .nav-links a:hover{background:rgba(255,244,223,.08);color:var(--paper);}
+  .nav-links a.is-active{background:rgba(255,244,223,.1);color:var(--paper);}
   .nav-links .social-link{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(157,77,255,.3);background:rgba(157,77,255,.1);color:#f3dcff;box-shadow:0 0 18px rgba(157,77,255,.12);}
   .nav-links .social-link:hover{background:rgba(157,77,255,.2);border-color:rgba(214,60,255,.68);color:#fff;box-shadow:0 0 24px rgba(157,77,255,.28);}
   .social-icon{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:7px;background:linear-gradient(135deg,var(--violet),var(--magenta));color:#fff;line-height:1;box-shadow:0 0 14px rgba(157,77,255,.28);}
@@ -145,8 +154,11 @@
   .nav-links .cta{background:var(--paper);color:#15120f;}
   .nav-links .cta:hover{background:#fff;color:#15120f;}
 
-  .hero{padding:82px 0 56px;}
-  .hero-grid{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(340px,.72fr);gap:42px;align-items:center;}
+  .hero{position:relative;overflow:hidden;padding:82px 0 56px;}
+  .hero-orb{position:absolute;border-radius:50%;filter:blur(64px);opacity:.38;pointer-events:none;z-index:0;}
+  .hero-orb-a{width:420px;height:420px;left:-130px;top:-90px;background:radial-gradient(circle,var(--violet),transparent 70%);animation:orb-float 15s ease-in-out infinite;}
+  .hero-orb-b{width:360px;height:360px;right:-110px;top:130px;background:radial-gradient(circle,var(--sage),transparent 70%);animation:orb-float 19s ease-in-out infinite reverse;}
+  .hero-grid{position:relative;z-index:1;perspective:1200px;display:grid;grid-template-columns:minmax(0,1.04fr) minmax(340px,.72fr);gap:42px;align-items:center;}
   .eyebrow{
     display:inline-flex;align-items:center;gap:10px;
     margin:0 0 18px;
@@ -158,6 +170,7 @@
   }
   .eyebrow::before{content:"";width:8px;height:8px;border-radius:99px;background:var(--sage);box-shadow:0 0 0 6px rgba(73,240,255,.12);}
   h1{margin:0;font-size:clamp(44px,8vw,92px);line-height:.92;letter-spacing:-.075em;max-width:820px;}
+  h1.display{background:linear-gradient(100deg,#fff 12%,#fff 34%,var(--sky) 47%,var(--magenta) 57%,#fff 70%,#fff 100%);background-size:230% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:hero-shine 9s linear infinite;}
   .hero-copy{max-width:660px;margin:24px 0 0;color:var(--muted);font-size:18px;}
   .hero-kicker{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px;}
   .hero-kicker span{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:rgba(255,244,223,.045);color:var(--muted);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;}
@@ -175,7 +188,9 @@
     transition:transform .15s,background .15s,border-color .15s;
   }
   .button:hover{transform:translateY(-2px);}
-  .button.primary{background:linear-gradient(135deg,var(--ember),var(--violet));border-color:transparent;color:#fff;box-shadow:0 16px 42px rgba(255,106,0,.2);}
+  .button.primary{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--ember),var(--violet));border-color:transparent;color:#fff;box-shadow:0 16px 42px rgba(255,106,0,.2);}
+  .button.primary::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.4) 50%,transparent 70%);transform:translateX(-120%);transition:transform .65s ease;}
+  .button.primary:hover::before{transform:translateX(120%);}
   .button.secondary{background:rgba(255,244,223,.06);color:var(--paper);}
   .button.secondary:hover{background:rgba(255,244,223,.1);border-color:var(--line-strong);}
 
@@ -187,8 +202,14 @@
     background:linear-gradient(180deg,rgba(17,19,43,.86),rgba(9,10,24,.94));
     backdrop-filter:blur(14px);
     box-shadow:0 28px 90px rgba(0,0,0,.48),0 0 58px rgba(157,77,255,.12);
+    transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s ease;
+    transform-style:preserve-3d;
+    will-change:transform;
   }
+  .terminal-card:hover{box-shadow:0 34px 100px rgba(0,0,0,.52),0 0 74px rgba(157,77,255,.22);}
   .terminal-card::before{content:"";position:absolute;inset:-20% -18% auto auto;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(157,77,255,.2),transparent 66%);pointer-events:none;}
+  .spotlight{position:absolute;inset:0;z-index:0;border-radius:inherit;background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,.14), transparent 62%);opacity:0;transition:opacity .3s ease;pointer-events:none;}
+  .game-card:hover .spotlight,.featured-game:hover .spotlight,.terminal-card:hover .spotlight{opacity:1;}
   .terminal-body{position:relative;padding:24px;}
   .hub-title{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;}
   .hub-title h2{margin:0;font-size:26px;line-height:1;letter-spacing:-.045em;}
@@ -204,6 +225,8 @@
   .featured-title::before{content:"";width:8px;height:8px;border-radius:99px;background:var(--sage);box-shadow:0 0 0 6px rgba(73,240,255,.1);}
   .featured-stack{display:grid;gap:12px;}
   .featured-game{
+    position:relative;
+    overflow:hidden;
     display:grid;
     grid-template-columns:44px 1fr auto;
     gap:12px;
@@ -216,6 +239,7 @@
     text-decoration:none;
     cursor:pointer;
     transition:transform .18s,border-color .18s,background .18s,box-shadow .18s;
+    animation:card-rise .5s ease both;
   }
   .featured-game:hover{transform:translateY(-2px);border-color:rgba(157,77,255,.52);background:rgba(157,77,255,.11);box-shadow:0 14px 36px rgba(157,77,255,.18);}
   .game-icon{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--accent) 42%,transparent);background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:900;overflow:hidden;transition:transform .18s,box-shadow .18s;}
@@ -279,9 +303,9 @@
   .search{width:100%;height:48px;border:1px solid var(--line);border-radius:15px;background:rgba(17,16,13,.78);color:var(--paper);padding:0 16px 0 36px;outline:none;}
   .search::placeholder{color:var(--muted-soft);}
   .filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
-  .pill{height:48px;border:1px solid var(--line);border-radius:15px;background:transparent;color:var(--muted);padding:0 14px;cursor:pointer;font-weight:800;font-size:12px;letter-spacing:.06em;}
-  .pill:hover{border-color:var(--line-strong);color:var(--paper);}
-  .pill[aria-pressed="true"]{background:var(--paper);border-color:var(--paper);color:#15120f;}
+  .pill{height:48px;border:1px solid var(--line);border-radius:15px;background:transparent;color:var(--muted);padding:0 14px;cursor:pointer;font-weight:800;font-size:12px;letter-spacing:.06em;transition:background .25s ease,color .25s ease,border-color .25s ease,transform .15s ease,box-shadow .25s ease;}
+  .pill:hover{border-color:var(--line-strong);color:var(--paper);transform:translateY(-1px);}
+  .pill[aria-pressed="true"]{background:var(--paper);border-color:var(--paper);color:#15120f;box-shadow:0 10px 26px rgba(255,244,223,.14);}
   .registry-body{padding:24px;}
   .category{margin-bottom:30px;}
   .category:last-child{margin-bottom:0;}
@@ -413,14 +437,25 @@
 
   @keyframes rocket-float{0%,100%{transform:translate(0,0) rotate(-9deg);}22%{transform:translate(32px,-105px) rotate(11deg);}48%{transform:translate(-6px,-184px) rotate(-5deg);}74%{transform:translate(42px,-76px) rotate(13deg);}}
   @keyframes stars-drift{from{background-position:0 0;}to{background-position:80px 120px;}}
+  @keyframes orb-float{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(34px,-26px) scale(1.08);}}
+  @keyframes hero-shine{0%{background-position:200% center;}100%{background-position:0% center;}}
 
   @keyframes card-rise{
     from{opacity:0;transform:translateY(14px);}
     to{opacity:1;transform:translateY(0);}
   }
 
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);}
+  .reveal.is-visible{opacity:1;transform:translateY(0);}
+
+  .to-top{position:fixed;right:18px;bottom:18px;z-index:60;width:46px;height:46px;border-radius:14px;border:1px solid rgba(157,77,255,.46);display:grid;place-items:center;background:linear-gradient(135deg,rgba(17,19,43,.9),rgba(157,77,255,.24));color:#fff;cursor:pointer;box-shadow:0 14px 36px rgba(157,77,255,.28);opacity:0;transform:translateY(10px) scale(.9);pointer-events:none;transition:opacity .25s ease,transform .25s ease,box-shadow .18s,border-color .18s;}
+  .to-top.is-visible{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+  .to-top:hover{border-color:rgba(73,240,255,.72);box-shadow:0 0 26px rgba(73,240,255,.34);transform:translateY(-2px) scale(1.04);}
+  @media (max-width:720px){.to-top{right:14px;bottom:14px;width:42px;height:42px;}}
+
   @media (prefers-reduced-motion:reduce){
-    *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important;}
+    *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
+    .hero-orb,.spotlight{display:none!important;}
   }
   @media (max-width:980px){
     .hero-grid{grid-template-columns:1fr;}
@@ -487,6 +522,7 @@
 </style>
 </head>
 <body>
+  <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
   <header class="topbar">
     <nav class="wrap nav" aria-label="Primary navigation">
       <a class="brand display" href="#top" aria-label="Starknet Gaming home">
@@ -527,6 +563,8 @@
 
   <main id="top">
     <section class="wrap hero">
+      <div class="hero-orb hero-orb-a" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-b" aria-hidden="true"></div>
       <div class="hero-grid">
         <div>
           <p class="eyebrow mono">The home of Starknet gaming</p>
@@ -552,6 +590,7 @@
         </div>
 
         <aside class="terminal-card" aria-label="Starknet Gaming hub overview">
+          <span class="spotlight" aria-hidden="true"></span>
           <div class="terminal-body">
             <div class="hub-title">
               <h2 class="display">Ecosystem Hub</h2>
@@ -796,6 +835,9 @@
     </div>
   </footer>
 
+  <button class="to-top" id="to-top" type="button" aria-label="Back to top" title="Back to top">
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 5l-7 7h4v7h6v-7h4z" fill="currentColor"/></svg>
+  </button>
   <button class="rocket-button" id="rocket-button" type="button" aria-label="Open Rocket Jump mini game"><span aria-hidden="true">🚀</span></button>
 
   <div class="game-overlay" id="game-overlay" aria-hidden="true">
@@ -852,6 +894,8 @@
   </div>
 
 <script>
+const reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+const supportsHover = !!(window.matchMedia && window.matchMedia("(hover:hover) and (pointer:fine)").matches);
 const TRANSLATIONS = {
   zh:{"Why it exists":"为什么存在","Community":"社区","Updates":"更新","Registry":"目录","Telegram Channel":"Telegram 频道","Official X":"官方 X","Telegram Group":"Telegram 群组","The home of Starknet gaming":"Starknet 游戏之家","One hub for players, builders, projects, and onchain games.":"玩家、开发者、项目和链上游戏的统一中心。","Starknet Gaming brings the ecosystem together: discover games, follow project updates, join community conversations, and track the news, recaps, and moments that move Starknet gaming forward.":"Starknet Gaming 将生态聚合在一起：发现游戏、关注项目更新、加入社区讨论，并追踪推动 Starknet 游戏前进的新闻与回顾。","News":"新闻","Recaps":"回顾","Join the community":"加入社区","Explore games":"探索游戏","Follow X updates":"关注 X 更新","Games tracked":"已跟踪游戏","Categories":"类别","Live now":"正在上线","News & community":"新闻与社区","Ecosystem Hub":"生态中心","Starknet Gaming":"Starknet Gaming","Players":"玩家","discover + compete":"发现 + 竞技","Builders":"开发者","updates + feedback":"更新 + 反馈","Projects":"项目","visibility + playtests":"曝光 + 测试","news + recaps":"新闻 + 回顾","Featured games":"精选游戏","Built as the front door for Starknet gaming.":"Starknet 游戏生态的入口。","For players":"面向玩家","For builders":"面向开发者","For communities":"面向社区","Community mission":"社区使命","Join Telegram Group":"加入 Telegram 群组","Read Announcements":"阅读公告","Centralize activity":"集中活动","Help projects find players":"帮助项目找到玩家","Make onboarding easier":"让入门更简单","Grow ecosystem media":"发展生态媒体","Shared world":"共享世界","Search games, mechanics, categories...":"搜索游戏、机制、类别...","ALL":"全部","LIVE":"上线","NEW":"新","SOON":"即将","Infrastructure":"基础设施","Player onboarding":"玩家入门","Website":"网站","Support":"支持"},
   ko:{"Why it exists":"존재 이유","Community":"커뮤니티","Updates":"업데이트","Registry":"레지스트리","Telegram Channel":"텔레그램 채널","Official X":"공식 X","Telegram Group":"텔레그램 그룹","The home of Starknet gaming":"Starknet 게이밍의 홈","One hub for players, builders, projects, and onchain games.":"플레이어, 빌더, 프로젝트, 온체인 게임을 위한 하나의 허브.","Starknet Gaming brings the ecosystem together: discover games, follow project updates, join community conversations, and track the news, recaps, and moments that move Starknet gaming forward.":"Starknet Gaming은 생태계를 하나로 모아 게임 발견, 프로젝트 업데이트, 커뮤니티 대화, 뉴스와 리캡을 제공합니다.","News":"뉴스","Recaps":"리캡","Join the community":"커뮤니티 참여","Explore games":"게임 탐색","Follow X updates":"X 업데이트 팔로우","Games tracked":"추적 중인 게임","Categories":"카테고리","Live now":"라이브","News & community":"뉴스와 커뮤니티","Ecosystem Hub":"생태계 허브","Players":"플레이어","discover + compete":"발견 + 경쟁","Builders":"빌더","updates + feedback":"업데이트 + 피드백","Projects":"프로젝트","visibility + playtests":"노출 + 플레이테스트","news + recaps":"뉴스 + 리캡","Featured games":"추천 게임","Built as the front door for Starknet gaming.":"Starknet 게이밍의 관문.","For players":"플레이어를 위해","For builders":"빌더를 위해","For communities":"커뮤니티를 위해","Community mission":"커뮤니티 미션","Join Telegram Group":"텔레그램 그룹 참여","Read Announcements":"공지 읽기","Centralize activity":"활동 통합","Help projects find players":"프로젝트가 플레이어를 찾도록 지원","Make onboarding easier":"온보딩을 쉽게","Grow ecosystem media":"생태계 미디어 성장","Shared world":"공유 세계","Search games, mechanics, categories...":"게임, 메커니즘, 카테고리 검색...","ALL":"전체","LIVE":"라이브","NEW":"신규","SOON":"예정","Infrastructure":"인프라","Player onboarding":"플레이어 온보딩","Website":"웹사이트","Support":"지원"},
@@ -1346,7 +1390,8 @@ function projectCard(game, index){
     : "";
 
   return `
-    <article class="game-card" id="${anchorId}" tabindex="-1" style="--accent:${accent}">
+    <article class="game-card" id="${anchorId}" tabindex="-1" style="--accent:${accent};animation-delay:${Math.min(index,8)*60}ms">
+      <span class="spotlight" aria-hidden="true"></span>
       <div class="card-top">
         ${badge}
         <span class="led ${game.status} mono"><span class="led-dot"></span>${statusLabel(game.status)}</span>
@@ -1397,7 +1442,8 @@ function renderFeatured(){
   const featuredNames = ["Brove Royale", "ZAP Football", "Corsair", "Loot Survivor", "GM NFT"];
   const featured = featuredNames.map(name => GAMES.find(game => game.name === name)).filter(Boolean);
   document.getElementById("featured-stack").innerHTML = featured.map((game, index) => `
-    <a class="featured-game" href="#${gameAnchorId(game)}" data-game-target="${gameAnchorId(game)}" style="--accent:${accents[index % accents.length]}">
+    <a class="featured-game" href="#${gameAnchorId(game)}" data-game-target="${gameAnchorId(game)}" style="--accent:${accents[index % accents.length]};animation-delay:${index*70}ms">
+      <span class="spotlight" aria-hidden="true"></span>
       <span class="game-icon display">${game.logo ? `<img src="${escapeHTML(game.logo)}" alt="" loading="lazy" decoding="async">` : initials(game.name)}</span>
       <span><strong>${escapeHTML(game.name)}</strong><small>${escapeHTML(t(game.cat))}</small></span>
       <span class="status-chip ${game.status} mono">${statusLabel(game.status).toUpperCase()}</span>
@@ -1425,10 +1471,43 @@ function renderPending(){
   `).join("");
 }
 
+function animateCount(el, target, duration = 1100){
+  if(!el) return;
+  if(reduceMotion || target <= 0){ el.textContent = target; return; }
+  const startTime = performance.now();
+  function tick(now){
+    const progress = Math.min((now - startTime) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(target * eased);
+    if(progress < 1) requestAnimationFrame(tick);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(tick);
+}
+
 function updateStats(){
-  document.getElementById("stat-games").textContent = GAMES.length;
-  document.getElementById("stat-categories").textContent = new Set(GAMES.map(game => game.cat)).size;
-  document.getElementById("stat-live").textContent = GAMES.filter(game => game.status === "live").length;
+  const gamesTotal = GAMES.length;
+  const categoriesTotal = new Set(GAMES.map(game => game.cat)).size;
+  const liveTotal = GAMES.filter(game => game.status === "live").length;
+  const statsEl = document.querySelector(".stats");
+  const triggerCounts = () => {
+    animateCount(document.getElementById("stat-games"), gamesTotal);
+    animateCount(document.getElementById("stat-categories"), categoriesTotal);
+    animateCount(document.getElementById("stat-live"), liveTotal);
+  };
+  if(statsEl && "IntersectionObserver" in window){
+    const statsObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          triggerCounts();
+          statsObserver.disconnect();
+        }
+      });
+    }, {threshold:.4});
+    statsObserver.observe(statsEl);
+  }else{
+    triggerCounts();
+  }
   document.getElementById("last-updated").textContent = new Intl.DateTimeFormat("en", {year:"numeric", month:"short", day:"numeric"}).format(new Date());
 }
 
@@ -1495,6 +1574,117 @@ updateStats();
 renderFeatured();
 renderRegistry();
 renderPending();
+
+try{
+  // --- Scroll-triggered reveal animations for static sections/cards ---
+  const revealGroups = [".value-grid",".mission-list",".media-grid",".partners-grid",".infra-grid",".stats"];
+  const revealTargets = new Set();
+  revealGroups.forEach(sel => {
+    document.querySelectorAll(`${sel} > *`).forEach((el, i) => {
+      el.classList.add("reveal");
+      el.style.transitionDelay = `${Math.min(i, 6) * 70}ms`;
+      revealTargets.add(el);
+    });
+  });
+  document.querySelectorAll(".section-head,.terminal-card,.mission-card,.world-strip").forEach(el => {
+    el.classList.add("reveal");
+    revealTargets.add(el);
+  });
+
+  if(reduceMotion || !("IntersectionObserver" in window)){
+    revealTargets.forEach(el => el.classList.add("is-visible"));
+  }else{
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, {threshold:.12, rootMargin:"0px 0px -40px 0px"});
+    revealTargets.forEach(el => revealObserver.observe(el));
+    // Safety net: guarantee visibility even if the observer misbehaves.
+    setTimeout(() => revealTargets.forEach(el => el.classList.add("is-visible")), 4000);
+  }
+
+  // --- Cursor-follow spotlight glow on game cards / featured games / hub card ---
+  if(supportsHover && !reduceMotion){
+    let spotlightPending = false;
+    let spotlightEvent = null;
+    function applySpotlight(){
+      spotlightPending = false;
+      if(!spotlightEvent) return;
+      const card = spotlightEvent.target.closest(".game-card,.featured-game");
+      if(!card) return;
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${((spotlightEvent.clientX - rect.left) / rect.width) * 100}%`);
+      card.style.setProperty("--my", `${((spotlightEvent.clientY - rect.top) / rect.height) * 100}%`);
+    }
+    function onSpotlightMove(event){
+      if(!event.target.closest(".game-card,.featured-game")) return;
+      spotlightEvent = event;
+      if(!spotlightPending){
+        spotlightPending = true;
+        requestAnimationFrame(applySpotlight);
+      }
+    }
+    document.getElementById("game-list")?.addEventListener("pointermove", onSpotlightMove);
+    document.getElementById("featured-stack")?.addEventListener("pointermove", onSpotlightMove);
+
+    // --- Subtle tilt + spotlight on the hero hub card ---
+    const terminalCard = document.querySelector(".terminal-card");
+    if(terminalCard){
+      terminalCard.addEventListener("pointermove", event => {
+        const rect = terminalCard.getBoundingClientRect();
+        const px = (event.clientX - rect.left) / rect.width;
+        const py = (event.clientY - rect.top) / rect.height;
+        terminalCard.style.setProperty("--mx", `${px * 100}%`);
+        terminalCard.style.setProperty("--my", `${py * 100}%`);
+        terminalCard.style.transform = `rotateX(${(0.5 - py) * 4}deg) rotateY(${(px - 0.5) * -4}deg)`;
+      });
+      terminalCard.addEventListener("pointerleave", () => { terminalCard.style.transform = ""; });
+    }
+  }
+
+  // --- Scroll progress bar, back-to-top, sticky nav shadow, scrollspy ---
+  const scrollProgressEl = document.getElementById("scroll-progress");
+  const toTopBtn = document.getElementById("to-top");
+  const topbarEl = document.querySelector(".topbar");
+  const navLinkEls = [...document.querySelectorAll(".nav-links a[href^='#']")];
+  const navSectionMap = navLinkEls
+    .map(link => ({link, el: document.querySelector(link.getAttribute("href"))}))
+    .filter(entry => entry.el);
+
+  let scrollTicking = false;
+  function onScrollUpdate(){
+    scrollTicking = false;
+    const doc = document.documentElement;
+    const scrollTop = doc.scrollTop || document.body.scrollTop;
+    const scrollHeight = (doc.scrollHeight - doc.clientHeight) || 1;
+    const pct = Math.min(100, Math.max(0, (scrollTop / scrollHeight) * 100));
+    if(scrollProgressEl) scrollProgressEl.style.width = `${pct}%`;
+    if(toTopBtn) toTopBtn.classList.toggle("is-visible", scrollTop > 480);
+    if(topbarEl) topbarEl.classList.toggle("is-scrolled", scrollTop > 8);
+
+    const activeY = scrollTop + 130;
+    let currentLink = null;
+    navSectionMap.forEach(({link, el}) => { if(el.offsetTop <= activeY) currentLink = link; });
+    navLinkEls.forEach(link => link.classList.toggle("is-active", link === currentLink));
+  }
+  window.addEventListener("scroll", () => {
+    if(!scrollTicking){
+      scrollTicking = true;
+      requestAnimationFrame(onScrollUpdate);
+    }
+  }, {passive:true});
+  onScrollUpdate();
+
+  toTopBtn?.addEventListener("click", () => {
+    window.scrollTo({top:0, behavior: reduceMotion ? "auto" : "smooth"});
+  });
+}catch(error){
+  console.warn("UI enhancements skipped:", error);
+}
 
 const savedLanguage = localStorage.getItem("site-language") || "en";
 document.getElementById("language-select").value = savedLanguage;
