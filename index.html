@@ -99,8 +99,10 @@
   .mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,monospace;}
 
   .topbar{
-    position:sticky;
+    position:fixed;
     top:0;
+    left:0;
+    right:0;
     z-index:20;
     backdrop-filter:blur(18px);
     background:rgba(9,8,12,.76);
@@ -108,6 +110,7 @@
     transition:box-shadow .35s ease,background .35s ease;
   }
   .topbar.is-scrolled{box-shadow:0 14px 34px rgba(0,0,0,.38);background:rgba(9,8,12,.92);}
+  .topbar-fix{height:81px;}
   .scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;z-index:100;background:linear-gradient(90deg,var(--ember),var(--violet),var(--sage));box-shadow:0 0 14px rgba(157,77,255,.55);transition:width .12s ease-out;}
   .nav{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px 0;}
   .brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:800;letter-spacing:-.03em;}
@@ -273,7 +276,7 @@
   .stat strong{display:block;font-size:30px;line-height:1;letter-spacing:-.06em;}
   .stat span{display:block;margin-top:9px;color:var(--muted-soft);font-size:12px;text-transform:uppercase;letter-spacing:.08em;}
 
-  .section{padding:64px 0;}
+  .section{padding:64px 0;scroll-margin-top:100px;}
   .section-head{display:flex;align-items:end;justify-content:space-between;gap:28px;margin-bottom:24px;}
   .section-title{margin:0;font-size:clamp(30px,5vw,54px);line-height:1;letter-spacing:-.055em;}
   .section-copy{margin:0;max-width:540px;color:var(--muted);font-size:15px;line-height:1.65;}
@@ -607,6 +610,7 @@
     </nav>
   </header>
 
+  <div class="topbar-fix" aria-hidden="true"></div>
   <main id="top">
     <section class="wrap hero">
       <div class="hero-orb hero-orb-a" aria-hidden="true"></div>
@@ -1705,6 +1709,12 @@ try{
   const scrollProgressEl = document.getElementById("scroll-progress");
   const toTopBtn = document.getElementById("to-top");
   const topbarEl = document.querySelector(".topbar");
+  const topbarFixEl = document.querySelector(".topbar-fix");
+  const syncTopbarFix = () => {
+    if(topbarFixEl && topbarEl) topbarFixEl.style.height = `${topbarEl.offsetHeight}px`;
+  };
+  syncTopbarFix();
+  window.addEventListener("resize", syncTopbarFix);
   const navLinkEls = [...document.querySelectorAll(".nav-links a[href^='#']")];
   const navSectionMap = navLinkEls
     .map(link => ({link, el: document.querySelector(link.getAttribute("href"))}))
