@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two Blind Machines</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17202a;
+      --muted: #5d6a75;
+      --paper: #f6f1e7;
+      --panel: #fffaf0;
+      --atlas: #2f6f73;
+      --cms: #b5533f;
+      --signal: #2d3b8f;
+      --line: rgba(23, 32, 42, 0.18);
+      --shadow: rgba(23, 32, 42, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
+      background: radial-gradient(circle at top left, rgba(47,111,115,0.12), transparent 28rem), var(--paper);
+      color: var(--ink);
+    }
+
+    main {
+      width: min(1120px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 28px 0 32px;
+    }
+
+    .mast {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: end;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2.25rem, 6vw, 5.4rem);
+      line-height: 0.92;
+      margin: 0;
+      letter-spacing: 0;
+      max-width: 11ch;
+    }
+
+    .dek {
+      margin: 0;
+      font-size: clamp(1rem, 1.7vw, 1.35rem);
+      line-height: 1.35;
+      color: var(--muted);
+    }
+
+    .lab {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.86fr) minmax(320px, 1.14fr);
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .controls, .result, .team, .data-board {
+      background: rgba(255, 250, 240, 0.82);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 28px var(--shadow);
+    }
+
+    .controls, .result { padding: 18px; }
+
+    .controls h2, .result h2, .team h2 {
+      margin: 0 0 10px;
+      font: 700 0.86rem/1.1 system-ui, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .controls p, .result p {
+      margin: 0 0 14px;
+      font: 1rem/1.45 system-ui, sans-serif;
+      color: var(--muted);
+    }
+
+    .step-buttons {
+      display: grid;
+      gap: 10px;
+    }
+
+    button {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--panel);
+      font: 700 0.94rem/1 system-ui, sans-serif;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: default;
+      opacity: 0.42;
+    }
+
+    .reset {
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .status-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 16px;
+      font: 0.92rem/1.25 system-ui, sans-serif;
+    }
+
+    .status-list div {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+    }
+
+    .right {
+      display: grid;
+      gap: 18px;
+    }
+
+    .teams {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .team {
+      min-height: 230px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .team::after {
+      content: "";
+      position: absolute;
+      inset: auto -20px -42px auto;
+      width: 150px;
+      height: 150px;
+      border: 1px solid currentColor;
+      opacity: 0.18;
+      border-radius: 50%;
+    }
+
+    .atlas { color: var(--atlas); }
+    .cms { color: var(--cms); }
+
+    .team h2 { color: inherit; }
+
+    .detector {
+      display: grid;
+      place-items: center;
+      height: 116px;
+      margin: 16px 0;
+    }
+
+    .rings {
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      border: 6px solid currentColor;
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .rings::before, .rings::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid currentColor;
+    }
+
+    .rings::before { inset: 18px; }
+    .rings::after { inset: 38px; background: currentColor; opacity: 0.16; }
+
+    .team p {
+      margin: 0;
+      font: 0.98rem/1.35 system-ui, sans-serif;
+      color: var(--ink);
+    }
+
+    .data-board {
+      padding: 18px;
+    }
+
+    .plot {
+      height: 230px;
+      display: grid;
+      grid-template-columns: repeat(24, 1fr);
+      align-items: end;
+      gap: 4px;
+      border-left: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      padding: 12px 12px 0;
+      background: repeating-linear-gradient(to top, transparent 0 43px, rgba(23,32,42,0.08) 44px 45px);
+    }
+
+    .bar {
+      min-height: 10px;
+      background: #b7b1a4;
+      transition: height 500ms ease, background 500ms ease, transform 500ms ease;
+    }
+
+    .bar.peek { background: var(--signal); transform: translateY(-2px); }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+      font: 0.88rem/1.2 system-ui, sans-serif;
+      color: var(--muted);
+    }
+
+    .swatch {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-right: 6px;
+      vertical-align: -1px;
+      background: #b7b1a4;
+    }
+
+    .swatch.signal { background: var(--signal); }
+
+    .verdict {
+      font: 700 clamp(1.5rem, 4vw, 3rem)/1.05 system-ui, sans-serif;
+      margin: 0 0 8px;
+    }
+
+    .small {
+      font: 0.84rem/1.35 system-ui, sans-serif;
+      color: var(--muted);
+      margin-top: 14px;
+    }
+
+    @media (max-width: 780px) {
+      main { width: min(100vw - 20px, 560px); padding-top: 16px; }
+      .mast, .lab, .teams { grid-template-columns: 1fr; }
+      .plot { height: 190px; gap: 3px; }
+      h1 { max-width: 9ch; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="mast" aria-label="Introduction">
+      <h1>Two Blind Machines</h1>
+      <p class="dek">At CERN's Large Hadron Collider, ATLAS and CMS study the same particle collisions with different detectors. Each team fixes its method before looking where the signal should be. A result counts as real only when both machines see it.</p>
+    </section>
+
+    <section class="lab" aria-label="Interactive blind analysis">
+      <aside class="controls">
+        <h2>Run The Check</h2>
+        <p>Lock the analysis first. The signal region stays hidden until both teams have committed their methods.</p>
+        <div class="step-buttons">
+          <button id="lockAtlas">Fix ATLAS method</button>
+          <button id="lockCms">Fix CMS method</button>
+          <button id="unblind" disabled>Open the signal region</button>
+          <button class="reset" id="reset">Reset</button>
+        </div>
+        <div class="status-list" aria-live="polite">
+          <div><span>ATLAS method</span><strong id="atlasStatus">hidden</strong></div>
+          <div><span>CMS method</span><strong id="cmsStatus">hidden</strong></div>
+          <div><span>Signal region</span><strong id="blindStatus">blinded</strong></div>
+        </div>
+      </aside>
+
+      <section class="right">
+        <div class="teams">
+          <article class="team atlas">
+            <h2>ATLAS</h2>
+            <div class="detector"><div class="rings" aria-hidden="true"></div></div>
+            <p id="atlasText">Thousands of people, one detector, one independent analysis path.</p>
+          </article>
+          <article class="team cms">
+            <h2>CMS</h2>
+            <div class="detector"><div class="rings" aria-hidden="true"></div></div>
+            <p id="cmsText">A separate collaboration studies the same collisions without comparing notes.</p>
+          </article>
+        </div>
+
+        <article class="data-board">
+          <div class="plot" id="plot" aria-label="Hidden collision data plot"></div>
+          <div class="legend"><span><i class="swatch"></i>background region</span><span><i class="swatch signal"></i>signal region after unblinding</span></div>
+        </article>
+
+        <article class="result">
+          <p class="verdict" id="verdict">No discovery yet.</p>
+          <p id="explain">One team seeing a bump is not enough here. The claim becomes a discovery only after ATLAS and CMS independently agree.</p>
+          <p class="small">Source: CERN. This interaction uses only the locked brief facts: ATLAS and CMS are separate LHC collaborations, analyze blind and independently, and both confirmed the Higgs boson in 2012.</p>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const state = { atlas: false, cms: false, open: false };
+    const bars = [26, 38, 31, 44, 36, 46, 33, 42, 49, 39, 48, 41, 46, 54, 84, 88, 82, 53, 47, 43, 37, 45, 34, 40];
+    const plot = document.getElementById('plot');
+
+    function drawPlot() {
+      plot.innerHTML = '';
+      bars.forEach((height, index) => {
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        const hiddenHeight = index >= 14 && index <= 16 && !state.open ? 18 : height;
+        bar.style.height = hiddenHeight + '%';
+        if (state.open && index >= 14 && index <= 16) bar.classList.add('peek');
+        plot.appendChild(bar);
+      });
+    }
+
+    function render() {
+      document.getElementById('atlasStatus').textContent = state.atlas ? 'fixed' : 'hidden';
+      document.getElementById('cmsStatus').textContent = state.cms ? 'fixed' : 'hidden';
+      document.getElementById('blindStatus').textContent = state.open ? 'open' : 'blinded';
+      document.getElementById('lockAtlas').disabled = state.atlas;
+      document.getElementById('lockCms').disabled = state.cms;
+      document.getElementById('unblind').disabled = !(state.atlas && state.cms) || state.open;
+      document.getElementById('atlasText').textContent = state.atlas ? 'ATLAS has fixed its method before seeing the hidden region.' : 'Thousands of people, one detector, one independent analysis path.';
+      document.getElementById('cmsText').textContent = state.cms ? 'CMS has fixed its method separately, using its own detector.' : 'A separate collaboration studies the same collisions without comparing notes.';
+      if (state.open) {
+        document.getElementById('verdict').textContent = 'Both machines see it.';
+        document.getElementById('explain').textContent = 'The same hidden region is opened only after both methods are fixed. Agreement across two independent detectors is what turns the claim into a discovery.';
+      } else if (state.atlas && state.cms) {
+        document.getElementById('verdict').textContent = 'Ready to unblind.';
+        document.getElementById('explain').textContent = 'Both collaborations have committed their analyses. Now the signal region can be opened without moving the target.';
+      } else {
+        document.getElementById('verdict').textContent = 'No discovery yet.';
+        document.getElementById('explain').textContent = 'One team seeing a bump is not enough here. The claim becomes a discovery only after ATLAS and CMS independently agree.';
+      }
+      drawPlot();
+    }
+
+    document.getElementById('lockAtlas').addEventListener('click', () => { state.atlas = true; render(); });
+    document.getElementById('lockCms').addEventListener('click', () => { state.cms = true; render(); });
+    document.getElementById('unblind').addEventListener('click', () => { state.open = true; render(); });
+    document.getElementById('reset').addEventListener('click', () => { state.atlas = false; state.cms = false; state.open = false; render(); });
+    render();
+  </script>
+</body>
+</html>
