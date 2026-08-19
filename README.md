@@ -17,9 +17,9 @@ The project is fully static and can also be hosted on GitHub Pages, Netlify, Clo
 ## Features
 
 - Responsive landing page for desktop and mobile.
-- Searchable Starknet game registry (**17 games tracked**).
+- Searchable Starknet game registry (**18 games tracked**).
 - Status filters: `All`, `Live`, `New`, `Beta`, `Soon`.
-- Game cards grouped by category (`Strategy / MMO`, `Roguelike / Dungeon`, `Card Games`, `Action / PvP`, `Puzzle / Casual`, `Creative / Social`, `Cross-chain`).
+- Game cards grouped by category (`Strategy / MMO`, `Roguelike / Dungeon`, `Card Games`, `Action / PvP`, `Puzzle / Casual`, `Creative / Social`, `Sports / Fantasy`, `Cross-chain`).
 - Official X and Website links for every listed game.
 - Pending projects section for entries still being verified.
 - Infrastructure cards (Dojo Engine, Cartridge).
