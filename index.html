@@ -367,6 +367,9 @@
   .card-foot{position:relative;z-index:2;display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line);}
   .tag{font-size:10px;color:var(--muted-soft);letter-spacing:.08em;text-transform:uppercase;transition:color .2s,text-shadow .2s;}
   .game-card:hover .tag{color:var(--sage);text-shadow:0 0 14px rgba(73,240,255,.45);}
+  .card-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .tag-extra{color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 32%,transparent);background:color-mix(in srgb,var(--accent) 9%,transparent);padding:3px 8px;border-radius:999px;}
+  .game-card:hover .tag-extra{color:var(--accent);text-shadow:none;}
   .project-links{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:8px;width:100%;}
   .project-link{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 10px;border:1px solid rgba(247,242,255,.18);border-radius:999px;background:rgba(247,242,255,.06);font-size:11px;text-decoration:none;color:var(--paper);font-weight:900;letter-spacing:.02em;line-height:1;transition:background .15s,border-color .15s,transform .15s;}
   .project-link.site-link{justify-self:end;}
@@ -1420,6 +1423,7 @@ const GAMES = [
   {name:"zKube", cat:"Puzzle / Casual", status:"live", desc:"Onchain Tetris with special abilities and combo bonuses.", twitter:"zKube_game", website:"https://app.zkube.xyz/", logo:"assets/logos/zkube.png"},
   {name:"GM NFT", cat:"Puzzle / Casual", status:"live", desc:"Casual guessing game built around the community's own NFTs.", twitter:"GuessmyNft", website:"https://www.guessmynft.com/", logo:"assets/logos/gm-nft.jpg"},
   {name:"Nums", cat:"Puzzle / Casual", status:"live", desc:"Quick-fire number puzzle game, easy to learn and replay.", twitter:"numsgg", website:"https://nums.gg/", logo:"assets/logos/nums.jpg"},
+  {name:"Hidden", cat:"Puzzle / Casual", status:"beta", tags:["privacy"], desc:"Private 1v1 wagered games on @Starknet. Hidden decisions, shielded stakes and private settlement with STRK20.", twitter:"hidden_games_", website:"https://hidden-starknet.vercel.app/", logo:"assets/logos/hidden.jpg"},
   {name:"ART/PEACE", cat:"Creative / Social", status:"live", desc:"Collaborative onchain pixel canvas. Millions of transactions, one shared drawing.", twitter:"art_peace_sn", website:"https://art-peace.ne/", logo:"assets/logos/art-peace.jpg"},
   {name:"Axe Arcade", cat:"Cross-chain", status:"beta", desc:"Multiplayer survival beta with NFT trait gating. Jump in, hunt, chop, and fight to earn gold during the Farming Phase.", twitter:"schizodio", website:"https://axe.schizod.io/", logo:"assets/logos/axe.jpg"}
 ];
@@ -1459,7 +1463,10 @@ function projectCard(game, index){
       <h4 class="display">${safeName}</h4>
         <p>${escapeHTML(t(game.desc))}</p>
       <div class="card-foot">
-        <span class="tag mono">${escapeHTML(t(game.cat))}</span>
+        <div class="card-meta">
+          <span class="tag mono">${escapeHTML(t(game.cat))}</span>
+          ${(game.tags || []).map(tag => `<span class="tag tag-extra mono">${escapeHTML(t(tag))}</span>`).join("")}
+        </div>
         <span class="project-links">${xLink}${siteLink}</span>
       </div>
     </article>
