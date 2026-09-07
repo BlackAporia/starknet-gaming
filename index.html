@@ -36,22 +36,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#050712;
-    --bg-soft:#0b0d21;
-    --panel:#11132b;
-    --panel-2:#19133a;
-    --paper:#f7f2ff;
-    --muted:rgba(247,242,255,.72);
-    --muted-soft:rgba(247,242,255,.48);
-    --line:rgba(189,154,255,.16);
-    --line-strong:rgba(255,125,28,.28);
-    --ember:#ff6a00;
-    --amber:#ffb000;
-    --sage:#49f0ff;
-    --sky:#6aa8ff;
-    --violet:#9d4dff;
-    --magenta:#d63cff;
-    --shadow:0 28px 90px rgba(0,0,0,.48);
+    /* Rebrand 2026-09: synthwave palette (deep navy + neon pink + magenta glow) */
+    --bg:#04020c;
+    --bg-soft:#0a0820;
+    --panel:#0e0a26;
+    --panel-2:#1a0e3d;
+    --paper:#f4ecff;
+    --muted:rgba(244,236,255,.74);
+    --muted-soft:rgba(244,236,255,.48);
+    --line:rgba(255,85,135,.18);
+    --line-strong:rgba(255,85,135,.42);
+    --ember:#ff5577;
+    --amber:#ff3b8b;
+    --sage:#ff85c1;
+    --sky:#c66dff;
+    --violet:#b14eff;
+    --magenta:#ff2e9a;
+    --shadow:0 28px 90px rgba(0,0,0,.6);
   }
 
   *{box-sizing:border-box;}
@@ -65,10 +66,11 @@
   body{
     margin:0;
     background:
-      linear-gradient(180deg, rgba(3,5,15,.68) 0%, rgba(5,7,18,.88) 44%, rgba(3,4,10,.98) 100%),
-      radial-gradient(circle at 18% 8%, rgba(255,106,0,.3), transparent 30rem),
-      radial-gradient(circle at 78% 10%, rgba(157,77,255,.32), transparent 34rem),
-      radial-gradient(circle at 88% 72%, rgba(73,240,255,.12), transparent 28rem),
+      linear-gradient(180deg, rgba(4,2,12,.78) 0%, rgba(10,4,32,.94) 48%, rgba(6,2,18,.99) 100%),
+      radial-gradient(circle at 12% 6%, rgba(255,85,135,.42), transparent 36rem),
+      radial-gradient(circle at 86% 14%, rgba(193,109,255,.44), transparent 38rem),
+      radial-gradient(circle at 88% 76%, rgba(255,46,154,.22), transparent 30rem),
+      radial-gradient(circle at 18% 84%, rgba(255,133,193,.18), transparent 26rem),
       url("assets/brand/background.png");
     background-attachment:fixed;
     background-position:center top;
@@ -85,10 +87,18 @@
     inset:0;
     pointer-events:none;
     background-image:
-      linear-gradient(rgba(157,77,255,.07) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(73,240,255,.045) 1px, transparent 1px);
-    background-size:44px 44px;
-    mask-image:linear-gradient(to bottom, #000 0%, transparent 70%);
+      /* synthwave horizon grid (fades to bottom) */
+      linear-gradient(rgba(255,85,135,.085) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(193,109,255,.06) 1px, transparent 1px),
+      /* sparkles */
+      radial-gradient(circle at 12% 18%, rgba(255,255,255,.45) 0, rgba(255,255,255,0) 1.2px),
+      radial-gradient(circle at 28% 32%, rgba(255,85,135,.55) 0, rgba(255,85,135,0) 1.5px),
+      radial-gradient(circle at 54% 12%, rgba(255,255,255,.4) 0, rgba(255,255,255,0) 1.2px),
+      radial-gradient(circle at 72% 28%, rgba(193,109,255,.55) 0, rgba(193,109,255,0) 1.5px),
+      radial-gradient(circle at 84% 18%, rgba(255,255,255,.5) 0, rgba(255,255,255,0) 1.3px),
+      radial-gradient(circle at 42% 8%, rgba(255,133,193,.5) 0, rgba(255,133,193,0) 1.4px);
+    background-size: 56px 56px, 56px 56px, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+    mask-image:linear-gradient(to bottom, #000 0%, rgba(0,0,0,.6) 60%, transparent 95%);
   }
   html.game-open,body.game-open{overflow:hidden;overscroll-behavior:none;}
   a{color:inherit;}
