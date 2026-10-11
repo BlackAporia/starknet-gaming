@@ -1,0 +1,48 @@
+name: Analytics historical backfill
+
+# Manual, one-off catch-up of history. Actions tab -> "Analytics historical
+# backfill" -> Run workflow. It is resumable: weeks already fully captured
+# are skipped, so if a run stops at GitHub's 6-hour job limit, just run it
+# again and it continues. Once a run logs "0 period(s) pulled", history is
+# caught up and this workflow never needs to run again.
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: "Only backfill this calendar year (blank = all history)"
+        required: false
+        default: "2026"
+      budget:
+        description: "Sender lookups per week (blank = unlimited)"
+        required: false
+        default: "500"
+
+concurrency:
+  group: analytics-onchain
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    defaults:
+      run:
+        working-directory: analytics/pipeline
+    env:
+      SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      STARKSCAN_API_KEY:    ${{ secrets.STARKSCAN_API_KEY }}
+      VOYAGER_API_KEY:      ${{ secrets.VOYAGER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run backfill
+        run: |
+          ARGS=""
+          [ -n "${{ github.event.inputs.year }}" ]   && ARGS="$ARGS --year=${{ github.event.inputs.year }}"
+          [ -n "${{ github.event.inputs.budget }}" ] && ARGS="$ARGS --budget=${{ github.event.inputs.budget }}"
+          node backfill.mjs $ARGS

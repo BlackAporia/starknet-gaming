@@ -1,0 +1,46 @@
+name: Analytics daily onchain pull
+
+# Keeps the /analytics dashboard current without anyone running scripts by hand.
+# Every day at 03:00 UTC it refreshes the current week to date. On Mondays it
+# first finalizes the week that just closed. Re-running is safe: both scripts
+# upsert on (game_id, week_start). Also runnable from the Actions tab.
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch: {}
+
+# One onchain job at a time (shared with the backfill) so they never fight
+# over the Starkscan rate limit. A newer trigger waits instead of cancelling.
+concurrency:
+  group: analytics-onchain
+  cancel-in-progress: false
+
+jobs:
+  pull:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    defaults:
+      run:
+        working-directory: analytics/pipeline
+    env:
+      SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      STARKSCAN_API_KEY:    ${{ secrets.STARKSCAN_API_KEY }}
+      VOYAGER_API_KEY:      ${{ secrets.VOYAGER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Finalize last week (Mondays only)
+        run: |
+          if [ "$(date -u +%u)" = "1" ]; then
+            node weekly-pull.mjs "$(date -u -d '-7 days' +%F)"
+          else
+            echo "Not Monday, skipping finalize step"
+          fi
+
+      - name: Refresh current week to date
+        run: node weekly-pull.mjs
