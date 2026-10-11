@@ -7,10 +7,11 @@
 <meta name="theme-color" content="#0a0614">
 <meta name="color-scheme" content="dark">
 <title>Starknet Gaming | Play · Build · Compete</title>
-<link rel="icon" href="/assets/logos/starknet-gaming.png" type="image/png">
+<link rel="icon" href="assets/logos/starknet-gaming.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/logos/starknet-gaming.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Space+Grotesk:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0a0614;
@@ -42,6 +43,13 @@ body{
 }
 .wrap{width:min(1120px,calc(100% - 36px));margin:0 auto;position:relative;z-index:3}
 .display{font-family:"Space Grotesk",Inter,sans-serif;font-weight:700}
+.pixel{font-family:"Press Start 2P",monospace;letter-spacing:.02em}
+
+/* Retro CRT scanline texture — subtle, sits above ambient/orbit, below content */
+.scanlines{
+  position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.035;mix-blend-mode:overlay;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.7) 0px,rgba(255,255,255,.7) 1px,transparent 1px,transparent 3px);
+}
 
 /* Subtle brand watermark */
 .bg-mark{
@@ -100,7 +108,7 @@ body{
 /* HUD */
 .hud{
   position:fixed;top:0;left:0;right:0;z-index:50;
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  display:flex;align-items:center;gap:12px;
   padding:11px 18px;padding-top:max(11px,env(safe-area-inset-top));
   background:rgba(10,6,20,.8);backdrop-filter:blur(18px);
   border-bottom:1px solid var(--line);
@@ -109,12 +117,11 @@ body{
 .hud.scrolled{background:rgba(10,6,20,.95);box-shadow:0 12px 36px rgba(0,0,0,.4)}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:800;font-size:14px}
 .brand-mark{
-  width:34px;height:34px;border-radius:11px;
-  background:var(--panel);border:1px solid var(--line-strong);
-  display:grid;place-items:center;overflow:hidden;
+  display:inline-flex;flex:none;line-height:0;border-radius:50%;
+  background:none;border:0;padding:0;overflow:hidden;
 }
-.brand-mark img{width:100%;height:100%;object-fit:contain}
-.nav-pills{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.brand-mark img{height:36px;width:auto;max-width:96px;border-radius:50%;display:block}
+.nav-pills{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:flex-end;margin-left:auto}
 .nav-pills a{
   font-size:12px;font-weight:700;color:var(--muted);text-decoration:none;
   padding:8px 12px;border-radius:999px;transition:all .2s;
@@ -211,7 +218,7 @@ body{
 .showcase-slide.active{opacity:1;pointer-events:auto}
 .showcase-art{
   position:absolute;inset:0;
-  background-size:cover;background-position:center;
+  background:linear-gradient(135deg,#2a1048,#120a20);
   transform:scale(1.05);transition:transform 4.5s ease-out;
 }
 .showcase-slide.active .showcase-art{transform:scale(1)}
@@ -230,9 +237,15 @@ body{
   font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
   padding:5px 10px;border-radius:999px;
 }
-.chip.live{color:var(--live);background:rgba(94,224,168,.12)}
+.chip.live{color:var(--live);background:rgba(94,224,168,.12);animation:chipPulse 1.7s ease-in-out infinite}
 .chip.new{color:var(--new);background:rgba(255,200,87,.12)}
 .chip.beta{color:var(--beta);background:rgba(201,160,255,.12)}
+@keyframes chipPulse{0%,100%{box-shadow:0 0 0 0 rgba(94,224,168,0)}50%{box-shadow:0 0 0 5px rgba(94,224,168,.16)}}
+.showcase-tag{
+  position:absolute;top:14px;left:14px;z-index:5;font-size:8px;color:#fff;
+  background:rgba(0,0,0,.5);padding:7px 10px;border-radius:8px;backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,.15);
+}
 .showcase-dots{
   position:absolute;top:14px;right:14px;z-index:5;display:flex;gap:6px;
 }
@@ -293,22 +306,25 @@ body{
 }
 .gcard:hover{transform:translateY(-4px);border-color:var(--line-strong);box-shadow:0 16px 40px rgba(255,77,141,.12)}
 .gcard-banner{
-  height:120px;position:relative;
-  background:linear-gradient(135deg,#1a0f30,#120a20);
-  background-size:cover;background-position:center;
+  aspect-ratio:16/8;min-height:110px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#2a1048,#120a20);
 }
+.gart{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+/* no art available: the logo is shown as-is (sharp, uncropped, centered) */
+.gart.is-logo{object-fit:cover;object-position:center;z-index:1}
+.gcard-banner .gart.is-logo ~ .gicon{display:none}
 .gcard-banner::after{
   content:"";position:absolute;inset:0;
   background:linear-gradient(to top,rgba(10,6,20,.85),rgba(10,6,20,.2));
 }
 .gcard-banner .gicon{
   position:absolute;left:14px;bottom:12px;z-index:1;
-  width:48px;height:48px;border-radius:12px;overflow:hidden;
+  width:48px;height:48px;border-radius:50%;overflow:hidden;
   background:rgba(0,0,0,.4);border:1px solid var(--line);
   display:grid;place-items:center;font-weight:800;font-size:13px;
   backdrop-filter:blur(6px);
 }
-.gcard-banner .gicon img{width:100%;height:100%;object-fit:contain;padding:3px}
+.gcard-banner .gicon img{position:static;width:100%;height:100%;object-fit:cover;padding:0;border-radius:50%;filter:none;transform:none;opacity:1}
 .gcard-banner .status{position:absolute;top:10px;right:10px;z-index:1}
 .gcard-body{padding:14px 14px 14px;flex:1;display:flex;flex-direction:column}
 .gcard h3{font-size:16px;letter-spacing:-.02em;margin-bottom:6px}
@@ -344,20 +360,18 @@ body{
 .event-card a:hover{text-decoration:underline}
 .events-more{text-align:center;margin-top:20px}
 
-/* Partners — 4 separate with logos, 2x2 grid */
-.partners-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+/* Partners — 4 separate with logos */
+.partners-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .partner-card{
-  padding:24px 20px;border-radius:16px;border:1px solid var(--line);
+  padding:20px;border-radius:16px;border:1px solid var(--line);
   background:var(--panel);text-align:center;
-  display:flex;flex-direction:column;align-items:center;
   transition:transform .25s,border-color .25s,box-shadow .25s;
 }
 .partner-card:hover{transform:translateY(-4px);border-color:var(--line-strong);box-shadow:0 14px 36px rgba(255,77,141,.1)}
 .partner-logo{
-  width:64px;height:64px;margin:0 auto 14px;border-radius:16px;
-  object-fit:contain;padding:8px;
-  background:rgba(255,255,255,.06);border:1px solid var(--line);
-  display:block;
+  width:56px;height:56px;margin:0 auto 14px;border-radius:14px;
+  object-fit:contain;padding:6px;
+  background:rgba(255,255,255,.05);border:1px solid var(--line);
 }
 .partner-card h3{font-size:16px;margin-bottom:6px}
 .partner-card p{font-size:12px;color:var(--muted);line-height:1.45}
@@ -397,87 +411,71 @@ body{
 }
 .to-top.show{opacity:1;pointer-events:auto;transform:translateY(0)}
 
-/* ===== Gamified loader overlay ===== */
-.mono{font-family:"JetBrains Mono",monospace}
-.loader-overlay{
-  position:fixed;inset:0;z-index:9999;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
-  background:
-    radial-gradient(ellipse 70% 50% at 20% 15%,rgba(255,77,141,.14),transparent 55%),
-    radial-gradient(ellipse 60% 45% at 85% 25%,rgba(177,78,255,.12),transparent 50%),
-    var(--bg);
-  transition:opacity .5s ease,visibility .5s ease;
+@media(max-width:1024px){
+  .game-grid{grid-template-columns:repeat(2,1fr)}
+  .partners-grid{grid-template-columns:repeat(2,1fr)}
 }
-.loader-overlay.loader-hide{opacity:0;visibility:hidden;pointer-events:none}
-.loader-overlay.loader-transition{background:var(--bg)}
-.loader-rings{position:relative;width:132px;height:132px;display:grid;place-items:center}
-.loader-ring{
-  position:absolute;border-radius:50%;
-  border:2px solid transparent;
-}
-.loader-ring.r1{width:132px;height:132px;border-top-color:var(--pink);border-right-color:rgba(255,77,141,.25);animation:spin 1.3s linear infinite}
-.loader-ring.r2{width:92px;height:92px;border-bottom-color:var(--violet);border-left-color:rgba(177,78,255,.25);animation:spin 1.7s linear infinite reverse}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loader-core{
-  width:44px;height:44px;border-radius:12px;overflow:hidden;
-  background:var(--panel);border:1px solid var(--line-strong);
-  display:grid;place-items:center;
-  box-shadow:0 0 24px rgba(255,77,141,.35);
-  animation:pulse 1.4s ease-in-out infinite;
-}
-.loader-core img{width:100%;height:100%;object-fit:contain}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-.loader-label{font-size:16px;letter-spacing:-.02em;color:#fff}
-.loader-bar{
-  width:min(220px,60vw);height:4px;border-radius:99px;overflow:hidden;
-  background:rgba(255,255,255,.08);border:1px solid var(--line);
-}
-.loader-bar-fill{
-  height:100%;width:0%;border-radius:99px;
-  background:linear-gradient(90deg,var(--pink),var(--violet));
-  box-shadow:0 0 12px rgba(255,77,141,.5);
-  transition:width .25s ease-out;
-}
-@media(prefers-reduced-motion:reduce){
-  .loader-ring,.loader-core{animation:none}
-}
-
 @media(max-width:900px){
+  .hero{min-height:auto;padding:36px 0 32px}
   .hero-grid{grid-template-columns:1fr;gap:28px}
+  .hero h1,.hero-sub{max-width:none}
   .stats{grid-template-columns:repeat(2,1fr)}
   .events-rail{grid-template-columns:1fr}
-  .game-grid{grid-template-columns:1fr 1fr}
-  .partners-grid{grid-template-columns:1fr 1fr}
+  .section{padding:44px 0}
+  .section-sub{max-width:none}
   .nav-pills a:not(.trigger):not(.cta){display:none}
+  .showcase{aspect-ratio:16/10;min-height:260px}
 }
 @media(max-width:560px){
-  .hero{padding:36px 0 28px;min-height:auto}
+  .wrap{width:calc(100% - 28px)}
+  .hud{padding:9px 12px;padding-top:max(9px,env(safe-area-inset-top));gap:8px}
+  .hud-spacer{height:52px}
+  .brand{font-size:13px;gap:8px;min-width:0}
+  .brand-mark img{height:32px}
+  .nav-pills{flex-wrap:nowrap;gap:4px;margin-left:auto}
+  .nav-pills a{padding:7px 10px;font-size:11px;white-space:nowrap}
+  .hero{padding:24px 0 24px}
+  .hero-actions{flex-direction:column;align-items:stretch;margin-bottom:24px}
+  .hero-actions .btn{width:100%}
+  .stat{padding:14px 10px}
+  .showcase{aspect-ratio:4/3;min-height:240px;border-radius:16px}
+  .showcase-overlay{padding:16px 16px 14px}
+  .showcase-overlay h3{font-size:20px}
+  .showcase-overlay p{max-width:none;font-size:12px}
+  .section{padding:36px 0}
+  .toolbar{padding:10px;gap:8px}
+  .search{flex:1 1 100%;min-width:0}
+  .filters{width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .filters::-webkit-scrollbar{display:none}
+  .pill{flex:1 0 auto;height:40px;padding:0 12px}
   .game-grid{grid-template-columns:1fr}
-  .partners-grid{gap:8px}
-  .partner-card{padding:16px 10px}
-  .partner-logo{width:48px;height:48px}
+  .gcard-banner{aspect-ratio:16/9}
+  .event-card{padding:18px}
+  .partners-grid{gap:10px}
+  .partner-card{padding:16px 12px}
+  .footer-row{flex-direction:column;align-items:flex-start}
+  .footer-links a,.footer-triggers a{padding:9px 14px}
+  .to-top{right:12px}
+}
+@media(max-width:400px){
+  .brand .display{display:none}
   .stats{gap:8px}
+  .partners-grid{grid-template-columns:1fr}
+}
+@media(hover:none){
+  .gcard:hover,.event-card:hover,.partner-card:hover,.stat:hover,.btn:hover{transform:none;box-shadow:none}
 }
 @media(prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
   .eyebrow::before{animation:none}
   html{scroll-behavior:auto}
+  .chip.live{animation:none}
 }
 </style>
 </head>
 <body>
-<div class="loader-overlay" id="loader" role="status" aria-live="polite">
-  <div class="loader-rings">
-    <div class="loader-ring r1"></div>
-    <div class="loader-ring r2"></div>
-    <div class="loader-core">
-      <img src="assets/logos/starknet-gaming.png" alt="" onerror="this.remove()">
-    </div>
-  </div>
-  <div class="loader-label display" id="loader-title">Loading…</div>
-  <div class="loader-bar"><div class="loader-bar-fill" id="loader-fill"></div></div>
-</div>
 <div class="ambient" aria-hidden="true"></div>
+<div class="scanlines" aria-hidden="true"></div>
 <div class="bg-mark" aria-hidden="true">
   <img src="assets/logos/starknet-gaming.png" alt="" onerror="this.remove()">
 </div>
@@ -504,7 +502,7 @@ body{
 
 <header class="hud" id="hud">
   <a class="brand" href="/">
-    <span class="brand-mark"><img src="assets/logos/starknet-gaming.png" alt="" width="34" height="34" onerror="this.remove()"></span>
+    <span class="brand-mark"><img src="assets/logos/starknet-gaming.png" alt="" onerror="this.parentElement.remove()"></span>
     <span class="display">Starknet Gaming</span>
   </a>
   <nav class="nav-pills" aria-label="Main">
@@ -513,7 +511,7 @@ body{
     <a href="#events">Events</a>
     <a class="trigger" href="../analytics">Analytics</a>
     <a class="trigger" href="https://gameshield-dapp.vercel.app/" target="_blank" rel="noopener">Gameshield</a>
-    <a class="cta" href="https://t.me/StarknetGaming" target="_blank" rel="noopener">Join</a>
+    <a class="cta" href="https://t.me/Starknet_Gaming" target="_blank" rel="noopener">Join</a>
   </nav>
 </header>
 <div class="hud-spacer"></div>
@@ -522,10 +520,11 @@ body{
   <section class="hero" id="play">
     <div class="wrap hero-grid">
       <div>
+        <p class="eyebrow">Starknet Gaming</p>
         <h1 class="display">Drop in. Discover. Compete.</h1>
-        <p class="hero-sub">One lobby for Starknet players &amp; builders. Find games, join nights, track the meta. less noise, more play.</p>
+        <p class="hero-sub">One lobby for Starknet players &amp; builders. Find games, join nights, track the meta — less noise, more play.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="https://t.me/StarknetGaming" target="_blank" rel="noopener">Join the community</a>
+          <a class="btn btn-primary" href="https://t.me/Starknet_Gaming" target="_blank" rel="noopener">Join the community</a>
           <a class="btn btn-ghost" href="#registry">Explore games</a>
           <a class="btn btn-ghost" href="https://x.com/StarknetGaming" target="_blank" rel="noopener">Follow X</a>
         </div>
@@ -539,6 +538,7 @@ body{
 
       <div class="showcase" id="showcase" aria-label="Featured games">
         <div class="showcase-progress" id="showcase-progress"></div>
+        <div class="showcase-tag pixel">▶ FEATURED</div>
         <div class="showcase-dots" id="showcase-dots"></div>
         <div id="showcase-slides"></div>
       </div>
@@ -555,10 +555,10 @@ body{
       <div class="toolbar reveal">
         <input class="search" id="search" type="search" placeholder="Search games…" aria-label="Search">
         <div class="filters">
-          <button class="pill" type="button" data-filter="all" aria-pressed="true">All</button>
-          <button class="pill" type="button" data-filter="live" aria-pressed="false">Live</button>
-          <button class="pill" type="button" data-filter="new" aria-pressed="false">New</button>
-          <button class="pill" type="button" data-filter="beta" aria-pressed="false">Beta</button>
+          <button class="pill" type="button" data-filter="all" aria-pressed="true">⬡ All</button>
+          <button class="pill" type="button" data-filter="live" aria-pressed="false">● Live</button>
+          <button class="pill" type="button" data-filter="new" aria-pressed="false">✦ New</button>
+          <button class="pill" type="button" data-filter="beta" aria-pressed="false">◆ Beta</button>
         </div>
       </div>
       <div id="game-list"></div>
@@ -590,8 +590,11 @@ body{
           <span class="event-tag">Recurring</span>
           <h3 class="display">Periodic game nights</h3>
           <p>Community nights across Starknet titles. Drop in, play, meet builders and players.</p>
-          <a href="https://t.me/StarknetGaming" target="_blank" rel="noopener">Join Telegram →</a>
+          <a href="https://t.me/Starknet_Gaming" target="_blank" rel="noopener">Join Telegram →</a>
         </article>
+      </div>
+      <div class="events-more reveal">
+        <a class="btn btn-ghost" href="https://t.me/Starknet_Gaming" target="_blank" rel="noopener">View more events</a>
       </div>
     </div>
   </section>
@@ -638,9 +641,10 @@ body{
     <div class="footer-row">
       <div>
         <strong class="display">Starknet Gaming</strong>
+        <p>Hub for players &amp; builders</p>
       </div>
       <div class="footer-links">
-        <a href="https://t.me/StarknetGaming" target="_blank" rel="noopener">Telegram</a>
+        <a href="https://t.me/Starknet_Gaming" target="_blank" rel="noopener">Telegram</a>
         <a href="https://x.com/StarknetGaming" target="_blank" rel="noopener">X</a>
         <a href="https://www.starknet.io/" target="_blank" rel="noopener">Starknet</a>
       </div>
@@ -649,7 +653,7 @@ body{
       <a href="../analytics">Analytics</a>
       <a href="https://gameshield-dapp.vercel.app/" target="_blank" rel="noopener">Gameshield</a>
       <a href="#events">Events</a>
-      <a href="https://t.me/StarknetGaming" target="_blank" rel="noopener">Community</a>
+      <a href="https://t.me/Starknet_Gaming" target="_blank" rel="noopener">Community</a>
     </div>
   </div>
 </footer>
@@ -659,58 +663,57 @@ body{
 <script>
 const GAMES = [
   {name:"ZAP Football", cat:"Sports / Fantasy", status:"new", desc:"Football strategy with real onchain squad decisions.", twitter:"playzapfc", website:"https://playzap.vercel.app/", logo:"assets/logos/zap-football.jpg", art:"assets/art/zap-football.jpg"},
-  {name:"Gaffer", cat:"Sports / Fantasy", status:"live", desc:"Football management & fantasy strategy onchain.", twitter:"Play_Gaffer", website:"https://playgaffer.xyz/", logo:"assets/logos/gaffer.jpg", art:"assets/art/gaffer.jpg"},
+  {name:"Gaffer", cat:"Sports / Fantasy", status:"live", desc:"Football management & fantasy strategy onchain.", twitter:"Play_Gaffer", website:"https://playgaffer.xyz/", logo:"assets/logos/gaffer.jpg", art:"assets/art/gaffer.png"},
   {name:"Realms Blitz", cat:"Strategy / MMO", status:"new", desc:"Fast two-hour matches on Realms Eternum mechanics.", twitter:"LootRealms", website:"https://realms.world/blitz", logo:"assets/logos/realms-blitz.svg", art:"assets/art/realms-blitz.jpg"},
   {name:"Ponziland", cat:"Strategy / MMO", status:"live", desc:"Land, taxes, nuclear button. Pure onchain chaos.", twitter:"ponzidotland", website:"https://play.ponzi.land/", logo:"assets/logos/ponziland.jpg", art:"assets/art/ponziland.jpg"},
   {name:"StakeWars", cat:"Strategy / MMO", status:"new", desc:"STRK delegation strategy — claim sectors, compete for territory.", twitter:"stake_wars", website:"https://stakewars.gg/", logo:"assets/logos/stakewars.jpg", art:"assets/art/stakewars.jpg"},
-  {name:"Influence", cat:"Strategy / MMO", status:"live", desc:"MMO across 250,000 procedurally generated asteroids.", twitter:"influenceth", website:"https://www.influenceth.io/", logo:"assets/logos/influence.jpg", art:"assets/art/influence.jpg"},
-  {name:"Loot Survivor", cat:"Roguelike / Dungeon", status:"live", desc:"Dungeon crawler with real permadeath.", twitter:"LootSurvivor", website:"https://www.deathmountain.gg/", logo:"assets/logos/loot-survivor.png", art:"assets/art/loot-survivor.jpg"},
+  {name:"Influence", cat:"Strategy / MMO", status:"live", desc:"MMO across 250,000 procedurally generated asteroids.", twitter:"influenceth", website:"https://www.influenceth.io/", logo:"assets/logos/influence.jpg", art:"assets/art/influence.png"},
+  {name:"Loot Survivor", cat:"Roguelike / Dungeon", status:"live", desc:"Dungeon crawler with real permadeath.", twitter:"LootSurvivor", website:"https://www.deathmountain.gg/", logo:"assets/logos/loot-survivor.png", art:"assets/art/loot.png"},
   {name:"Dark Shuffle", cat:"Roguelike / Dungeon", status:"live", desc:"Deck-building roguelike on procedural maps.", twitter:"darkshuffle_gg", website:"https://darkshuffle.gg/", logo:"assets/logos/dark-shuffle.png", art:"assets/art/dark-shuffle.jpg"},
   {name:"Jokers of Neon", cat:"Card Games", status:"live", desc:"Poker strategy with combos & weekly leagues.", twitter:"jokers_of_neon", website:"https://jokersofneon.com/", logo:"assets/logos/jokers-of-neon.jpg", art:"assets/art/jokers-of-neon.jpg"},
-  {name:"Dope Wars", cat:"Card Games", status:"live", desc:"Street trading & empire-building, fully onchain.", twitter:"Dopewarsx", website:"https://dopewars.game/", logo:"assets/logos/dope-wars.jpg", art:"assets/art/dope-wars.jpg"},
+  {name:"Dope Wars", cat:"Card Games", status:"live", desc:"Street trading & empire-building, fully onchain.", twitter:"Dopewarsx", website:"https://dopewars.game/", logo:"assets/logos/dope-wars.jpg", art:"assets/art/dope wars.png"},
   {name:"Blob Arena", cat:"Action / PvP", status:"live", desc:"Creature battles & community tournaments.", twitter:"BlobArena", website:"https://blobarena.xyz/", logo:"assets/logos/blob-arena.jpg", art:"assets/art/blob-arena.jpg"},
-  {name:"Pistols at Dawn", cat:"Action / PvP", status:"live", desc:"Commit-reveal PvP duels — pistol or sabre.", twitter:"Pistols_gg", website:"https://pistols.gg/", logo:"assets/logos/pistols-at-dawn.jpg", art:"assets/art/pistols.jpg"},
-  {name:"Corsair", cat:"Action / PvP", status:"new", desc:"Pirate turn-based adventure with daily challenges.", twitter:"PlayCorsair", website:"https://corsair.game/", logo:"assets/logos/corsair.jpg", art:"assets/art/corsair.jpg"},
-  {name:"Brove Royale", cat:"Action / PvP", status:"new", desc:"Battle royale by an independent community team.", twitter:"Brove_Royale", website:"https://brove.gg/", logo:"assets/logos/brove-royale.jpg", art:"assets/art/brove.jpg"},
-  {name:"zKube", cat:"Puzzle / Casual", status:"live", desc:"Onchain Tetris with abilities & combos.", twitter:"zKube_game", website:"https://zkube.xyz/", logo:"assets/logos/zkube.png", art:"assets/art/zkube.jpg"},
+  {name:"Pistols at Dawn", cat:"Action / PvP", status:"live", desc:"Commit-reveal PvP duels — pistol or sabre.", twitter:"Pistols_gg", website:"https://pistols.gg/", logo:"assets/logos/pistols-at-down.jpg", art:"assets/art/pistols.png"},
+  {name:"Corsair", cat:"Action / PvP", status:"new", desc:"Pirate turn-based adventure with daily challenges.", twitter:"PlayCorsair", website:"https://corsair.game/", logo:"assets/logos/corsair.jpg", art:"assets/art/corsair.png"},
+  {name:"Brove Royale", cat:"Action / PvP", status:"new", desc:"Battle royale by an independent community team.", twitter:"Brove_Royale", website:"https://brove.gg/", logo:"assets/logos/brove-royale.jpg", art:"assets/art/brove.png"},
+  {name:"jKube", cat:"Puzzle / Casual", status:"live", desc:"Onchain Tetris with abilities & combos.", twitter:"jKube_game", website:"https://jkube.xyz/", logo:"assets/logos/zkube.png", art:"assets/art/jkube.jpg"},
   {name:"GM NFT", cat:"Puzzle / Casual", status:"live", desc:"Casual guessing around community NFTs.", twitter:"gmnft", website:"https://gssmynft.com/", logo:"assets/logos/gm-nft.jpg", art:"assets/art/gm-nft.jpg"},
-  {name:"Nums", cat:"Puzzle / Casual", status:"live", desc:"Quick-fire number puzzle — easy to replay.", twitter:"numsgg", website:"https://nums.gg/", logo:"assets/logos/nums.jpg", art:"assets/art/nums.jpg"},
-  {name:"StarkOrbs", cat:"Puzzle / Casual", status:"new", desc:"Match, connect, clear orbs across onchain levels.", twitter:"orbstark", website:"https://playstark.vercel.app/", logo:"assets/logos/starkorbs.jpg", art:"assets/art/starkorbs.jpg"},
-  {name:"Hidden", cat:"Puzzle / Casual", status:"beta", desc:"Private 1v1 wagered games with STRK20 shielded stakes.", twitter:"hidden_games_", website:"https://hidden-starknet.vercel.app/", logo:"assets/logos/hidden.jpg", art:"assets/art/hidden.jpg"},
-  {name:"ART/PEACE", cat:"Creative / Social", status:"live", desc:"Collaborative onchain pixel canvas.", twitter:"art_peace_sn", website:"https://art-peace.ne/", logo:"assets/logos/art-peace.jpg", art:"assets/art/art-peace.jpg"},
-  {name:"Axe Arcade", cat:"Cross-chain", status:"beta", desc:"Multiplayer survival with NFT trait gating.", twitter:"schizodio", website:"https://axe.schizod.io/", logo:"assets/logos/axe.jpg", art:"assets/art/axe.jpg"}
+  {name:"Nums", cat:"Puzzle / Casual", status:"live", desc:"Quick-fire number puzzle — easy to replay.", twitter:"numsgg", website:"https://nums.gg/", logo:"assets/logos/nums.jpg", art:"assets/art/nums.png"},
+  {name:"StarkOrbs", cat:"Puzzle / Casual", status:"new", desc:"Match, connect, clear orbs across onchain levels.", twitter:"orbstark", website:"https://playstark.vercel.app/", logo:"assets/logos/starkorbs.jpg", art:"assets/art/starkorbs.png"},
+  {name:"Hidden", cat:"Puzzle / Casual", status:"beta", desc:"Private 1v1 wagered games with STRK20 shielded stakes.", twitter:"hidden_games_", website:"https://hidden-starknet.vercel.app/", logo:"assets/logos/hidden.jpg", art:"assets/art/hidden.png"},
+  {name:"ART/PEACE", cat:"Creative / Social", status:"live", desc:"Collaborative onchain pixel canvas.", twitter:"art_peace_sn", website:"https://art-peace.ne/", logo:"assets/logos/art-peace.jpg", art:"assets/art/art-peace.png"},
+  {name:"Axe Arcade", cat:"Cross-chain", status:"beta", desc:"Multiplayer survival with NFT trait gating.", twitter:"schizodio", website:"https://axe.schizod.io/", logo:"assets/logos/axe.jpg", art:"assets/art/axe.png"}
 ];
 
-/* ---- Art auto-matcher --------------------------------------------------
-   The `art:` paths hand-typed on each GAMES entry don't reliably match what
-   actually lives in /assets/art (different slug, different extension, or
-   missing entirely). Instead of trusting those strings, we match each
-   game's NAME against the real files in the art folder and only ever point
-   at a file that exists. No match -> g.art is null -> UI falls back to the
-   logo as the banner image, and to initials if there's no logo either
-   (see projectCard / showcase below).
-   Update ART_FILES if files are added/removed from /assets/art. */
-const ART_FILES = [
-  "art-peace.png","axe.png","brove.png","corsair.png","dope wars.png",
-  "gaffer.png","hidden.png","influence.png","loot.png","nums.png",
-  "pistols.png","starkorbs.png","zap-football.jpg"
-];
-const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g,"");
-const ART_INDEX = ART_FILES.map(f => ({ file:f, slug:slug(f.replace(/\.[^.]+$/,"")) }));
-function resolveArt(name){
-  const target = slug(name);
-  if(!target) return null;
-  let hit = ART_INDEX.find(a => a.slug === target); // exact match first
-  if(!hit){
-    // otherwise the longest art-file slug that's contained in (or contains) the game name
-    hit = ART_INDEX
-      .filter(a => a.slug.length >= 3 && (target.includes(a.slug) || a.slug.includes(target)))
-      .sort((a,b) => b.slug.length - a.slug.length)[0];
+/* ---- Images ------------------------------------------------------------
+   Each game's `art` (banner) and `logo` are used exactly as written on its entry.
+   If a file 404s, the same name is retried with the other common extensions
+   (.png / .jpg / .jpeg / .webp), then falls back to the logo, then to initials. */
+const IMG_EXTS = ["png","jpg","jpeg","webp"];
+const uniq = a => a.filter((v,i)=>a.indexOf(v)===i);
+const withExts = p => {
+  if(!p) return [];
+  const base = p.replace(/\.[^./]+$/,"");
+  return uniq([p, ...IMG_EXTS.map(e => `${base}.${e}`)]);
+};
+const srcChain = p => withExts(p).map(encodeURI);
+function imgNext(img){
+  const q = (img.dataset.q||"").split("|").filter(Boolean);
+  const i = (+img.dataset.i||0) + 1;
+  if(i < q.length){
+    img.dataset.i = i;
+    img.classList.toggle("is-logo", i >= (+img.dataset.art||0));
+    img.src = q[i];
+  } else if(img.dataset.initials){
+    img.parentElement.textContent = img.dataset.initials;
+  } else {
+    img.parentElement.classList.add("no-art");
+    img.remove();
   }
-  return hit ? `assets/art/${hit.file}` : null;
 }
-GAMES.forEach(g => { g.art = resolveArt(g.name); });
-
+const imgTag = (q, cls, extra="") => q.length
+  ? `<img class="${cls}" src="${q[0].replace(/"/g,"&quot;")}" data-q="${q.join("|").replace(/"/g,"&quot;")}" ${extra} alt="" onerror="imgNext(this)">`
+  : "";
 
 const FEATURED_NAMES = ["Brove Royale","ZAP Football","Corsair","Loot Survivor","GM NFT"];
 const FEATURED = FEATURED_NAMES.map(n => GAMES.find(g => g.name === n)).filter(Boolean);
@@ -718,7 +721,7 @@ const FEATURED = FEATURED_NAMES.map(n => GAMES.find(g => g.name === n)).filter(B
 const esc = v => String(v).replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
 const initials = n => n.split(" ").map(p=>p[0]).slice(0,2).join("").toUpperCase();
 const idOf = g => `game-${g.name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"")}`;
-const statusLabel = s => ({live:"Live",new:"New",beta:"Beta"}[s]||s);
+const statusLabel = s => ({live:"● Live",new:"✦ New",beta:"◆ Beta"}[s]||s);
 
 /* Showcase — full-bleed art (logo as art fallback) */
 (function showcase(){
@@ -733,12 +736,11 @@ const statusLabel = s => ({live:"Live",new:"New",beta:"Beta"}[s]||s);
   let paused = false;
 
   slidesEl.innerHTML = FEATURED.map((g,i)=>{
-    const src = g.art || g.logo;
-    const art = src
-      ? `background-image:url('${esc(src)}');background-color:#1a0f30`
-      : `background:linear-gradient(135deg,#2a1048,#120a20)`;
+    const artQ = srcChain(g.art), logoQ = srcChain(g.logo);
+    const q = [...artQ, ...logoQ];
+    const img = imgTag(q, "gart" + (artQ.length ? "" : " is-logo"), `data-art="${artQ.length}" data-initials="" ${i===0?"":'loading="lazy"'}`.replace('data-initials="" ',''));
     return `<div class="showcase-slide${i===0?" active":""}" data-i="${i}">
-      <div class="showcase-art" style="${art}"></div>
+      <div class="showcase-art">${img}</div>
       <div class="showcase-overlay">
         <h3 class="display">${esc(g.name)}</h3>
         <p>${esc(g.desc)}</p>
@@ -767,6 +769,15 @@ const statusLabel = s => ({live:"Live",new:"New",beta:"Beta"}[s]||s);
   const sc = document.getElementById("showcase");
   sc.addEventListener("mouseenter",()=>paused=true);
   sc.addEventListener("mouseleave",()=>{paused=false;start=performance.now()});
+  let tx = null;
+  sc.addEventListener("touchstart",e=>{tx=e.touches[0].clientX;paused=true},{passive:true});
+  sc.addEventListener("touchend",e=>{
+    if(tx!==null){
+      const dx = e.changedTouches[0].clientX - tx;
+      if(Math.abs(dx)>40) show((idx+(dx<0?1:-1)+FEATURED.length)%FEATURED.length);
+    }
+    tx=null;paused=false;start=performance.now();
+  },{passive:true});
 
   function tick(now){
     if(!paused){
@@ -781,17 +792,16 @@ const statusLabel = s => ({live:"Live",new:"New",beta:"Beta"}[s]||s);
 })();
 
 function projectCard(g){
-  const cover = g.art || g.logo; // real art first, logo as banner fallback, letters as last resort (in .gicon)
-  const bannerStyle = cover
-    ? `style="background-image:url('${esc(cover)}');background-size:cover;background-position:center"`
-    : "";
+  const artQ = srcChain(g.art), logoQ = srcChain(g.logo);
+  const banner = imgTag([...artQ, ...logoQ], "gart" + (artQ.length ? "" : " is-logo"), `data-art="${artQ.length}" loading="lazy"`);
   const icon = g.logo
-    ? `<div class="gicon"><img src="${esc(g.logo)}" alt="" loading="lazy" onerror="this.parentElement.textContent='${initials(g.name)}'"></div>`
+    ? `<div class="gicon">${imgTag(logoQ, "", `data-initials="${initials(g.name)}" loading="lazy"`)}</div>`
     : `<div class="gicon">${initials(g.name)}</div>`;
   const x = g.twitter ? `<a class="glink" href="https://x.com/${esc(g.twitter)}" target="_blank" rel="noopener">X</a>` : "";
   const w = g.website ? `<a class="glink" href="${esc(g.website)}" target="_blank" rel="noopener">Play</a>` : "";
   return `<article class="gcard" id="${idOf(g)}">
-    <div class="gcard-banner" ${bannerStyle}>
+    <div class="gcard-banner">
+      ${banner}
       ${icon}
       <span class="status chip ${g.status}">${statusLabel(g.status)}</span>
     </div>
@@ -882,11 +892,6 @@ document.querySelectorAll(".pill").forEach(b=>{
   });
 });
 document.getElementById("search").addEventListener("input", e => renderRegistry(filter, e.target.value));
-const _lastUpdatedEl = document.getElementById("last-updated");
-if(_lastUpdatedEl){
-  _lastUpdatedEl.textContent =
-    new Intl.DateTimeFormat("en",{month:"short",day:"numeric",year:"numeric"}).format(new Date());
-}
 
 renderRegistry();
 bindCount();
@@ -936,123 +941,6 @@ bindCount();
     });
   },{passive:true});
   toTop.addEventListener("click",()=>scrollTo({top:0,behavior:"smooth"}));
-})();
-
-/* ===== Gamified entrance loader + internal page-transition loader ===== */
-(function(){
-  const loader = document.getElementById("loader");
-  if(!loader) return;
-  const fill = loader.querySelector("#loader-fill");
-  const title = loader.querySelector("#loader-title");
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  /* ---- Entrance loader: waits on real images, not a fake timer, so it
-     can never clear before the art behind it is actually in place. ---- */
-  const imgs = Array.from(document.images || []);
-  const totalImgs = imgs.length;
-  let loadedImgs = 0;
-  let winLoaded = false;
-  let entranceDone = false;
-  const startedAt = performance.now();
-  const MIN_MS = reduce ? 150 : 1600;
-
-  function setEntranceProgress(p){
-    const shown = Math.min(100, Math.round(p));
-    fill.style.width = shown + "%";
-    title.textContent = "Loading… " + shown + "%";
-  }
-
-  function currentTarget(){
-    if(!totalImgs) return winLoaded ? 100 : 55;
-    const imgPct = (loadedImgs / totalImgs) * 100;
-    return winLoaded ? Math.max(imgPct, 96) : imgPct;
-  }
-
-  imgs.forEach(img=>{
-    if(img.complete){ loadedImgs++; return; }
-    const onDone = () => { loadedImgs++; img.removeEventListener("load", onDone); img.removeEventListener("error", onDone); };
-    img.addEventListener("load", onDone);
-    img.addEventListener("error", onDone);
-  });
-
-  let shownProgress = 0;
-  const grind = setInterval(()=>{
-    if(entranceDone) return;
-    const target = currentTarget();
-    shownProgress += (target - shownProgress) * 0.12 + 0.05;
-    setEntranceProgress(shownProgress);
-    const ready = (totalImgs ? loadedImgs >= totalImgs : true) && winLoaded;
-    const elapsed = performance.now() - startedAt;
-    if(ready && elapsed >= MIN_MS) finishEntrance();
-  }, 90);
-
-  function finishEntrance(){
-    if(entranceDone) return;
-    entranceDone = true;
-    clearInterval(grind);
-    setEntranceProgress(100);
-    setTimeout(()=>{
-      loader.classList.add("loader-hide");
-      setTimeout(()=>loader.remove(), reduce ? 0 : 500);
-    }, reduce ? 0 : 200);
-  }
-
-  if(document.readyState === "complete"){
-    winLoaded = true;
-  } else {
-    window.addEventListener("load", ()=>{ winLoaded = true; });
-  }
-  // Safety net only — real completion above still gates on images + load.
-  setTimeout(()=>{ winLoaded = true; finishEntrance(); }, 8000);
-
-  /* ---- Transition loader for internal navigations (not external tabs) ---- */
-  function isInternalNav(a){
-    if(!a) return false;
-    const href = a.getAttribute("href");
-    if(!href) return false;
-    if(href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("javascript:")) return false;
-    if(a.target === "_blank") return false;
-    try{
-      const url = new URL(href, window.location.href);
-      if(url.origin !== window.location.origin) return false;
-    }catch(e){ return false; }
-    return true;
-  }
-
-  document.addEventListener("click", function(e){
-    const a = e.target.closest("a[href]");
-    if(!a || !isInternalNav(a)) return;
-    if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-
-    e.preventDefault();
-    const href = a.getAttribute("href");
-    const label = (a.textContent || "").trim() || "next page";
-
-    let nav = document.getElementById("loader");
-    if(!nav){
-      nav = loader.cloneNode(true);
-      nav.id = "loader-nav-active";
-      document.body.appendChild(nav);
-    }
-    nav.classList.remove("loader-hide");
-    const navTitle = nav.querySelector("#loader-title, .loader-label");
-    const navFill = nav.querySelector("#loader-fill, .loader-bar-fill");
-
-    let p = 0;
-    const grindNav = setInterval(()=>{
-      p = Math.min(95, p + (95 - p) * 0.1 + 0.6);
-      if(navFill) navFill.style.width = p + "%";
-      if(navTitle) navTitle.textContent = "Loading " + label + "… " + Math.round(p) + "%";
-    }, 70);
-
-    const goDelay = reduce ? 60 : 900;
-    setTimeout(()=>{
-      clearInterval(grindNav);
-      if(navFill) navFill.style.width = "100%";
-      if(navTitle) navTitle.textContent = "Loading " + label + "… 100%";
-      setTimeout(()=>{ window.location.href = href; }, reduce ? 0 : 220);
-    }, goDelay);
-  }, true);
 })();
 </script>
 </body>
