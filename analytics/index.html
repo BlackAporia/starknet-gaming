@@ -653,9 +653,15 @@ const LOGO_BY_SLUG = {
    trying each extension in turn. Drop in a correctly named file and it
    appears — no code change needed. If nothing matches, coloured initials show. */
 const LOGO_EXTS = ["jpg","png","jpeg","webp","svg"];
+const LOGO_ALIASES = {"dark-bags":["darkbag"], "escape-saylor":["saylor"], "realmofzee":["realms"]};
 function logoCandidates(slug){
   const out = [];
   if(LOGO_BY_SLUG[slug]) out.push(LOGO_BASE + LOGO_BY_SLUG[slug]);
+  for(const n of (LOGO_ALIASES[slug]||[]))
+    for(const x of LOGO_EXTS){
+      const u = LOGO_BASE + encodeURIComponent(n) + "." + x;
+      if(!out.includes(u)) out.push(u);
+    }
   for(const x of LOGO_EXTS){
     const u = LOGO_BASE + slug + "." + x;
     if(!out.includes(u)) out.push(u);
@@ -686,7 +692,8 @@ function avatarEl(g, sizeClass=""){
 const BANNER_BASE = "https://raw.githubusercontent.com/BlackAporia/starknet-gaming/main/assets/art/";
 const BANNER_ALIASES = {
   "axe-arcade":["axe"], "brove-royale":["brove"], "loot-survivor":["loot"],
-  "pistols-at-dawn":["pistols"], "dope-wars":["dope wars"]
+  "pistols-at-dawn":["pistols"], "dope-wars":["dope wars"],
+  "dark-bags":["darkbagloot"], "escape-saylor":["escapesaylor"], "realmofzee":["realmsofzee"]
 };
 const BANNER_EXTS = ["png","jpg","jpeg","webp"];   // art files: png first, then the other common types
 const bannerCache = {};   // slug -> {url, logo} that worked, or null when nothing exists
