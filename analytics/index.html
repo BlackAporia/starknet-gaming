@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>(function(){var t=localStorage.getItem("sg-theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0a0b">
+<title>Analytics · Starknet Gaming</title>
+<meta name="sg-build" content="table-only-mobile-1">
+<meta name="description" content="Clear on-chain analytics for Starknet games: active players, volume, genre trends and regular updates. Pulled from Starkscan & Voyager.">
+<meta property="og:title" content="Analytics · Starknet Gaming">
+<meta property="og:description" content="On-chain activity across Starknet games. Unique wallets, volume, and trends over time. No estimates.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://starknet-gaming.com/analytics">
+<link rel="canonical" href="https://starknet-gaming.com/analytics">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Starknet Gaming Analytics. polished dashboard
+   Brand accent kept (#9d4dff). Typography & density tuned for
+   a modern product analytics feel.
+   ============================================================ */
+:root{
+  --bg:            #09090b;
+  --bg-elevated:   #0f0f12;
+  --panel:         #121216;
+  --panel-2:       #18181c;
+  --panel-hover:   #1c1c22;
+  --border:        rgba(255,255,255,.06);
+  --border-strong: rgba(255,255,255,.10);
+  --border-focus:  rgba(157,77,255,.45);
+
+  --ink:           #fafafa;
+  --ink-2:         #a1a1aa;
+  --ink-3:         #71717a;
+  --ink-4:         #52525b;
+
+  --purple:        #9d4dff;
+  --purple-soft:   rgba(157,77,255,.12);
+  --purple-mid:    rgba(157,77,255,.22);
+  --magenta:       #ff4dcd;
+  --blue:          #4d8dff;
+  --teal:          #2ee6c5;
+  --orange:        #ff8a3d;
+  --red:           #ff4d63;
+  --green:         #34d399;
+  --amber:         #fbbf24;
+
+  --sidebar-w:     240px;
+  --topbar-h:      52px;
+  --r:             10px;
+  --r-sm:          6px;
+  --r-lg:          14px;
+
+  --f-sans:        "Inter", system-ui, -apple-system, sans-serif;
+  --f-mono:        "JetBrains Mono", ui-monospace, monospace;
+
+  --shadow-sm:     0 1px 2px rgba(0,0,0,.35);
+  --shadow:        0 4px 16px -4px rgba(0,0,0,.45);
+}
+
+/* Light theme */
+[data-theme="light"]{
+  --bg:            #f4f4f5;
+  --bg-elevated:   #ffffff;
+  --panel:         #ffffff;
+  --panel-2:       #f4f4f5;
+  --panel-hover:   #f0f0f1;
+  --border:        rgba(0,0,0,.07);
+  --border-strong: rgba(0,0,0,.12);
+  --ink:           #18181b;
+  --ink-2:         #52525b;
+  --ink-3:         #71717a;
+  --ink-4:         #a1a1aa;
+  --purple-soft:   rgba(157,77,255,.08);
+  --purple-mid:    rgba(157,77,255,.14);
+  --shadow-sm:     0 1px 2px rgba(0,0,0,.04);
+  --shadow:        0 4px 16px -4px rgba(0,0,0,.08);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f4f4f5; --bg-elevated:#fff; --panel:#fff; --panel-2:#f4f4f5; --panel-hover:#f0f0f1;
+    --border:rgba(0,0,0,.07); --border-strong:rgba(0,0,0,.12);
+    --ink:#18181b; --ink-2:#52525b; --ink-3:#71717a; --ink-4:#a1a1aa;
+    --purple-soft:rgba(157,77,255,.08); --purple-mid:rgba(157,77,255,.14);
+    --shadow-sm:0 1px 2px rgba(0,0,0,.04); --shadow:0 4px 16px -4px rgba(0,0,0,.08);
+  }
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-sans);
+  font-weight:400;
+  font-size:13.5px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:rgba(157,77,255,.35)}
+
+*::-webkit-scrollbar{width:8px;height:8px}
+*::-webkit-scrollbar-thumb{background:var(--ink-4);border-radius:8px}
+*::-webkit-scrollbar-track{background:transparent}
+
+/* Type */
+h1,h2,h3,h4{font-family:var(--f-sans);font-weight:600;margin:0;letter-spacing:-.02em;line-height:1.25}
+h1{font-size:22px;letter-spacing:-.03em}
+h2{font-size:15px}
+h3{font-size:13px}
+.eyebrow{
+  font-family:var(--f-mono);font-size:10px;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+}
+.num{font-family:var(--f-mono);font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.muted{color:var(--ink-2)}
+.dim{color:var(--ink-3)}
+
+/* Shell */
+.shell{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);min-height:100vh}
+
+.sidebar{
+  border-right:1px solid var(--border);
+  background:var(--bg-elevated);
+  position:sticky;top:0;height:100vh;
+  display:flex;flex-direction:column;
+  z-index:20;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;
+  padding:16px 16px 14px;border-bottom:1px solid var(--border);
+}
+.brand-mark{
+  width:28px;height:28px;border-radius:7px;
+  background:linear-gradient(135deg,var(--purple),#7b34e0);
+  display:grid;place-items:center;
+  font-weight:700;font-size:11px;color:#fff;letter-spacing:-.02em;
+  flex:none;
+}
+.brand-txt{font-weight:600;font-size:13px;line-height:1.25;letter-spacing:-.01em}
+.brand-txt span{display:block;font-weight:400;font-size:11px;color:var(--ink-3);letter-spacing:0}
+
+nav.rail{padding:12px 10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;flex:1}
+.rail-label{padding:12px 10px 6px}
+.nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 10px;border-radius:var(--r-sm);
+  color:var(--ink-2);font-size:13px;font-weight:500;
+  position:relative;transition:background .12s,color .12s;
+}
+.nav-item:hover{background:var(--panel-2);color:var(--ink)}
+.nav-item.on{background:var(--purple-soft);color:var(--ink)}
+.nav-item.on::before{
+  content:"";position:absolute;left:0;top:8px;bottom:8px;width:2px;
+  border-radius:2px;background:var(--purple);
+}
+.nav-item svg{width:15px;height:15px;flex:none;stroke:currentColor;fill:none;stroke-width:1.7;opacity:.9}
+.nav-count{margin-left:auto;font-family:var(--f-mono);font-size:10px;color:var(--ink-3);font-weight:500}
+
+.rail-foot{
+  padding:12px 14px 16px;border-top:1px solid var(--border);
+  display:flex;flex-direction:column;gap:6px;
+}
+.rail-foot a{font-size:12px;color:var(--ink-3);transition:color .12s}
+.rail-foot a:hover{color:var(--ink-2)}
+
+/* Main */
+.main{display:flex;flex-direction:column;min-width:0;min-height:100vh}
+.topbar{
+  height:var(--topbar-h);flex:none;
+  display:flex;align-items:center;gap:12px;
+  padding:0 20px;border-bottom:1px solid var(--border);
+  background:var(--bg-elevated);position:sticky;top:0;z-index:10;
+}
+.crumb{font-size:13px;font-weight:500;color:var(--ink-2);flex:1;min-width:0}
+.crumb b{color:var(--ink);font-weight:600}
+
+.source-pill{
+  display:flex;align-items:center;gap:7px;
+  font-size:11.5px;color:var(--ink-3);
+  padding:5px 10px;border-radius:999px;
+  background:var(--panel-2);border:1px solid var(--border);
+  max-width:min(420px,48vw);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.dot{width:6px;height:6px;border-radius:50%;flex:none;background:var(--ink-4)}
+.dot:not(.none):not(.stale){background:var(--green);box-shadow:0 0 0 3px rgba(52,211,153,.15)}
+.dot.stale{background:var(--amber);box-shadow:0 0 0 3px rgba(251,191,36,.15)}
+.dot.none{background:var(--ink-4)}
+
+.icon-btn{
+  width:32px;height:32px;border-radius:var(--r-sm);
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  color:var(--ink-2);border:1px solid transparent;font-size:12px;
+  transition:background .12s,border-color .12s,color .12s;
+}
+.icon-btn:hover{background:var(--panel-2);border-color:var(--border);color:var(--ink)}
+.icon-btn.burger{display:none}
+.hide-xs{display:inline}
+
+.page{padding:24px 28px 48px;max-width:1280px;width:100%}
+.page-head{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.page-head p{margin:6px 0 0;max-width:56ch;color:var(--ink-2);font-size:13px;line-height:1.5}
+
+/* Cards & layout */
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  box-shadow:var(--shadow-sm);
+  overflow:hidden;
+}
+.card-head{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:14px 16px 0;
+}
+.card-head h2{font-size:13.5px;font-weight:600}
+.card-body{padding:12px 16px 16px}
+.card-note{
+  margin:0 16px 14px;padding:10px 12px;
+  background:var(--panel-2);border-radius:var(--r-sm);
+  font-size:12px;color:var(--ink-2);line-height:1.45;
+}
+.mt{margin-top:16px}
+.spacer{margin-left:auto}
+
+.grid{display:grid;gap:14px}
+.g-stats3{grid-template-columns:repeat(3,1fr)}
+.g-stats{grid-template-columns:repeat(3,1fr)}
+.g-stats4{grid-template-columns:repeat(4,1fr)}
+.g-2{grid-template-columns:repeat(2,1fr)}
+.g-hero{grid-template-columns:1.6fr 1fr}
+.g-cards{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+
+/* Stat cards */
+.stat{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:16px 18px;
+  box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
+}
+.stat .label{font-size:12px;font-weight:500;color:var(--ink-3);margin-bottom:8px}
+.stat .value{font-family:var(--f-mono);font-size:26px;font-weight:600;letter-spacing:-.03em;line-height:1.15}
+.stat .hint{margin-top:6px;font-size:11.5px;color:var(--ink-3)}
+.stat .value.pending,.v.pending{color:var(--ink-3);font-size:15px;font-weight:500;font-family:var(--f-sans)}
+.stat .value.empty{color:var(--ink-3);font-size:15px;font-weight:500;font-family:var(--f-sans)}
+.stat .spark{position:absolute;right:12px;bottom:10px;opacity:.7}
+
+.genre-highlight{
+  display:flex;flex-direction:column;justify-content:center;
+  min-height:100%;
+  border-color:var(--border);
+  background:var(--panel);
+}
+.genre-hl-body{padding:16px 18px;cursor:pointer}
+.genre-highlight:hover{border-color:var(--border-strong);background:var(--panel-hover)}
+.genre-hl-title{font-size:18px;font-weight:600;letter-spacing:-.02em;margin-top:6px;line-height:1.25}
+.genre-hl-copy{margin:8px 0 0;font-size:12.5px;color:var(--ink-2);line-height:1.45;max-width:28ch}
+.genre-hl-cta{
+  display:inline-block;margin-top:12px;
+  font-size:12px;font-weight:600;color:var(--purple);
+}
+
+
+/* Deltas */
+.delta{display:inline-flex;align-items:center;gap:3px;font-family:var(--f-mono);font-size:11px;font-weight:500}
+.delta svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+.delta.up{color:var(--green)}
+.delta.down{color:var(--red)}
+.delta.flat{color:var(--ink-3)}
+.delta .wow{font-family:var(--f-sans);font-weight:400;color:var(--ink-3);margin-left:2px}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 12px;border-radius:var(--r-sm);
+  font-size:12.5px;font-weight:500;
+  border:1px solid var(--border);background:var(--panel-2);
+  transition:background .12s,border-color .12s,color .12s;
+}
+.btn:hover{background:var(--panel-hover);border-color:var(--border-strong)}
+.btn-primary{
+  background:linear-gradient(135deg,var(--purple),#7b34e0);
+  color:#fff;border-color:transparent;
+  box-shadow:0 4px 14px -6px rgba(157,77,255,.7);
+}
+.btn-primary:hover{filter:brightness(1.06);border-color:transparent}
+.btn-ghost{background:transparent}
+
+/* Range toggle */
+.range{display:inline-flex;gap:2px;padding:3px;background:var(--panel-2);border-radius:var(--r-sm);border:1px solid var(--border)}
+.range button{
+  padding:5px 10px;border-radius:5px;font-size:11.5px;font-weight:500;color:var(--ink-3);
+  transition:background .12s,color .12s;
+}
+.range button:hover{color:var(--ink)}
+.range button.on{background:var(--purple-mid);color:var(--ink)}
+
+/* Tags / chips */
+.tag{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 8px;border-radius:999px;
+  font-size:11px;font-weight:500;
+  border:1px solid var(--border);color:var(--ink-2);background:var(--panel-2);
+}
+.tag.cat{border-color:color-mix(in srgb,var(--c,#9d4dff) 35%,transparent);color:var(--c,#9d4dff);background:color-mix(in srgb,var(--c,#9d4dff) 10%,transparent)}
+
+/* Filters */
+.filters{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.search{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:var(--r-sm);
+  background:var(--panel);border:1px solid var(--border);
+  min-width:220px;flex:1;max-width:320px;
+}
+.search input{
+  border:0;outline:0;background:transparent;color:var(--ink);
+  font:inherit;width:100%;
+}
+.search input::placeholder{color:var(--ink-4)}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{
+  text-align:left;padding:10px 14px;font-weight:500;color:var(--ink-3);
+  font-size:11px;text-transform:uppercase;letter-spacing:.04em;
+  border-bottom:1px solid var(--border);background:var(--panel-2);
+}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tr:hover td{background:var(--panel-hover)}
+.ta-r{text-align:right}
+.lb-name{font-weight:500}
+.lb{padding:4px 0 8px}
+.lb-row{
+  display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;
+  padding:12px 16px;border-top:1px solid var(--border);
+  transition:background .12s;
+}
+.lb a{color:inherit;text-decoration:none}
+.lb a:hover .lb-row{background:var(--panel-hover)}
+.lb-rank{
+  font-family:var(--f-mono);font-size:12px;font-weight:600;color:var(--ink-3);
+  letter-spacing:.02em;
+}
+.lb-meta{margin-top:4px}
+.lb-val{text-align:right}
+.lb-val .v{font-family:var(--f-mono);font-size:15px;font-weight:600;letter-spacing:-.02em}
+.lb-val .delta{margin-top:2px;justify-content:flex-end}
+
+/* Reach vs onchain pair on game detail */
+.collects b.y{color:var(--green)}
+.collects b.n{color:var(--red)}
+.duo-metric{
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;
+  padding:4px 16px 8px;
+}
+.card > .duo-metric{padding-top:8px}
+.duo-metric .v{font-family:var(--f-mono);font-size:22px;font-weight:600;margin-top:4px;letter-spacing:-.02em}
+.duo-metric .v.empty,.duo-metric .empty{color:var(--ink-3);font-size:15px;font-weight:500}
+@media (max-width:600px){
+  .duo-metric{grid-template-columns:1fr}
+  .lb-row{grid-template-columns:32px 1fr auto;gap:8px;padding:10px 12px}
+}
+
+/* Game cards */
+.gcard{padding:14px;cursor:pointer;transition:border-color .12s,background .12s}
+.gcard:hover{border-color:var(--border-strong);background:var(--panel-hover)}
+.gcard .top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.gcard .av,.detail-hero .av,.av{
+  width:36px;height:36px;border-radius:9px;flex:none;
+  display:grid;place-items:center;overflow:hidden;
+  font-weight:700;font-size:12px;color:#0b0a08;
+  background:var(--panel-2);
+}
+.av img{width:100%;height:100%;object-fit:cover;display:block}
+.detail-hero .av{width:48px;height:48px;border-radius:12px;font-size:16px}
+.gcard .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gcard .v{font-family:var(--f-mono);font-size:16px;font-weight:600;margin-top:2px}
+.gcard .muted-val{color:var(--ink-3);font-size:13px;font-weight:500}
+
+/* Category sections */
+.cat-section{margin-bottom:20px}
+.cat-bar{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 4px 10px;border-bottom:1px solid var(--border);margin-bottom:12px;
+}
+.cat-bar-name{font-weight:600;font-size:13px;color:var(--c,#9d4dff)}
+.cat-bar-count{font-size:11.5px;color:var(--ink-3);margin-left:auto}
+
+/* Detail hero */
+.detail-hero{display:flex;align-items:flex-start;gap:14px}
+.detail-hero .av{width:48px;height:48px;border-radius:12px;font-size:16px}
+.kv{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12px;color:var(--ink-3)}
+.kv code{font-family:var(--f-mono);font-size:11px;background:var(--panel-2);padding:2px 6px;border-radius:4px;color:var(--ink-2)}
+
+/* Mover */
+.mover .flame{font-size:11.5px;font-weight:600;color:var(--orange);letter-spacing:.02em}
+.mover .why{margin:12px 16px;padding:10px 12px;background:var(--panel-2);border-radius:var(--r-sm);font-size:12.5px;line-height:1.45}
+.mover .why em{display:block;font-style:normal;font-weight:600;font-size:11px;color:var(--ink-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.mover .btn{margin:0 16px 16px}
+
+/* Charts */
+.chart-wrap{width:100%;min-height:120px}
+.chart-wrap svg{width:100%;height:auto;display:block}
+.empty,.empty-state{
+  padding:32px 20px;text-align:center;
+  color:var(--ink-3);
+}
+.empty .box{
+  width:36px;height:36px;margin:0 auto 12px;border-radius:10px;
+  display:grid;place-items:center;
+  background:var(--panel-2);border:1px solid var(--border);
+  font-size:14px;color:var(--ink-4);
+}
+.empty strong,.empty-state strong{display:block;color:var(--ink-2);font-weight:600;font-size:13.5px;margin-bottom:6px}
+.empty p,.empty-state p{margin:0 auto;font-size:12.5px;max-width:38ch;line-height:1.5;color:var(--ink-3)}
+.card > .empty{padding:40px 20px}
+
+/* Prose (About) */
+.prose{font-size:13px;color:var(--ink-2);line-height:1.6}
+.prose p{margin:0 0 10px}
+.prose ul{margin:0;padding-left:18px}
+.prose li{margin-bottom:6px}
+.prose strong{color:var(--ink);font-weight:600}
+
+/* Sep note */
+.sep-note{
+  display:flex;gap:8px;align-items:flex-start;
+  margin:0 16px 14px;padding:10px 12px;
+  background:var(--purple-soft);border-radius:var(--r-sm);
+  font-size:12px;color:var(--ink-2);line-height:1.45;
+}
+.sep-note svg{width:16px;height:16px;flex:none;stroke:var(--purple);fill:none;stroke-width:1.6;margin-top:1px}
+
+/* Community posts */
+.post{padding:16px}
+.post .who{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.post .who .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:12px;color:#0b0a08}
+.post .role{font-size:11.5px;color:var(--ink-3)}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--panel-2);border:1px solid var(--border-strong);
+  color:var(--ink);padding:10px 16px;border-radius:var(--r);
+  font-size:13px;font-weight:500;box-shadow:var(--shadow);
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:100;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Reveal */
+.rv{animation:fadeUp .35s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── Mobile / tablet ── */
+.nav-backdrop{
+  display:none;position:fixed;inset:0;z-index:40;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(2px);
+}
+body.nav-open .nav-backdrop{display:block}
+body.nav-open{overflow:hidden}
+
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{
+    position:fixed;inset:0 auto 0 0;width:min(280px,86vw);
+    transform:translateX(-105%);transition:transform .25s ease;
+    box-shadow:none;z-index:50;height:100%;
+  }
+  body.nav-open .sidebar{transform:none;box-shadow:8px 0 32px rgba(0,0,0,.45)}
+  .icon-btn.burger{display:inline-flex}
+  .topbar{padding:0 12px;gap:8px}
+  .page{padding:16px 14px 48px}
+  .page-head{margin-bottom:16px}
+  .page-head h1{font-size:20px}
+  .page-head p{font-size:12.5px}
+  .g-stats3,.g-stats,.g-stats4,.g-2,.g-hero{grid-template-columns:1fr}
+  .source-pill{display:none}
+  .hide-xs{display:none}
+  .stat{padding:14px 16px}
+  .stat .value{font-size:22px}
+  .card-head{padding:12px 14px 0}
+  .card-body{padding:10px 14px 14px}
+  .filters{margin-bottom:12px}
+  .search{min-width:0;max-width:none;flex:1}
+  table{font-size:12px}
+  th,td{padding:10px 10px}
+  /* hide WoW columns on tablet to reduce horizontal scroll */
+  .hide-sm{display:none}
+  .gcard .row{gap:8px}
+  .detail-hero{flex-wrap:wrap}
+  .range button{padding:6px 10px;font-size:12px}
+}
+
+@media (max-width:600px){
+  .g-cards{grid-template-columns:1fr}
+  .g-stats3{grid-template-columns:1fr}
+  h1{font-size:19px}
+  .stat .value{font-size:20px}
+  .crumb{font-size:12.5px}
+  /* tighter table for phones */
+  th,td{padding:9px 8px}
+  .tag{font-size:10px;padding:2px 6px}
+  .gcard{padding:12px}
+  .lb-name{font-size:13px}
+  .mover .why{margin:10px 12px}
+  .mover .btn{margin:0 12px 12px}
+  .empty,.empty-state{padding:28px 16px}
+  /* stack dual metric columns if needed */
+  .duo{display:flex;flex-direction:column;gap:10px}
+}
+
+/* Safe area for notched phones */
+@supports (padding: max(0px)) {
+  .topbar{padding-left:max(12px, env(safe-area-inset-left));padding-right:max(12px, env(safe-area-inset-right))}
+  .page{padding-bottom:max(48px, env(safe-area-inset-bottom))}
+  .sidebar{padding-bottom:env(safe-area-inset-bottom)}
+}
+</style>
+</head>
+<body>
+
+<div class="nav-backdrop" id="navBackdrop" onclick="document.body.classList.remove('nav-open')"></div>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="https://starknet-gaming.com/">
+      <div class="brand-mark">SG</div>
+      <div class="brand-txt">Starknet Gaming<span>Analytics</span></div>
+    </a>
+    <nav class="rail" id="rail"></nav>
+    <div class="rail-foot">
+      <a href="https://starknet-gaming.com/" target="_blank" rel="noopener">← Back to main hub</a>
+      <a href="https://x.com/StarknetGaming" target="_blank" rel="noopener">@StarknetGaming</a>
+      <a href="https://t.me/Starknet_Gaming" target="_blank" rel="noopener">Telegram group</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn burger" onclick="document.body.classList.toggle('nav-open')" aria-label="Menu">☰</button>
+      <div class="crumb" id="crumb">Overview</div>
+      <div class="source-pill" id="sourcePill" title="Where the numbers come from">
+        <span class="dot none" id="srcDot"></span>
+        <span id="srcTxt">Not connected to live data yet</span>
+      </div>
+      <button class="icon-btn" id="themeToggle" onclick="App.toggleTheme()" title="Toggle light / dark">🌙</button>
+      <button class="icon-btn" onclick="App.share()" title="Share this page">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M12 15V3m0 0L8 7m4-4 4 4"/></svg>
+        <span class="hide-xs">Share</span>
+      </button>
+    </header>
+    <main class="page" id="view"></main>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   1. CONFIG. the only block you edit to go live.
+   ═══════════════════════════════════════════════════════════════════ */
+const CONFIG = {
+  // Point at your Supabase project (anon key is safe: RLS = read-only public).
+  supabaseUrl:     "https://jvxyvgwiebifeacgdywn.supabase.co",
+  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2eHl2Z3dpZWJpZmVhY2dkeXduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1Njg2OTMsImV4cCI6MjEwNTE0NDY5M30.MMom3kr9u72FQ4YfoCq2njj3kCgu4QIMTWQZ0VE1VnY",
+  // ...or any REST endpoint returning { games, snapshots, reports, posts, last_updated }
+  apiBase:         "",          // e.g. "https://api.starknet-gaming.com/analytics"
+
+  unit: "STRK",                 // volume denomination label
+  parentSite: "https://starknet-gaming.com/",
+  explorerGame: a => `https://starkscan.co/contract/${a}`,
+  sourcesLabel: "Starkscan & Voyager",
+  staleAfterDays: 9             // badge turns amber past this
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   2. CATEGORY REGISTRY. add a genre here, nothing else to change.
+   ═══════════════════════════════════════════════════════════════════ */
+const CATS = {
+  "Sports / Fantasy":{c:"#4d8dff"}, "Strategy / MMO":{c:"#9d4dff"},
+  "Roguelike / Dungeon":{c:"#ff4d63"}, "Card Games":{c:"#ffd24d"},
+  "Action / PvP":{c:"#ff4dcd"}, "Puzzle / Casual":{c:"#2ee6c5"},
+  "Creative / Social":{c:"#4de0d0"}, "Cross-chain":{c:"#67e04d"},
+  Other:{c:"#7c766c"}
+};
+const catColor = n => (CATS[n]||CATS.Other).c;
+
+/* Logo files live in the main site repo. load by slug when present. */
+const LOGO_BASE = "https://raw.githubusercontent.com/BlackAporia/starknet-gaming/main/assets/logos/";
+const LOGO_BY_SLUG = {
+  "zap-football":"zap-football.jpg",
+  "gaffer":"gaffer.jpg",
+  "realms-blitz":"realms-blitz.svg",
+  "ponziland":"ponziland.jpg",
+  "stakewars":"stakewars.jpg",
+  "influence":"influence.jpg",
+  "loot-survivor":"loot-survivor.png",
+  "dark-shuffle":"dark-shuffle.png",
+  "jokers-of-neon":"jokers-of-neon.jpg",
+  "dope-wars":"dope-wars.jpg",
+  "blob-arena":"blob-arena.jpg",
+  "pistols-at-dawn":"pistols-at-dawn.jpg",
+  "corsair":"corsair.jpg",
+  "brove-royale":"brove-royale.jpg",
+  "zkube":"zkube.png",
+  "gm-nft":"gm-nft.jpg",
+  "nums":"nums.jpg",
+  "starkorbs":"starkorbs.jpg",
+  "hidden":"hidden.jpg",
+  "art-peace":"art-peace.jpg",
+  "axe-arcade":"axe.jpg"
+};
+function logoUrl(slug){
+  const f = LOGO_BY_SLUG[slug];
+  return f ? LOGO_BASE + f : null;
+}
+/** Avatar: real logo when we have one, otherwise coloured initials. */
+function avatarEl(g, sizeClass=""){
+  const url = logoUrl(g.slug);
+  const wrap = el("div",{class:"av"+(sizeClass?" "+sizeClass:""),style:url?"":`background:linear-gradient(140deg,${catColor(g.category)},${catColor(g.category)}99)`});
+  if(url){
+    const img = el("img",{src:url,alt:"",loading:"lazy",onerror:e=>{e.target.remove(); wrap.textContent=initials(g.name); wrap.style.background=`linear-gradient(140deg,${catColor(g.category)},${catColor(g.category)}99)`;}});
+    wrap.appendChild(img);
+  } else {
+    wrap.textContent = initials(g.name);
+  }
+  return wrap;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. UTILITIES
+   ═══════════════════════════════════════════════════════════════════ */
+const $  = (s,r=document)=>r.querySelector(s);
+const el = (t,a={},...k)=>{const n=document.createElement(t);
+  for(const[p,v]of Object.entries(a)){ if(v===null||v===false||v===undefined)continue;
+    if(p==="class")n.className=v; else if(p==="html")n.innerHTML=v;
+    else if(p.startsWith("on"))n.addEventListener(p.slice(2).toLowerCase(),v); else n.setAttribute(p,v);}
+  for(const c of k.flat()){ if(c===null||c===undefined||c===false)continue;
+    n.appendChild(typeof c==="object"?c:document.createTextNode(String(c)));}
+  return n;};
+
+const NO = '<span class="dim">No data yet</span>';
+function fmt(n){ if(n===null||n===undefined||Number.isNaN(n))return null;
+  const a=Math.abs(n);
+  if(a>=1e9)return (n/1e9).toFixed(a>=1e10?0:1).replace(/\.0$/,"")+"B";
+  if(a>=1e6)return (n/1e6).toFixed(a>=1e7?0:1).replace(/\.0$/,"")+"M";
+  if(a>=1e4)return (n/1e3).toFixed(0)+"K";
+  if(a>=1e3)return (n/1e3).toFixed(1).replace(/\.0$/,"")+"K";
+  return n.toLocaleString("en-US");}
+const short=a=>a?a.slice(0,6)+"…"+a.slice(-4):"";
+const slug =s=>s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const fmtDate=d=>new Date(d).toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"});
+const fmtShort=d=>new Date(d).toLocaleDateString("en-GB",{day:"2-digit",month:"short"});
+const initials=n=>n.replace(/[^A-Za-z0-9 ]/g,"").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase()||"?";
+
+/** Week-over-week change. Returns null when there isn't a real prior value. */
+function wow(cur,prev){
+  if(cur===null||cur===undefined||prev===null||prev===undefined||prev===0)return null;
+  return ((cur-prev)/prev)*100;
+}
+function deltaEl(pct,{suffix="vs last check"}={}){
+  if(pct===null||pct===undefined)
+    return el("span",{class:"delta flat"},"",el("span",{class:"wow"},"no prior data"));
+  const up=pct>0.05, dn=pct<-0.05, cls=up?"up":dn?"down":"flat";
+  const arrow=up?'<path d="M12 19V5m0 0-6 6m6-6 6 6"/>':dn?'<path d="M12 5v14m0 0 6-6m-6 6-6-6"/>':'<path d="M5 12h14"/>';
+  return el("span",{class:"delta "+cls},
+    el("svg",{viewBox:"0 0 24 24",html:arrow}),
+    (up?"+":"")+pct.toFixed(1)+"%",
+    suffix?el("span",{class:"wow"}," "+suffix):null);
+}
+/** Only show a trend delta when there's an actual current-week value to
+ * trend from. A missing current value means "no data yet" already says
+ * enough. pairing it with "no prior week" too is just noise. */
+function maybeDelta(curVal,pct,opts){
+  return (curVal===null||curVal===undefined) ? null : deltaEl(pct,opts);
+}
+/**
+ * The per-game version of a trend line. With two real weeks, this is a
+ * normal week-over-week delta. With only one week on record. which is
+ * true for every game on day one. there's nothing to compare against
+ * yet, so instead of announcing that absence ("no prior week"), it shows
+ * the honest positive: the real total collected so far, and since when.
+ * Never a guess, never phrased as a gap. just what's actually known.
+ */
+function trendLine(gameId,metricKey,curVal,pct,opts={}){
+  // Compact cards: only show a real week-over-week delta. Never the
+  // "0 transactions since …" fallback. that reads as duplicate clutter.
+  if(curVal===null||curVal===undefined) return null;
+  if(pct!==null&&pct!==undefined) return deltaEl(pct,opts);
+  if(opts.compact) return null;
+  // Detail pages only: with a single week of data, show lifetime total.
+  const snaps=snapsFor(gameId).filter(s=>s[metricKey]!==null);
+  if(!snaps.length) return null;
+  const total=snaps.reduce((a,s)=>a+s[metricKey],0);
+  if(total===0) return null;
+  const noun=metricKey==="wallets"?"players":metricKey==="txs"?"transactions":"total";
+  return el("span",{class:"delta flat since-line"},
+    fmt(total)+" "+noun,
+    el("span",{class:"wow"}," since "+fmtShort(snaps[0].week)));
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. STATE + DATA LAYER
+   ═══════════════════════════════════════════════════════════════════ */
+const state = {
+  games:[], snapshots:[], reports:[], posts:[],
+  lastUpdated:null, source:"none",   // none | live
+  range: localStorage.getItem("sg-range") || "8W",   // global, shared by every chart
+  loading:true, error:null
+};
+const RANGES={"8W":8,"16W":16,"ALL":Infinity};
+const RANGE_LABELS={"8W":"8","16W":"16","ALL":"All"};   // display text — internal keys stay as-is (storage/back-compat)
+
+async function loadData(){
+  state.loading=true;
+  try{
+    if(CONFIG.apiBase){
+      const r=await fetch(CONFIG.apiBase,{headers:{accept:"application/json"}});
+      if(!r.ok)throw new Error("HTTP "+r.status);
+      ingest(await r.json(),"live"); return;
+    }
+    if(CONFIG.supabaseUrl && CONFIG.supabaseAnonKey){
+      const h={apikey:CONFIG.supabaseAnonKey,Authorization:"Bearer "+CONFIG.supabaseAnonKey};
+      const q=p=>fetch(`${CONFIG.supabaseUrl}/rest/v1/${p}`,{headers:h}).then(r=>r.ok?r.json():[]);
+      const [games,snapshots,reports,posts]=await Promise.all([
+        q("games?select=*&order=name"),
+        q("weekly_snapshots?select=*&order=week_start"),
+        q("reports?select=*&order=week_number.desc"),
+        q("community_posts?select=*&order=published_at.desc")
+      ]);
+      ingest({games,snapshots,reports,posts},"live"); return;
+    }
+    ingest({games:[],snapshots:[],reports:[],posts:[]},"none");
+  }catch(e){ state.error=e.message; ingest({games:[],snapshots:[],reports:[],posts:[]},"none"); }
+}
+
+function ingest(d,source){
+  // Preferred slug aliases (old seed rows → clean slug)
+  const SLUG_ALIAS = {
+    "blob-arena-amma":"blob-arena",
+    "pistols":"pistols-at-dawn",
+    "guessmynft":"gm-nft",
+    "guess-my-nft":"gm-nft"
+  };
+  const mapped=(d.games||[]).map(g=>{
+    let s=(g.slug||slug(g.name)||"").toLowerCase();
+    if(SLUG_ALIAS[s]) s=SLUG_ALIAS[s];
+    return {
+      id:g.id, name:g.name, slug:s, category:g.category||"Other",
+      contract:g.contract_address||g.contract||"", x:g.x_handle||g.x||"",
+      url:g.url||"", listed:g.listed_at||g.listed||null, blurb:g.blurb||""
+    };
+  });
+  // Dedupe by slug, then by normalised name. keep the row with more metadata / lower id
+  const bySlug=new Map();
+  for(const g of mapped){
+    const prev=bySlug.get(g.slug);
+    if(!prev){ bySlug.set(g.slug,g); continue; }
+    // prefer the one with blurb / url / x
+    const score=x=>(x.blurb?1:0)+(x.url?1:0)+(x.x?1:0);
+    if(score(g)>=score(prev)) bySlug.set(g.slug,g);
+  }
+  const byName=new Map();
+  for(const g of bySlug.values()){
+    const key=(g.name||"").toLowerCase().replace(/[^a-z0-9]+/g,"");
+    const prev=byName.get(key);
+    if(!prev){ byName.set(key,g); continue; }
+    const score=x=>(x.blurb?1:0)+(x.url?1:0)+(x.x?1:0);
+    if(score(g)>=score(prev)) byName.set(key,g);
+  }
+  state.games=[...byName.values()].sort((a,b)=>a.name.localeCompare(b.name));
+  state.snapshots=(d.snapshots||[]).map(s=>({
+    gameId:s.game_id??s.gameId, week:s.week_start||s.week,
+    wallets:num(s.unique_wallets??s.wallets), volume:num(s.volume??s.tx_volume),
+    txs:num(s.tx_count??s.txs),
+    visits:num(s.offchain_visits??s.visits), sessions:num(s.offchain_sessions??s.sessions),
+    converted:num(s.converted_sessions??s.converted)
+  })).sort((a,b)=>new Date(a.week)-new Date(b.week));
+  state.reports=(d.reports||[]).map(r=>({
+    id:r.id, week:r.week_number??r.week, date:r.published_at||r.date,
+    title:r.title||`State of Starknet Gaming · Update ${r.week_number??r.week}`,
+    body:r.body||r.html||""
+  }));
+  state.posts=(d.posts||[]).map(p=>({
+    author:p.author, role:p.role||"", game:p.game||"", date:p.published_at||p.date,
+    title:p.title||"", body:p.body||"", x:p.x_handle||p.x||""
+  }));
+  state.lastUpdated=d.last_updated||d.lastUpdated||
+    (state.snapshots.length?state.snapshots[state.snapshots.length-1].week:null);
+  state.source=source;
+  state.loading=false;
+}
+const num=v=>(v===null||v===undefined||v===""||Number.isNaN(Number(v)))?null:Number(v);
+
+/** Prefer games that already have transaction activity in the current week. */
+function activityScore(g, wk){
+  const s=wk?snapAt(g.id,wk):null;
+  if(!s) return -1;
+  const txs = s.txs!=null ? s.txs : -1;
+  const wallets = s.wallets!=null ? s.wallets : -1;
+  // games with real txs float to the top; then by volume of txs; then wallets
+  if(txs > 0) return 1e12 + txs;
+  if(txs === 0) return 1e9;           // measured zero still ranks above "no data"
+  if(wallets > 0) return 1e6 + wallets;
+  if(wallets === 0) return 1e3;
+  return 0;
+}
+function sortByActivity(games, wk){
+  return [...games].sort((a,b)=>{
+    const d = activityScore(b,wk) - activityScore(a,wk);
+    return d!==0 ? d : a.name.localeCompare(b.name);
+  });
+}
+
+/* ---- derived selectors -------------------------------------------------- */
+const weeks = ()=>[...new Set(state.snapshots.map(s=>s.week))].sort((a,b)=>new Date(a)-new Date(b));
+function weeksInRange(){ const w=weeks(),n=RANGES[state.range]; return n===Infinity?w:w.slice(-n); }
+const snapsFor = id=>state.snapshots.filter(s=>s.gameId===id);
+function snapAt(id,wk){ return state.snapshots.find(s=>s.gameId===id&&s.week===wk)||null; }
+// Most recent snapshot for this game where `metric` actually has a value —
+// used as a fallback when the single globally-latest week is missing/null
+// for this particular game (a contract hiccup, not-yet-run this week, etc).
+function lastGoodSnap(id,metric){
+  for(let i=state.snapshots.length-1;i>=0;i--){
+    const s=state.snapshots[i];
+    if(s.gameId===id && s[metric]!==null) return s;
+  }
+  return null;
+}
+
+function totalsAt(wk){
+  const rows=state.snapshots.filter(s=>s.week===wk);
+  if(!rows.length)return null;
+  const sum=k=>{const v=rows.map(r=>r[k]).filter(x=>x!==null); return v.length?v.reduce((a,b)=>a+b,0):null;};
+  return {wallets:sum("wallets"),volume:sum("volume"),txs:sum("txs"),
+          games:rows.filter(r=>(r.wallets||0)>0||(r.txs||0)>0).length};
+}
+function latestPair(){ const w=weeks(); return {cur:w[w.length-1]||null, prev:w[w.length-2]||null}; }
+
+function biggestMover(){
+  const {cur,prev}=latestPair(); if(!cur||!prev)return null;
+  let best=null;
+  for(const g of state.games){
+    const a=snapAt(g.id,cur), b=snapAt(g.id,prev); if(!a||!b)continue;
+    const wg=wow(a.wallets,b.wallets), vg=wow(a.volume,b.volume);
+    if(wg===null)continue;
+    if(b.wallets<20)continue;                       // ignore noise off a tiny base
+    if(!best||wg>best.walletGrowth)best={game:g,walletGrowth:wg,volumeGrowth:vg,cur:a,prev:b};
+  }
+  return best;
+}
+
+function categoryBreakdown(wk){
+  const out={};
+  for(const g of state.games){
+    const s=snapAt(g.id,wk); if(!s||s.wallets===null)continue;
+    out[g.category]=(out[g.category]||0)+s.wallets;
+  }
+  const total=Object.values(out).reduce((a,b)=>a+b,0);
+  return {total,rows:Object.entries(out).map(([k,v])=>({cat:k,val:v,pct:total?v/total*100:0}))
+    .sort((a,b)=>b.val-a.val)};
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. CHART PRIMITIVES (dependency-free SVG)
+   ═══════════════════════════════════════════════════════════════════ */
+const NS="http://www.w3.org/2000/svg";
+const sv=(t,a={})=>{const n=document.createElementNS(NS,t);for(const[k,v]of Object.entries(a))if(v!==null)n.setAttribute(k,v);return n;};
+
+/**
+ * series: [{key,label,color,values:[n|null]}]. dual axis when 2 series.
+ * labels: week dates
+ */
+function areaChart(labels, series, {height=248, fmtV=fmt}={}){
+  const wrap=el("div",{class:"chart-wrap"});
+  if(!labels.length||!series.some(s=>s.values.some(v=>v!==null))){
+    wrap.appendChild(emptyState("No data for this range yet.",
+      "Once we have a real data point for this game, the chart appears here."));
+    return wrap;
+  }
+  const W=1000,H=height,PL=48,PR=54,PT=16,PB=26;
+  const iw=W-PL-PR, ih=H-PT-PB;
+  const svg=sv("svg",{viewBox:`0 0 ${W} ${H}`,preserveAspectRatio:"none",role:"img"});
+  const defs=sv("defs");
+  const X=i=>labels.length===1?PL+iw/2:PL+(i/(labels.length-1))*iw;
+
+  // per-series scale (independent axes so wallets & volume co-plot honestly)
+  series.forEach(s=>{
+    const vals=s.values.filter(v=>v!==null);
+    s.max=Math.max(...vals,1)*1.14; s.min=0;
+    s.Y=v=>PT+ih-((v-s.min)/(s.max-s.min))*ih;
+    const gid="grad-"+s.key+"-"+Math.random().toString(36).slice(2,7); s.gid=gid;
+    const g=sv("linearGradient",{id:gid,x1:"0",y1:"0",x2:"0",y2:"1"});
+    g.appendChild(sv("stop",{offset:"0%","stop-color":s.color,"stop-opacity":".38"}));
+    g.appendChild(sv("stop",{offset:"100%","stop-color":s.color,"stop-opacity":"0"}));
+    defs.appendChild(g);
+  });
+  svg.appendChild(defs);
+
+  // gridlines + left axis (series 0)
+  for(let i=0;i<=4;i++){
+    const y=PT+(ih/4)*i;
+    svg.appendChild(sv("line",{x1:PL,y1:y,x2:W-PR,y2:y,class:"gridline"}));
+    const v=series[0].max-(series[0].max/4)*i;
+    const t=sv("text",{x:PL-9,y:y+3,class:"axis-txt","text-anchor":"end"}); t.textContent=fmt(Math.round(v)); svg.appendChild(t);
+    if(series[1]){
+      const v2=series[1].max-(series[1].max/4)*i;
+      const t2=sv("text",{x:W-PR+9,y:y+3,class:"axis-txt","text-anchor":"start"}); t2.textContent=fmt(Math.round(v2)); svg.appendChild(t2);
+    }
+  }
+  // x labels (max ~7)
+  const step=Math.max(1,Math.ceil(labels.length/7));
+  labels.forEach((l,i)=>{ if(i%step&&i!==labels.length-1)return;
+    const t=sv("text",{x:X(i),y:H-7,class:"axis-txt","text-anchor":"middle"}); t.textContent=fmtShort(l); svg.appendChild(t);});
+
+  // paths
+  series.forEach(s=>{
+    const pts=s.values.map((v,i)=>v===null?null:[X(i),s.Y(v)]).filter(Boolean);
+    if(!pts.length)return;
+    const d=pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+    svg.appendChild(sv("path",{d:`${d} L ${pts[pts.length-1][0]} ${PT+ih} L ${pts[0][0]} ${PT+ih} Z`,fill:`url(#${s.gid})`}));
+    svg.appendChild(sv("path",{d,fill:"none",stroke:s.color,"stroke-width":"2","stroke-linejoin":"round","stroke-linecap":"round",
+      style:`filter:drop-shadow(0 0 7px ${s.color}88)`}));
+    pts.forEach(p=>svg.appendChild(sv("circle",{cx:p[0],cy:p[1],r:2.6,fill:"#11100d",stroke:s.color,"stroke-width":"1.8"})));
+  });
+
+  // crosshair + hover
+  const cross=sv("line",{x1:0,y1:PT,x2:0,y2:PT+ih,stroke:"rgba(255,255,255,.28)","stroke-width":"1","stroke-dasharray":"3 3",opacity:"0"});
+  svg.appendChild(cross);
+  const hit=sv("rect",{x:PL,y:PT,width:iw,height:ih,fill:"transparent",style:"cursor:crosshair"});
+  svg.appendChild(hit);
+  wrap.appendChild(svg);
+  const tip=el("div",{class:"tip"}); wrap.appendChild(tip);
+
+  function move(ev){
+    const r=svg.getBoundingClientRect();
+    const px=(ev.touches?ev.touches[0].clientX:ev.clientX)-r.left;
+    const vx=px/r.width*W;
+    let i=Math.round((vx-PL)/(iw||1)*(labels.length-1));
+    i=Math.max(0,Math.min(labels.length-1,i));
+    cross.setAttribute("x1",X(i)); cross.setAttribute("x2",X(i)); cross.setAttribute("opacity","1");
+    tip.innerHTML=`<div class="t-date">${fmtDate(labels[i])}</div>`+
+      series.map(s=>`<div class="t-row"><i style="background:${s.color}"></i>${s.label}<b>${
+        s.values[i]===null?"no data":(s.fmt?s.fmt(s.values[i]):fmtV(s.values[i]))}</b></div>`).join("");
+    tip.style.left=(X(i)/W*100)+"%";
+    tip.style.top=(PT+ih*0.28)+"px";
+    tip.style.opacity="1";
+  }
+  hit.addEventListener("mousemove",move);
+  hit.addEventListener("touchmove",e=>{move(e);e.preventDefault();},{passive:false});
+  hit.addEventListener("mouseleave",()=>{tip.style.opacity="0";cross.setAttribute("opacity","0");});
+  return wrap;
+}
+
+function sparkline(values,color){
+  const vals=values.filter(v=>v!==null);
+  if(vals.length<2)return null;
+  const W=112,H=40,max=Math.max(...vals),min=Math.min(...vals),sp=(max-min)||1;
+  const pts=values.map((v,i)=>v===null?null:[i/(values.length-1)*W,H-4-((v-min)/sp)*(H-12)]).filter(Boolean);
+  const svg=sv("svg",{class:"spark",viewBox:`0 0 ${W} ${H}`,preserveAspectRatio:"none"});
+  const d=pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+  svg.appendChild(sv("path",{d:`${d} L ${W} ${H} L 0 ${H} Z`,fill:color,opacity:".12"}));
+  svg.appendChild(sv("path",{d,fill:"none",stroke:color,"stroke-width":"1.6","stroke-linecap":"round",opacity:".95"}));
+  return svg;
+}
+
+function donut(rows,total){
+  const S=190,R=74,r=48,C=S/2;
+  const svg=sv("svg",{viewBox:`0 0 ${S} ${S}`});
+  if(!rows.length){svg.appendChild(sv("circle",{cx:C,cy:C,r:(R+r)/2,fill:"none",stroke:"rgba(255,255,255,.08)","stroke-width":R-r,"stroke-dasharray":"4 6"}));return svg;}
+  let ang=-Math.PI/2;
+  rows.forEach(row=>{
+    const sweep=(row.pct/100)*Math.PI*2, end=ang+sweep, large=sweep>Math.PI?1:0;
+    const p=(rad,ra)=>[C+Math.cos(rad)*ra,C+Math.sin(rad)*ra];
+    const [x1,y1]=p(ang,R),[x2,y2]=p(end,R),[x3,y3]=p(end,r),[x4,y4]=p(ang,r);
+    const path=sv("path",{d:`M${x1} ${y1}A${R} ${R} 0 ${large} 1 ${x2} ${y2}L${x3} ${y3}A${r} ${r} 0 ${large} 0 ${x4} ${y4}Z`,
+      fill:catColor(row.cat),opacity:".88",style:"transition:.2s"});
+    path.addEventListener("mouseenter",()=>{path.setAttribute("opacity","1");path.style.filter=`drop-shadow(0 0 12px ${catColor(row.cat)})`;});
+    path.addEventListener("mouseleave",()=>{path.setAttribute("opacity",".88");path.style.filter="none";});
+    path.appendChild(sv("title")).textContent=`${row.cat}: ${row.pct.toFixed(1)}%`;
+    svg.appendChild(path); ang=end;
+  });
+  const t1=sv("text",{x:C,y:C-2,class:"donut-center",fill:"#f4f1ea","font-size":"19","font-weight":"600"});t1.textContent=fmt(total);
+  const t2=sv("text",{x:C,y:C+15,class:"donut-center",fill:"#7c766c","font-size":"8.5","letter-spacing":"1.6"});t2.textContent="PLAYERS";
+  svg.appendChild(t1);svg.appendChild(t2);
+  return svg;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. SHARED COMPONENTS
+   ═══════════════════════════════════════════════════════════════════ */
+function emptyState(title,body,action){
+  return el("div",{class:"empty"},
+    el("div",{class:"box"},"∅"),
+    el("strong",{},title),
+    body?el("p",{},body):null,
+    action||null);
+}
+function rangeToggle(){
+  const w=el("div",{class:"range"});
+  Object.keys(RANGES).forEach(k=>w.appendChild(el("button",{
+    class:state.range===k?"on":"", onclick:()=>{state.range=k;localStorage.setItem("sg-range",k);render();}
+  },RANGE_LABELS[k])));
+  return w;
+}
+function statCard({label,value,delta,trend,color,spark,hint,pending}){
+  const hasValue = !(value===null||value===undefined);
+  const deltaNode = trend!==undefined ? trend : (hasValue && delta!==undefined ? deltaEl(delta) : null);
+  const card=el("div",{class:"card stat rv",style:`--accent:${color||"var(--purple)"}`},
+    el("div",{class:"label"},el("span",{class:"eyebrow"},label)),
+    hasValue
+      ? el("div",{class:"value"},value)
+      : pending
+        ? el("div",{class:"value muted-val"},"")
+        : el("div",{class:"value empty"},"No data yet"),
+    deltaNode,
+    hint?el("div",{class:"hint"},hint):null
+  );
+  if(spark)card.appendChild(spark);
+  return card;
+}
+function gameLink(g,children){ return el("a",{href:"#/game/"+g.slug},children); }
+function catTag(c){ return el("span",{class:"tag cat",style:`--c:${catColor(c)}`},c); }
+
+function leaderboard(metric){
+  const {cur,prev}=latestPair();
+  const card=el("div",{class:"card rv"});
+  card.appendChild(el("div",{class:"card-head"},
+    el("div",{},
+      el("div",{class:"eyebrow"},"Top games"),
+      el("h2",{style:"margin-top:5px"},
+      metric==="wallets"?"By players":metric==="txs"?"By activity":"By volume")),
+    el("span",{class:"tag spacer"},
+      metric==="wallets"?"players / update":metric==="txs"?"actions / update":CONFIG.unit+" / update")));
+
+  if(!cur){ card.appendChild(emptyState("No ranking yet","Leaderboards appear once the first real numbers land.")); return card; }
+  const rows=state.games.map(g=>{
+    const a=snapAt(g.id,cur),b=prev?snapAt(g.id,prev):null;
+    return {g,val:a?a[metric]:null,pct:wow(a?a[metric]:null,b?b[metric]:null)};
+  }).filter(r=>r.val!==null && r.val>0).sort((a,b)=>b.val-a.val).slice(0,10);
+
+  if(!rows.length){ card.appendChild(emptyState("No ranking yet","Once numbers land for at least one game, the leaderboard fills in here.")); return card; }
+
+  const lb=el("div",{class:"lb"});
+  rows.forEach((r,i)=>lb.appendChild(gameLink(r.g,el("div",{class:"lb-row"},
+    el("div",{class:"lb-rank"},String(i+1).padStart(2,"0")),
+    el("div",{},
+      el("span",{class:"lb-name"},r.g.name),
+      el("div",{class:"lb-meta"},catTag(r.g.category))),
+    el("div",{class:"lb-val"},
+      el("div",{class:"v"},fmt(r.val)),
+      deltaEl(r.pct,{suffix:""}))
+  ))));
+  card.appendChild(lb);
+  card.appendChild(el("div",{class:"card-note"},`As of ${fmtDate(cur)} · wallets and volume are tracked separately. We never combine them into one score.`));
+  return card;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. PAGES
+   ═══════════════════════════════════════════════════════════════════ */
+
+function topGenreCard(topCat){
+  const card=el("div",{class:"card genre-highlight rv"});
+  if(!topCat){
+    card.appendChild(el("div",{class:"genre-hl-body"},
+      el("div",{class:"eyebrow"},"Spotlight"),
+      el("div",{class:"genre-hl-title muted"},"No genre lead yet"),
+      el("p",{class:"genre-hl-copy"},"When player numbers land, the busiest genre shows up here.")));
+    return card;
+  }
+  const cat=topCat.cat;
+  card.appendChild(el("a",{
+      class:"genre-hl-body",
+      href:"#/games",
+      onclick:()=>{ try{ sessionStorage.setItem("sg-cat", cat); }catch(e){} },
+      style:"display:block;color:inherit;text-decoration:none"
+    },
+    el("div",{class:"eyebrow"},"Spotlight genre"),
+    el("div",{class:"genre-hl-title",style:`color:${catColor(cat)}`},cat),
+    el("p",{class:"genre-hl-copy"},
+      topCat.pct>0
+        ? `${topCat.pct.toFixed(0)}% of active players. Browse games in this genre.`
+        : "Browse games in this genre."),
+    el("span",{class:"genre-hl-cta"},"See games →")
+  ));
+  return card;
+}
+
+const PAGES = {};
+
+/* ---------- OVERVIEW ---------- */
+PAGES.overview = () => {
+  const v=el("div",{});
+  const {cur,prev}=latestPair();
+
+  v.appendChild(el("div",{class:"page-head"},el("div",{},
+    el("div",{class:"eyebrow"},"Analytics"),
+    el("h1",{style:"margin-top:7px"},"All games · latest numbers"),
+    el("p",{},"Every tracked game in one table: players, transactions, and volume from the most recent update. Click a row to open the game."))));
+
+  const card=el("div",{class:"card rv"},el("div",{class:"card-head"},
+    el("h2",{},"Comparison"),
+    el("span",{class:"tag spacer"},cur?fmtDate(cur):"no data yet")));
+
+  if(!cur){
+    card.appendChild(emptyState("Nothing to compare yet","This table fills in once the first real numbers land."));
+  } else {
+    const tb=el("tbody");
+    // Sort: games with any data first, then by name
+    const ranked=sortByActivity(state.games, cur);
+    ranked.forEach(g=>{
+      const a=snapAt(g.id,cur), b=prev?snapAt(g.id,prev):null;
+      tb.appendChild(el("tr",{style:"cursor:pointer",onclick:()=>location.hash="#/game/"+g.slug},
+        el("td",{},el("span",{class:"lb-name"},g.name)),
+        el("td",{},catTag(g.category)),
+        el("td",{class:"ta-r num"},a&&a.wallets!==null?fmt(a.wallets):NO_TD()),
+        el("td",{class:"ta-r hide-sm"},trendLine(g.id,"wallets",a?.wallets,wow(a?.wallets,b?.wallets),{suffix:"",compact:true})),
+        el("td",{class:"ta-r num"},a&&a.txs!==null?fmt(a.txs):NO_TD()),
+        el("td",{class:"ta-r hide-sm"},trendLine(g.id,"txs",a?.txs,wow(a?.txs,b?.txs),{suffix:"",compact:true})),
+        el("td",{class:"ta-r num"},a&&a.volume!==null?fmt(a.volume):NO_TD()),
+        el("td",{class:"ta-r hide-sm"},trendLine(g.id,"volume",a?.volume,wow(a?.volume,b?.volume),{suffix:"",compact:true}))));
+    });
+    card.appendChild(el("div",{style:"overflow-x:auto"},el("table",{},
+      el("thead",{},el("tr",{},
+        el("th",{},"Game"),el("th",{},"Category"),
+        el("th",{class:"ta-r"},"Players"),el("th",{class:"ta-r hide-sm"},"WoW"),
+        el("th",{class:"ta-r"},"Activity"),el("th",{class:"ta-r hide-sm"},"WoW"),
+        el("th",{class:"ta-r"},"Volume"),el("th",{class:"ta-r hide-sm"},"WoW"))),
+      tb)));
+  }
+  v.appendChild(card);
+  return v;
+};
+
+function moverCard(){
+  const m=biggestMover();
+  const card=el("div",{class:"card mover rv"});
+  card.appendChild(el("div",{class:"card-head"},
+    el("span",{class:"flame"},"Biggest mover")));
+  if(!m){
+    card.appendChild(emptyState("Nothing to crown yet","We need two data points before ranking growth. Until then, this stays empty. We don't estimate."));
+    return card;
+  }
+  const note = m.game.blurb || null;
+  card.appendChild(el("div",{class:"card-body",style:"position:relative;z-index:1"},
+    el("h2",{},m.game.name),
+    catTag(m.game.category),
+    el("div",{class:"duo"},
+      el("div",{},el("span",{class:"eyebrow"},"Player growth"),
+        el("div",{class:"v",style:"color:var(--orange)"},(m.walletGrowth>0?"+":"")+m.walletGrowth.toFixed(1)+"%"),
+        el("div",{class:"dim",style:"font-size:11px"},fmt(m.prev.wallets)+" → "+fmt(m.cur.wallets)+" players"))),
+    note
+      ? el("div",{class:"why"},el("em",{},"What's likely behind it"),note)
+      : el("div",{class:"why"},el("em",{},"What's likely behind it"),
+          el("span",{class:"dim"},"No note yet. We only add context when a team or the community confirms it.")),
+    el("a",{href:"#/game/"+m.game.slug,class:"btn btn-primary"},"View game")
+  ));
+  return card;
+}
+
+const excerpt=h=>{const d=document.createElement("div");d.innerHTML=h;
+  const t=(d.textContent||"").trim(); return (t.slice(0,210)+(t.length>210?"…":"")).replace(/</g,"&lt;");};
+
+/* ---------- GAMES ---------- */
+let gFilter={q:""};
+PAGES.games = () => {
+  const v=el("div",{});
+  v.appendChild(el("div",{class:"page-head"},el("div",{},
+    el("div",{class:"eyebrow"},"Registry"),
+    el("h1",{style:"margin-top:7px"},"Games"),
+    el("p",{},"Every game we track, grouped by genre. Numbers come straight from the chain. Nothing estimated."))));
+
+  if(!state.games.length){
+    v.appendChild(el("div",{class:"card"},emptyState("No games listed yet",
+      "Games are added by the Starknet Gaming team. Check back soon, or reach out if you'd like yours listed.")));
+    return v;
+  }
+  const {cur,prev}=latestPair();
+  v.appendChild(el("div",{class:"filters"},
+    el("label",{class:"search"},
+      el("span",{class:"dim"},"⌕"),
+      el("input",{type:"search",placeholder:"Search by name…",value:gFilter.q,
+        oninput:e=>{gFilter.q=e.target.value;paint();}}))));
+
+  const body=el("div",{});
+  v.appendChild(body);
+
+  function gcard(g){
+    const a=cur?snapAt(g.id,cur):null, b=prev?snapAt(g.id,prev):null;
+    const wSnap = (a&&a.wallets!==null) ? a : lastGoodSnap(g.id,"wallets");
+    const tSnap = (a&&a.txs!==null) ? a : lastGoodSnap(g.id,"txs");
+    const wStale = wSnap && wSnap.week!==cur;
+    const tStale = tSnap && tSnap.week!==cur;
+    return gameLink(g,el("div",{class:"card gcard rv"},
+      el("div",{class:"top"},
+        avatarEl(g),
+        el("div",{style:"min-width:0"},
+          el("div",{class:"lb-name"},g.name),
+          el("div",{style:"margin-top:5px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"},catTag(g.category)),
+          g.blurb?el("div",{class:"dim",style:"font-size:11.5px;margin-top:6px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden"},g.blurb):null)),
+      el("div",{class:"row"},
+        el("div",{},el("span",{class:"eyebrow"},"Players"),
+          wSnap?el("div",{class:"v"},fmt(wSnap.wallets)):el("div",{class:"v muted-val"},""),
+          wStale?el("div",{class:"dim",style:"font-size:10px;margin-top:2px"},"as of "+fmtShort(wSnap.week))
+            :trendLine(g.id,"wallets",a?.wallets,wow(a?.wallets,b?.wallets),{suffix:"",compact:true})),
+        el("div",{},el("span",{class:"eyebrow"},"Activity"),
+          tSnap?el("div",{class:"v"},fmt(tSnap.txs)):el("div",{class:"v muted-val"},""),
+          tStale?el("div",{class:"dim",style:"font-size:10px;margin-top:2px"},"as of "+fmtShort(tSnap.week))
+            :trendLine(g.id,"txs",a?.txs,wow(a?.txs,b?.txs),{suffix:"",compact:true})))));
+  }
+
+  function paint(){
+    body.innerHTML="";
+    let catFocus=null;
+    try{ catFocus=sessionStorage.getItem("sg-cat"); }catch(e){}
+    const q=gFilter.q.toLowerCase();
+    let list=state.games.filter(g=>!q||g.name.toLowerCase().includes(q)||(g.blurb||"").toLowerCase().includes(q));
+    if(catFocus){
+      // pin that category first; clear after one use so normal browsing works
+      const focused=list.filter(g=>g.category===catFocus);
+      const rest=list.filter(g=>g.category!==catFocus);
+      if(focused.length){ list=[...focused,...rest]; }
+      try{ sessionStorage.removeItem("sg-cat"); }catch(e){}
+      // also set search empty; scroll handled by category order below
+      gFilter._pinCat=catFocus;
+    }
+    if(!list.length){body.appendChild(el("div",{class:"card"},emptyState("No matches","Try a different name or keyword."))); return;}
+
+    // group by category; within each group, games with transactions sit on top
+    const groups=new Map();
+    list.forEach(g=>{
+      if(!groups.has(g.category)) groups.set(g.category,[]);
+      groups.get(g.category).push(g);
+    });
+    // categories that have any activity float up
+    const pin=gFilter._pinCat||null;
+    gFilter._pinCat=null;
+    const order=[...groups.keys()].sort((ca,cb)=>{
+      if(pin){ if(ca===pin&&cb!==pin)return -1; if(cb===pin&&ca!==pin)return 1; }
+      const maxScore=cat=>Math.max(0,...(groups.get(cat)||[]).map(g=>activityScore(g,cur)));
+      const d=maxScore(cb)-maxScore(ca);
+      return d!==0?d:ca.localeCompare(cb);
+    });
+
+    order.forEach(cat=>{
+      const games=sortByActivity(groups.get(cat), cur);
+      body.appendChild(el("div",{class:"cat-section"},
+        el("div",{class:"cat-bar",style:`--c:${catColor(cat)}`},
+          el("span",{class:"cat-bar-name"},cat),
+          el("span",{class:"cat-bar-count"},games.length+(games.length===1?" game":" games"))),
+        el("div",{class:"grid g-cards"},...games.map(gcard))
+      ));
+    });
+  }
+  paint();
+  return v;
+};
+
+/* ---------- GAME DETAIL ---------- */
+PAGES.game = (sl) => {
+  const g=state.games.find(x=>x.slug===sl);
+  const v=el("div",{});
+  if(!g){ v.appendChild(el("div",{class:"card"},emptyState("Game not found",
+    "This game isn't in the registry yet.",el("a",{href:"#/games",class:"btn btn-ghost",style:"margin-top:12px"},"← All games")))); return v;}
+
+  const snaps=snapsFor(g.id), wkAll=snaps.map(s=>s.week);
+  const n=RANGES[state.range], wk=n===Infinity?wkAll:wkAll.slice(-n);
+  const pick=k=>wk.map(w=>{const s=snapAt(g.id,w);return s?s[k]:null;});
+  const cur=snaps[snaps.length-1]||null, prev=snaps[snaps.length-2]||null;
+  const walletsResolving = cur && cur.wallets===null && cur.txs!==null && cur.txs>0;
+
+  /* ── Hero ── */
+  v.appendChild(el("div",{class:"page-head"},
+    el("div",{class:"detail-hero",style:"flex:1"},
+      avatarEl(g),
+      el("div",{style:"min-width:0"},
+        el("a",{href:"#/games",class:"eyebrow"},"← Games"),
+        el("h1",{style:"margin-top:7px"},g.name),
+        el("div",{style:"margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center"},
+          catTag(g.category),
+          g.listed?el("span",{class:"tag"},"Listed "+fmtDate(g.listed)):null,
+          g.x?el("a",{class:"tag",href:"https://x.com/"+g.x.replace("@",""),target:"_blank",rel:"noopener"},"@"+g.x.replace("@","")):null,
+          g.url?el("a",{class:"tag",href:g.url.startsWith("http")?g.url:"https://"+g.url,target:"_blank",rel:"noopener"},"Play ↗"):null),
+        g.blurb?el("p",{style:"margin:8px 0 0;max-width:52ch;color:var(--ink-2);font-size:13px;line-height:1.45"},g.blurb):null)),
+    el("div",{style:"display:flex;gap:9px;margin-left:auto;align-items:flex-start"},
+      el("button",{class:"icon-btn",onclick:()=>App.share(g.name+" on Starknet Gaming Analytics")},"Share"),
+      rangeToggle())));
+
+  /* ── Compact headline metrics (activity-first) ── */
+  v.appendChild(el("div",{class:"grid g-stats"},
+    statCard({
+      label:"On-chain activity",
+      value:cur&&cur.txs!==null?fmt(cur.txs):null,
+      trend:trendLine(g.id,"txs",cur?.txs,wow(cur?.txs,prev?.txs)),
+      color:"var(--blue)",
+      hint:cur&&cur.txs!==null?"contract interactions":"No activity recorded yet"
+    }),
+    statCard({
+      label:"Unique players",
+      value:cur&&cur.wallets!==null?fmt(cur.wallets):null,
+      pending:walletsResolving,
+      trend:trendLine(g.id,"wallets",cur?.wallets,wow(cur?.wallets,prev?.wallets)),
+      color:"var(--purple)",
+      hint:walletsResolving
+        ?"Wallets are being matched to transactions. Updates on the next pull"
+        :(cur&&cur.wallets!==null?"distinct wallets that interacted":null)
+    }),
+    statCard({
+      label:`Volume (${CONFIG.unit})`,
+      value:cur&&cur.volume!==null?fmt(cur.volume):null,
+      trend:trendLine(g.id,"volume",cur?.volume,wow(cur?.volume,prev?.volume)),
+      color:"var(--teal)",
+      hint:cur&&cur.volume===null&&cur&&cur.txs!==null?"Not available for this contract setup":null
+    })
+  ));
+
+  /* ── Activity chart. prefer wallets, fall back to txs so the chart isn't empty ── */
+  const hasWalletSeries = pick("wallets").some(v=>v!==null);
+  const hasTxSeries = pick("txs").some(v=>v!==null);
+  const series = [];
+  if(hasWalletSeries) series.push({key:"w",label:"Players",color:"#9d4dff",values:pick("wallets")});
+  if(hasTxSeries) series.push({key:"t",label:"Activity",color:"#4d8dff",values:pick("txs")});
+  if(!series.length && hasTxSeries===false) {
+    // keep empty
+  }
+
+  v.appendChild(el("div",{class:"card rv mt"},
+    el("div",{class:"card-head"},
+      el("div",{},
+        el("div",{class:"eyebrow"},"Activity over time"),
+        el("h2",{style:"margin-top:5px"},g.name+" · activity trend")),
+      el("div",{class:"spacer"}),
+      rangeToggle()),
+    el("div",{class:"card-body"},
+      series.length
+        ? areaChart(wk, series, {height:220})
+        : emptyState("No history yet","Once a real data point lands for this game, the trend chart shows up here."))
+  ));
+
+  /* ── Update history table (activity column first) ── */
+  if(snaps.length){
+    const tb=el("tbody");
+    [...snaps].reverse().forEach((s,i,arr)=>{
+      const p=arr[i+1];
+      tb.appendChild(el("tr",{},
+        el("td",{class:"num",style:"font-size:12px"},fmtDate(s.week)),
+        el("td",{class:"ta-r num"},s.txs!==null?fmt(s.txs):""),
+        el("td",{class:"ta-r"},deltaEl(wow(s.txs,p?.txs),{suffix:""})),
+        el("td",{class:"ta-r num"},s.wallets!==null?fmt(s.wallets):(s.txs!==null&&s.txs>0?"…":"")),
+        el("td",{class:"ta-r num"},s.volume!==null?fmt(s.volume):"")));
+    });
+    v.appendChild(el("div",{class:"card rv mt"},
+      el("div",{class:"card-head"},
+        el("h2",{},"Update history"),
+        el("span",{class:"tag spacer"},snaps.length+(snaps.length===1?" update":" updates"))),
+      el("div",{style:"overflow-x:auto"},el("table",{},
+        el("thead",{},el("tr",{},
+          el("th",{},"Date"),
+          el("th",{class:"ta-r"},"Activity"),
+          el("th",{class:"ta-r"},"Change"),
+          el("th",{class:"ta-r"},"Players"),
+          el("th",{class:"ta-r"},"Volume"))),
+        tb))));
+  }
+
+  /* ── Reach block only when tracking data exists (don't waste space otherwise) ── */
+  const visits = cur?cur.visits:null;
+  const wallets = cur?cur.wallets:null;
+  if(visits!==null){
+    v.appendChild(el("div",{class:"card rv mt"},
+      el("div",{class:"card-head"},
+        el("div",{},
+          el("div",{class:"eyebrow"},"Reach vs on-chain"),
+          el("h2",{style:"margin-top:5px"},"Website visits and players")),
+        el("span",{class:"tag spacer"},"latest")),
+      el("div",{class:"duo-metric"},
+        el("div",{},
+          el("span",{class:"eyebrow"},"Site visits"),
+          el("div",{class:"v",style:"color:var(--blue)"},fmt(visits)),
+          el("div",{class:"dim",style:"font-size:11.5px"},"anonymous page opens")),
+        el("div",{},
+          el("span",{class:"eyebrow"},"On-chain players"),
+          wallets!==null?el("div",{class:"v",style:"color:var(--purple)"},fmt(wallets)):el("div",{class:"v muted-val"},""),
+          el("div",{class:"dim",style:"font-size:11.5px"},"unique wallets"))),
+      el("div",{class:"sep-note"},
+        el("svg",{viewBox:"0 0 24 24",html:'<circle cx="12" cy="12" r="9"/><path d="M12 8v5m0 3.5v.01"/>'}),
+        el("span",{},"Visits and wallets are different things. We show them side by side, never as one number.")),
+      (cur&&cur.converted!==null)
+        ? el("div",{class:"card-note"},`${fmt(cur.converted)} visitors linked a wallet (${(cur.converted/visits*100).toFixed(1)}% of visits).`)
+        : null
+    ));
+  }
+
+  return v;
+};
+
+/* ---------- ANALYTICS ---------- */
+PAGES.analytics = () => {
+  const v=el("div",{});
+  const {cur,prev}=latestPair();
+  const T=cur?totalsAt(cur):null, P=prev?totalsAt(prev):null;
+  const wk=weeksInRange();
+  const ser=k=>wk.map(w=>{const t=totalsAt(w);return t?t[k]:null;});
+  const topCat=cur?categoryBreakdown(cur).rows[0]:null;
+
+  v.appendChild(el("div",{class:"page-head"},
+    el("div",{},
+      el("div",{class:"eyebrow"},"Overview"),
+      el("h1",{style:"margin-top:7px"},"Starknet gaming, right now"),
+      el("p",{},"A clear snapshot of who's playing, which genres are active, and what's moving."))
+  ));
+
+  /* top stats. kept plain: no token amounts on the homepage */
+  v.appendChild(el("div",{class:"grid g-stats3"},
+    statCard({label:"Active players",value:T?fmt(T.wallets):null,delta:wow(T?.wallets,P?.wallets),
+              color:"var(--purple)",spark:sparkline(ser("wallets"),"#9d4dff")}),
+    statCard({label:"Games tracked",value:T?String(T.games):null,delta:wow(T?.games,P?.games),
+              color:"var(--magenta)",hint:state.games.length?`${state.games.length} on Starknet Gaming`:null}),
+    topGenreCard(topCat)
+  ));
+
+  /* chart + mover */
+  const chartCard=el("div",{class:"card rv"},
+    el("div",{class:"card-head"},
+      el("div",{},el("div",{class:"eyebrow"},"Activity"),
+        el("h2",{style:"margin-top:5px"},"Players over time")),
+      el("div",{class:"spacer"}),
+      rangeToggle()),
+    el("div",{class:"card-body"},
+      areaChart(wk,[{key:"w",label:"Players",color:"#9d4dff",values:ser("wallets")}]))
+  );
+
+  v.appendChild(el("div",{class:"grid g-hero mt"},chartCard,moverCard()));
+
+  /* Rank by transactions first. unique wallets resolve across later pull runs */
+  v.appendChild(el("div",{class:"mt"},leaderboard("txs")));
+  return v;
+};
+const NO_TD=()=>{const s=document.createElement("span");s.className="dim";s.style.fontSize="11px";s.textContent="no data";return s;};
+
+PAGES.retention = () => {
+  const v=el("div",{});
+  v.appendChild(el("div",{class:"page-head"},el("div",{},
+    el("div",{class:"eyebrow"},"Retention"),
+    el("h1",{style:"margin-top:7px"},"Off-chain → onchain"),
+    el("p",{},"How many people who visit a game's website actually go on to play onchain. This only works once a game has added our tracking snippet, and only counts visits where the player agreed to link their wallet."))));
+
+  const {cur}=latestPair();
+  const rows=state.games.map(g=>{const s=cur?snapAt(g.id,cur):null;return{g,s};})
+    .filter(r=>r.s&&r.s.visits!==null);
+
+  const card=el("div",{class:"card rv"},el("div",{class:"card-head"},
+    el("h2",{},"Conversion by game"),el("span",{class:"tag spacer"},"consented sessions only")));
+  if(!rows.length){
+    card.appendChild(emptyState("No conversion data yet",
+      "None of our tracked games have added the visitor-tracking snippet yet, or no one's opted in so far. Rather than guess, we simply show nothing until real data comes in."));
+  }else{
+    const tb=el("tbody");
+    rows.forEach(({g,s})=>{
+      const rate=(s.converted!==null&&s.visits)?s.converted/s.visits*100:null;
+      tb.appendChild(el("tr",{style:"cursor:pointer",onclick:()=>location.hash="#/game/"+g.slug},
+        el("td",{},el("span",{class:"lb-name"},g.name)),
+        el("td",{},catTag(g.category)),
+        el("td",{class:"ta-r num"},fmt(s.visits)),
+        el("td",{class:"ta-r num"},s.converted!==null?fmt(s.converted):NO_TD()),
+        el("td",{class:"ta-r num",style:rate!==null?"color:var(--teal)":""},rate!==null?rate.toFixed(1)+"%":NO_TD()),
+        el("td",{class:"ta-r num"},s.wallets!==null?fmt(s.wallets):NO_TD())));
+    });
+    card.appendChild(el("div",{style:"overflow-x:auto"},el("table",{},
+      el("thead",{},el("tr",{},el("th",{},"Game"),el("th",{},"Category"),
+        el("th",{class:"ta-r"},"Sessions"),el("th",{class:"ta-r"},"Converted"),
+        el("th",{class:"ta-r"},"Rate"),el("th",{class:"ta-r"},"Players (onchain)"))),tb)));
+    card.appendChild(el("div",{class:"card-note"},"Visits and onchain wallets are shown in separate columns because they measure different things. The rate is visits-that-later-played ÷ total visits. never wallets ÷ visits."));
+  }
+  v.appendChild(card);
+  v.appendChild(trackingSnippetCard());
+  return v;
+};
+
+function trackingSnippetCard(){
+  const code=
+`<span class="tok-c">&lt;!-- one line: what this does --&gt;</span>
+<span class="tok-a">&lt;script</span> <span class="tok-b">async</span>
+  <span class="tok-b">src</span>=<span class="tok-b">"https://starknet-gaming.com/sg-track.js"</span>
+  <span class="tok-b">data-game</span>=<span class="tok-b">"your-game-slug"</span><span class="tok-a">&gt;&lt;/script&gt;</span>`;
+  const card=el("div",{class:"card rv mt"},
+    el("div",{class:"card-head"},
+      el("div",{},el("div",{class:"eyebrow"},"For builders"),
+        el("h2",{style:"margin-top:5px"},"Tracking snippet")),
+      el("span",{class:"tag spacer"},"~1.2 KB · no cookies")),
+    el("div",{class:"card-body"},
+      el("p",{style:"margin:0 0 14px;font-size:13.5px;color:var(--ink-2)"},
+        el("strong",{style:"color:var(--ink);font-weight:500"},"What it does: "),
+        "it counts one anonymous visit each time someone opens your game's page. That lets us show website reach next to on-chain wallets. No cookies, no wallet addresses, and no IPs are stored."),
+      el("div",{class:"code"},
+        el("button",{class:"icon-btn copy",onclick:e=>copy(
+`<script async src="https://starknet-gaming.com/sg-track.js" data-game="your-game-slug"></scr`+`ipt>`)},"Copy"),
+        el("pre",{html:code})),
+      el("div",{style:"margin-top:16px"},
+        el("div",{class:"eyebrow",style:"margin-bottom:9px"},"Exactly what is sent"),
+        el("div",{class:"collects"},
+          el("div",{},el("b",{class:"y"},"✓ game id"),el("p",{},"the slug you set in data-game")),
+          el("div",{},el("b",{class:"y"},"✓ random session id"),el("p",{},"regenerated per visit, never reused")),
+          el("div",{},el("b",{class:"y"},"✓ timestamp"),el("p",{},"rounded to the hour")),
+          el("div",{},el("b",{class:"y"},"✓ referrer domain"),el("p",{},"domain only, never the full URL")),
+          el("div",{},el("b",{class:"n"},"✗ no IP stored"),el("p",{},"used for rate limiting, then discarded")),
+          el("div",{},el("b",{class:"n"},"✗ no cookies"),el("p",{},"nothing written to the visitor's device")),
+          el("div",{},el("b",{class:"n"},"✗ no wallet address"),el("p",{},"unless the player explicitly opts in")),
+          el("div",{},el("b",{class:"n"},"✗ no fingerprinting"),el("p",{},"no canvas, fonts or device probing")))),
+      el("div",{style:"margin-top:18px"},
+        el("div",{class:"eyebrow",style:"margin-bottom:9px"},"Optional: conversion linking"),
+        el("p",{style:"margin:0 0 12px;font-size:13px;color:var(--ink-2);max-width:72ch"},
+          "Call this once a player agrees, in your own UI, to link their visit to their wallet. That lets us measure how many visitors actually go on to play. If there's no explicit yes from the player, we drop the request completely, so a conversion number can never show up without their say-so."),
+        el("div",{class:"code"},el("pre",{html:
+`<span class="tok-a">window</span>.sgTrack.<span class="tok-b">linkWallet</span>({
+  address: <span class="tok-b">"0x…"</span>,      <span class="tok-c">// hashed before storage</span>
+  consent: <span class="tok-b">true</span>        <span class="tok-c">// must come from a real opt-in</span>
+});`})))),
+    el("div",{class:"card-note"},"Self-hostable. The script is open source. Read it before you ship it."));
+  return card;
+}
+
+/* ---------- COMMUNITY ---------- */
+PAGES.community = () => {
+  const v=el("div",{});
+  v.appendChild(el("div",{class:"page-head"},el("div",{},
+    el("div",{class:"eyebrow"},"Community"),
+    el("h1",{style:"margin-top:7px"},"Founder spotlights & devlogs"),
+    el("p",{},"Builders in their own words, kept separate from the numbers so opinion never mixes with measurement."))));
+  if(!state.posts.length){
+    v.appendChild(el("div",{class:"card"},emptyState("No posts yet",
+      "Founder spotlights and devlogs are published from the community_posts table.",
+      el("a",{href:"https://t.me/Starknet_Gaming",target:"_blank",rel:"noopener",class:"btn btn-primary",style:"margin-top:14px"},"Pitch a devlog →"))));
+    return v;
+  }
+  const grid=el("div",{class:"grid g-2"});
+  state.posts.forEach(p=>grid.appendChild(el("div",{class:"card post rv"},
+    el("div",{class:"who"},
+      el("div",{class:"av",style:"background:linear-gradient(140deg,#9d4dff,#ff4dcd)"},initials(p.author)),
+      el("div",{},el("div",{style:"font-family:var(--f-display);font-weight:600;font-size:13.5px"},p.author),
+        el("div",{class:"dim",style:"font-size:11px"},[p.role,p.game].filter(Boolean).join(" · ")))),
+    p.title?el("h3",{style:"font-size:15px"},p.title):null,
+    el("div",{class:"body"},p.body),
+    el("div",{style:"display:flex;gap:9px;align-items:center;margin-top:2px"},
+      el("span",{class:"eyebrow"},p.date?fmtDate(p.date):""),
+      p.x?el("a",{class:"tag",style:"margin-left:auto",href:"https://x.com/"+p.x.replace("@",""),target:"_blank",rel:"noopener"},"@"+p.x.replace("@","")):null))));
+  v.appendChild(grid);
+  return v;
+};
+
+/* ---------- ABOUT ---------- */
+PAGES.about = () => {
+  const v=el("div",{});
+  v.appendChild(el("div",{class:"page-head"},el("div",{},
+    el("div",{class:"eyebrow"},"About"),
+    el("h1",{style:"margin-top:7px"},"How these numbers are made"),
+    el("p",{},"This dashboard is only useful if it's trusted. Here's exactly where every figure comes from and what it does not mean."))));
+
+  const sec=(t,...kids)=>el("div",{class:"card rv"},
+    el("div",{class:"card-head"},el("h2",{},t)),
+    el("div",{class:"card-body"},el("div",{class:"prose"},...kids)));
+
+  v.appendChild(el("div",{class:"grid g-2"},
+    sec("Where the data comes from",
+      el("p",{},`We pull fresh on-chain data from ${CONFIG.sourcesLabel} for each tracked game: unique wallets that interacted, and transaction volume. Every chart and leaderboard here is built from those numbers.`),
+      el("p",{},"We never fill a missing period with a guess. If a pull fails, that period stays empty. You'll see a gap, not a made-up number.")),
+    sec("What we never do",
+      el("ul",{},
+        el("li",{},el("strong",{},"No estimated numbers. "),"If a figure isn't there, you see \"no data yet\", never a plausible-looking placeholder."),
+        el("li",{},el("strong",{},"No blended scores. "),"Wallets and volume sit in two separate leaderboards. Combining them would hide which one actually moved."),
+        el("li",{},el("strong",{},"No merging reach with on-chain. "),"Page visits and wallet counts sit side by side, labelled, never summed into one figure."),
+        el("li",{},el("strong",{},"No personal data. "),"The optional tracking snippet stores no cookies, no IPs, and no addresses without explicit opt-in."))),
+    sec("Known limits",
+      el("ul",{},
+        el("li",{},"A unique wallet is not a unique person. One player can use several addresses, and session keys can inflate counts."),
+        el("li",{},"Volume depends on how a game's contracts are built. Games that batch calls look smaller than ones that don't."),
+        el("li",{},"Games with several contracts only count the addresses registered here."),
+        el("li",{},"Update periods run Monday to Sunday in UTC. A Sunday-night launch lands in the next period."))),
+    sec("Add your game",
+      el("p",{},"Listing a game only needs a name, contract address, and category. No engineering work on your side. Charts and leaderboard spots appear automatically."),
+      el("p",{},"Corrections and contract updates are welcome. This is meant to be a neutral shared source, not a promotional page."),
+      el("div",{style:"display:flex;gap:9px;flex-wrap:wrap;margin-top:4px"},
+        el("a",{class:"btn btn-primary",href:"https://t.me/BlackAporia",target:"_blank",rel:"noopener"},"Submit a game"),
+        el("a",{class:"btn btn-ghost",href:CONFIG.parentSite},"Main hub ↗")))
+  ));
+  return v;
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   8. NAV + ROUTER
+   ═══════════════════════════════════════════════════════════════════ */
+const NAV=[
+  {id:"overview",  label:"Overview",   icon:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>'},
+  {id:"games",     label:"Games",      icon:'<rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 11v3m-1.5-1.5h3M16 12h.01M18.5 14.5h.01"/>', count:()=>state.games.length},
+  {id:"analytics", label:"Analytics",  icon:'<path d="M3 20h18M6 16V9m5 7V5m5 11v-5"/>'},
+  {id:"retention", label:"Retention",  icon:'<path d="M4 4v6h6M20 20v-6h-6"/><path d="M4.5 10a8 8 0 0 1 14-3M19.5 14a8 8 0 0 1-14 3"/>'},
+  {id:"community", label:"Community",  icon:'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 11a3 3 0 1 0-1.5-5.6M17 20a5.5 5.5 0 0 0-2-4.3"/>'},
+  {id:"about",     label:"About",      icon:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8.5v.01"/>'}
+];
+
+function renderNav(active){
+  const rail=$("#rail"); rail.innerHTML="";
+  rail.appendChild(el("div",{class:"rail-label"},el("span",{class:"eyebrow"},"Dashboard")));
+  NAV.forEach((n,i)=>{
+    if(i===4)rail.appendChild(el("div",{class:"rail-label"},el("span",{class:"eyebrow"},"Narrative")));
+    const c=n.count?n.count():null;
+    rail.appendChild(el("a",{href:"#/"+n.id,class:"nav-item"+(active===n.id?" on":""),
+      onclick:()=>document.body.classList.remove("nav-open")},
+      el("span",{html:`<svg viewBox="0 0 24 24">${n.icon}</svg>`}),
+      n.label,
+      c?el("span",{class:"nav-count"},String(c)):null));
+  });
+}
+
+function route(){
+  const h=(location.hash||"#/overview").replace(/^#\/?/,"");
+  const [p,arg]=h.split("/");
+  return {page:p||"overview",arg:arg?decodeURIComponent(arg):null};
+}
+
+function updateSourcePill(){
+  const dot=$("#srcDot"), txt=$("#srcTxt");
+  if(state.source==="none"){
+    dot.className="dot none";
+    txt.textContent="Not connected to live data yet. Empty cells mean we have nothing to show";
+    return;
+  }
+  const d=state.lastUpdated;
+  const days=d?(Date.now()-new Date(d))/864e5:999;
+  dot.className="dot"+(days>CONFIG.staleAfterDays?" stale":"");
+  const n=weeks().length;
+  txt.textContent=`Live data from ${CONFIG.sourcesLabel} · ${n} update${n===1?"":"s"} · Updated ${d?fmtDate(d):"…"}`;
+}
+
+function render(){
+  const {page,arg}=route();
+  const known=PAGES[page]?page:"overview";
+  renderNav(["game"].includes(known)?"games":known);
+  const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+  $("#crumb").innerHTML= arg?`${cap(known)} / <b>${arg}</b>`:`<b>${cap(known)}</b>`;
+  updateSourcePill();
+  const view=$("#view"); view.innerHTML="";
+  if(state.loading){ view.appendChild(el("div",{class:"card"},emptyState("Loading…","Fetching the latest numbers."))); return; }
+  view.appendChild(PAGES[known](arg));
+  // stagger reveals
+  view.querySelectorAll(".rv").forEach((n,i)=>n.style.animationDelay=Math.min(i*42,420)+"ms");
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   9. APP
+   ═══════════════════════════════════════════════════════════════════ */
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");
+  clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2100);}
+function copy(txt){ navigator.clipboard?.writeText(txt).then(()=>toast("Copied to clipboard"),()=>toast("Copy failed")); }
+
+const App={
+  share(title){
+    const url=location.href, t=title||"Starknet Gaming Analytics";
+    if(navigator.share)navigator.share({title:t,url}).catch(()=>{});
+    else copy(url);
+  },
+  toggleTheme(){
+    const html=document.documentElement;
+    const isLight = html.getAttribute("data-theme")==="light" ||
+      (!html.getAttribute("data-theme") && typeof matchMedia==="function" && matchMedia("(prefers-color-scheme: light)").matches);
+    const next = isLight ? "dark" : "light";
+    html.setAttribute("data-theme",next);
+    localStorage.setItem("sg-theme",next);
+    syncThemeIcon();
+  }
+};
+window.App=App;
+function syncThemeIcon(){
+  const html=document.documentElement;
+  const isLight = html.getAttribute("data-theme")==="light" ||
+    (!html.getAttribute("data-theme") && typeof matchMedia==="function" && matchMedia("(prefers-color-scheme: light)").matches);
+  const btn=$("#themeToggle");
+  if(btn) btn.textContent = isLight ? "☀️" : "🌙";
+}
+
+/* ---- boot ---- */
+(async function boot(){
+  syncThemeIcon();
+  renderNav("overview");
+  render();
+  await loadData();
+  render();
+})();
+
+addEventListener("hashchange",()=>{window.scrollTo(0,0);render();});
+</script>
+</body>
+</html>
