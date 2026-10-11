@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<script>(function(){var t=localStorage.getItem("sg-theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
+<script>(function(){var t=null;try{t=localStorage.getItem("sg-theme")}catch(e){}if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0a0a0b">
 <title>Analytics · Starknet Gaming</title>
+<link rel="icon" href="../assets/logos/starknet-gaming.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/logos/starknet-gaming.png">
 <meta name="sg-build" content="table-only-mobile-1">
 <meta name="description" content="Clear on-chain analytics for Starknet games: active players, volume, genre trends and regular updates. Pulled from Starkscan & Voyager.">
 <meta property="og:title" content="Analytics · Starknet Gaming">
@@ -138,12 +140,15 @@ h3{font-size:13px}
   padding:16px 16px 14px;border-bottom:1px solid var(--border);
 }
 .brand-mark{
-  width:28px;height:28px;border-radius:7px;
+  display:inline-flex;flex:none;line-height:0;border-radius:50%;overflow:hidden;
+}
+.brand-mark img{height:30px;width:auto;max-width:72px;border-radius:50%;display:block}
+.brand-mark.no-logo{
+  width:28px;height:28px;
   background:linear-gradient(135deg,var(--purple),#7b34e0);
   display:grid;place-items:center;
-  font-weight:700;font-size:11px;color:#fff;letter-spacing:-.02em;
-  flex:none;
 }
+.brand-mark.no-logo::before{content:"SG";font-weight:700;font-size:11px;line-height:1;color:#fff;letter-spacing:-.02em}
 .brand-txt{font-weight:600;font-size:13px;line-height:1.25;letter-spacing:-.01em}
 .brand-txt span{display:block;font-weight:400;font-size:11px;color:var(--ink-3);letter-spacing:0}
 
@@ -369,7 +374,12 @@ tr:hover td{background:var(--panel-hover)}
 }
 
 /* Game cards */
-.gcard{padding:14px;cursor:pointer;transition:border-color .12s,background .12s}
+.gcard{padding:14px;cursor:pointer;transition:border-color .12s,background .12s;overflow:hidden}
+.gcard .banner{height:84px;margin:-14px -14px 12px;background:var(--panel-2)}
+.banner img,.detail-banner img{width:100%;height:100%;object-fit:cover;display:block}
+.detail-banner{height:180px;border-radius:14px;overflow:hidden;margin-bottom:16px;border:1px solid var(--border);background:var(--panel-2)}
+@media (max-width:600px){.detail-banner{height:120px}}
+.banner.is-logo img,.detail-banner.is-logo img{object-fit:cover;padding:0}
 .gcard:hover{border-color:var(--border-strong);background:var(--panel-hover)}
 .gcard .top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .gcard .av,.detail-hero .av,.av{
@@ -522,6 +532,26 @@ body.nav-open{overflow:hidden}
   .page{padding-bottom:max(48px, env(safe-area-inset-bottom))}
   .sidebar{padding-bottom:env(safe-area-inset-bottom)}
 }
+
+/* ── polish ─────────────────────────────── */
+.zero{color:var(--ink-3)}
+.card{box-shadow:var(--shadow-sm);border-radius:var(--r-lg)}
+.stat{padding:18px 20px}
+.stat .value{font-size:30px}
+.stat .value.zero{color:var(--ink-3);font-size:30px;font-family:var(--f-mono);font-weight:600}
+.kstrip{margin-bottom:14px}
+th{letter-spacing:.07em;font-size:10.5px;background:var(--panel-2)}
+tbody tr:nth-child(even) td{background:rgba(255,255,255,.018)}
+[data-theme="light"] tbody tr:nth-child(even) td{background:rgba(0,0,0,.02)}
+td{padding:13px 16px}
+.tag.cat{border-color:transparent;font-weight:500}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border)}
+.kpi{background:var(--panel);padding:20px 18px}
+.kpi .v{font:600 28px var(--f-mono);margin-top:8px}
+.mv-empty{padding:40px 16px;text-align:center}
+.mv-empty .v{font:600 38px var(--f-mono);color:var(--ink-3);margin-bottom:6px}
+.gcard .v.zero{color:var(--ink-3);font-size:16px}
+@media(max-width:900px){.kstrip,.kpis{grid-template-columns:repeat(2,1fr)}.stat .value,.stat .value.zero{font-size:24px}}
 </style>
 </head>
 <body>
@@ -531,7 +561,7 @@ body.nav-open{overflow:hidden}
 <div class="shell">
   <aside class="sidebar" id="sidebar">
     <a class="brand" href="https://starknet-gaming.com/">
-      <div class="brand-mark">SG</div>
+      <div class="brand-mark"><img src="../assets/logos/starknet-gaming.png" alt="" onerror="var p=this.parentElement;p.classList.add('no-logo');this.remove()"></div>
       <div class="brand-txt">Starknet Gaming<span>Analytics</span></div>
     </a>
     <nav class="rail" id="rail"></nav>
@@ -617,20 +647,75 @@ const LOGO_BY_SLUG = {
   "art-peace":"art-peace.jpg",
   "axe-arcade":"axe.jpg"
 };
-function logoUrl(slug){
-  const f = LOGO_BY_SLUG[slug];
-  return f ? LOGO_BASE + f : null;
-}
-/** Avatar: real logo when we have one, otherwise coloured initials. */
-function avatarEl(g, sizeClass=""){
-  const url = logoUrl(g.slug);
-  const wrap = el("div",{class:"av"+(sizeClass?" "+sizeClass:""),style:url?"":`background:linear-gradient(140deg,${catColor(g.category)},${catColor(g.category)}99)`});
-  if(url){
-    const img = el("img",{src:url,alt:"",loading:"lazy",onerror:e=>{e.target.remove(); wrap.textContent=initials(g.name); wrap.style.background=`linear-gradient(140deg,${catColor(g.category)},${catColor(g.category)}99)`;}});
-    wrap.appendChild(img);
-  } else {
-    wrap.textContent = initials(g.name);
+/* The games table has no logo column, so logos are found by file name.
+   Explicit entries in LOGO_BY_SLUG win. Anything else (e.g. a game added to
+   Supabase later) is looked up by convention: assets/logos/<slug>.<ext>,
+   trying each extension in turn. Drop in a correctly named file and it
+   appears — no code change needed. If nothing matches, coloured initials show. */
+const LOGO_EXTS = ["jpg","png","jpeg","webp","svg"];
+function logoCandidates(slug){
+  const out = [];
+  if(LOGO_BY_SLUG[slug]) out.push(LOGO_BASE + LOGO_BY_SLUG[slug]);
+  for(const x of LOGO_EXTS){
+    const u = LOGO_BASE + slug + "." + x;
+    if(!out.includes(u)) out.push(u);
   }
+  return out;
+}
+/** Avatar: real logo when we find one, otherwise coloured initials. */
+function avatarEl(g, sizeClass=""){
+  const candidates = logoCandidates(g.slug);
+  const fallbackBg = `linear-gradient(140deg,${catColor(g.category)},${catColor(g.category)}99)`;
+  const wrap = el("div",{class:"av"+(sizeClass?" "+sizeClass:"")});
+  let i = 0;
+  const img = el("img",{src:candidates[0],alt:"",loading:"lazy"});
+  img.addEventListener("error",()=>{
+    i++;
+    if(i < candidates.length){ img.src = candidates[i]; return; }   // try next extension
+    img.remove(); wrap.textContent = initials(g.name); wrap.style.background = fallbackBg;
+  });
+  wrap.appendChild(img);
+  return wrap;
+}
+
+/* Banner images (wide game artwork) live in assets/art/ in the main site
+   repo. Found by file name: <slug>.<ext>, or one of the short aliases below
+   (so files named "axe", "brove", "loot", "pistols", "dope wars" still match).
+   A missing banner simply isn't shown — no empty gap. Results are remembered
+   for the page's lifetime so each game is probed only once. */
+const BANNER_BASE = "https://raw.githubusercontent.com/BlackAporia/starknet-gaming/main/assets/art/";
+const BANNER_ALIASES = {
+  "axe-arcade":["axe"], "brove-royale":["brove"], "loot-survivor":["loot"],
+  "pistols-at-dawn":["pistols"], "dope-wars":["dope wars"]
+};
+const BANNER_EXTS = ["png","jpg","jpeg","webp"];   // art files: png first, then the other common types
+const bannerCache = {};   // slug -> {url, logo} that worked, or null when nothing exists
+function bannerCandidates(slug){
+  const out = [], names = [slug, ...(BANNER_ALIASES[slug]||[])];
+  for(const x of BANNER_EXTS)                       // extension-first: .png for every name, then .jpg
+    for(const n of names) out.push(BANNER_BASE + encodeURIComponent(n) + "." + x);
+  return out;
+}
+/* Banner image if the game has one; otherwise its logo, centred on the panel;
+   otherwise nothing (the card/page just has no banner strip). */
+function bannerEl(g, cls){
+  const cached = bannerCache[g.slug];
+  if(cached === null) return null;
+  const cands = cached ? [cached]
+    : [...bannerCandidates(g.slug).map(url=>({url,logo:false})),
+       ...logoCandidates(g.slug).map(url=>({url,logo:true}))];
+  const wrap = el("div",{class:cls});
+  let i = 0;
+  const apply = c => wrap.classList.toggle("is-logo", c.logo);
+  apply(cands[0]);
+  const img = el("img",{src:cands[0].url,alt:"",loading:"lazy"});
+  img.addEventListener("load",()=>{ bannerCache[g.slug] = cands[i]; });
+  img.addEventListener("error",()=>{
+    i++;
+    if(i < cands.length){ apply(cands[i]); img.src = cands[i].url; return; }
+    bannerCache[g.slug] = null; wrap.remove();
+  });
+  wrap.appendChild(img);
   return wrap;
 }
 
@@ -667,8 +752,7 @@ function wow(cur,prev){
   return ((cur-prev)/prev)*100;
 }
 function deltaEl(pct,{suffix="vs last check"}={}){
-  if(pct===null||pct===undefined)
-    return el("span",{class:"delta flat"},"",el("span",{class:"wow"},"no prior data"));
+  if(pct===null||pct===undefined) pct=0;
   const up=pct>0.05, dn=pct<-0.05, cls=up?"up":dn?"down":"flat";
   const arrow=up?'<path d="M12 19V5m0 0-6 6m6-6 6 6"/>':dn?'<path d="M12 5v14m0 0 6-6m-6 6-6-6"/>':'<path d="M5 12h14"/>';
   return el("span",{class:"delta "+cls},
@@ -693,14 +777,14 @@ function maybeDelta(curVal,pct,opts){
 function trendLine(gameId,metricKey,curVal,pct,opts={}){
   // Compact cards: only show a real week-over-week delta. Never the
   // "0 transactions since …" fallback. that reads as duplicate clutter.
-  if(curVal===null||curVal===undefined) return null;
+  if(curVal===null||curVal===undefined) return deltaEl(0,opts);
   if(pct!==null&&pct!==undefined) return deltaEl(pct,opts);
-  if(opts.compact) return null;
+  if(opts.compact) return deltaEl(0,opts);
   // Detail pages only: with a single week of data, show lifetime total.
   const snaps=snapsFor(gameId).filter(s=>s[metricKey]!==null);
-  if(!snaps.length) return null;
+  if(!snaps.length) return deltaEl(0,opts);
   const total=snaps.reduce((a,s)=>a+s[metricKey],0);
-  if(total===0) return null;
+  if(total===0) return deltaEl(0,opts);
   const noun=metricKey==="wallets"?"players":metricKey==="txs"?"transactions":"total";
   return el("span",{class:"delta flat since-line"},
     fmt(total)+" "+noun,
@@ -713,7 +797,7 @@ function trendLine(gameId,metricKey,curVal,pct,opts={}){
 const state = {
   games:[], snapshots:[], reports:[], posts:[],
   lastUpdated:null, source:"none",   // none | live
-  range: localStorage.getItem("sg-range") || "8W",   // global, shared by every chart
+  range: (()=>{try{return localStorage.getItem("sg-range")}catch(e){return null}})() || "8W",   // global, shared by every chart
   loading:true, error:null
 };
 const RANGES={"8W":8,"16W":16,"ALL":Infinity};
@@ -1007,7 +1091,7 @@ function emptyState(title,body,action){
 function rangeToggle(){
   const w=el("div",{class:"range"});
   Object.keys(RANGES).forEach(k=>w.appendChild(el("button",{
-    class:state.range===k?"on":"", onclick:()=>{state.range=k;localStorage.setItem("sg-range",k);render();}
+    class:state.range===k?"on":"", onclick:()=>{state.range=k;try{localStorage.setItem("sg-range",k)}catch(e){}render();}
   },RANGE_LABELS[k])));
   return w;
 }
@@ -1018,10 +1102,8 @@ function statCard({label,value,delta,trend,color,spark,hint,pending}){
     el("div",{class:"label"},el("span",{class:"eyebrow"},label)),
     hasValue
       ? el("div",{class:"value"},value)
-      : pending
-        ? el("div",{class:"value muted-val"},"")
-        : el("div",{class:"value empty"},"No data yet"),
-    deltaNode,
+      : el("div",{class:"value zero"},"0"),
+    (deltaNode===null && !hasValue) ? deltaEl(0) : deltaNode,
     hint?el("div",{class:"hint"},hint):null
   );
   if(spark)card.appendChild(spark);
@@ -1105,7 +1187,16 @@ PAGES.overview = () => {
   v.appendChild(el("div",{class:"page-head"},el("div",{},
     el("div",{class:"eyebrow"},"Analytics"),
     el("h1",{style:"margin-top:7px"},"All games · latest numbers"),
-    el("p",{},"Every tracked game in one table: players, transactions, and volume from the most recent update. Click a row to open the game."))));
+    el("p",{},"Players, activity and volume for every tracked game, from the latest update. Click a row to open the game."))));
+
+  const sum=(wk,k)=>wk?state.games.reduce((t,g)=>{const x=snapAt(g.id,wk);return t+((x&&x[k])||0)},0):0;
+  const live=wk=>wk?state.games.filter(g=>{const x=snapAt(g.id,wk);return x&&(x.wallets||x.txs||x.volume)}).length:0;
+  const kp=(label,k,color,hint)=>statCard({label,value:fmt(sum(cur,k)),delta:wow(sum(cur,k),sum(prev,k)),color,hint});
+  v.appendChild(el("div",{class:"grid g-stats4 kstrip"},
+    kp("Total players","wallets","var(--purple)"),
+    kp("Total activity","txs","var(--blue)"),
+    kp("Total volume","volume","var(--teal)",CONFIG.unit),
+    statCard({label:"Games tracked",value:String(state.games.length),color:"var(--magenta)",hint:live(cur)+" reporting data"})));
 
   const card=el("div",{class:"card rv"},el("div",{class:"card-head"},
     el("h2",{},"Comparison"),
@@ -1123,18 +1214,15 @@ PAGES.overview = () => {
         el("td",{},el("span",{class:"lb-name"},g.name)),
         el("td",{},catTag(g.category)),
         el("td",{class:"ta-r num"},a&&a.wallets!==null?fmt(a.wallets):NO_TD()),
-        el("td",{class:"ta-r hide-sm"},trendLine(g.id,"wallets",a?.wallets,wow(a?.wallets,b?.wallets),{suffix:"",compact:true})),
         el("td",{class:"ta-r num"},a&&a.txs!==null?fmt(a.txs):NO_TD()),
-        el("td",{class:"ta-r hide-sm"},trendLine(g.id,"txs",a?.txs,wow(a?.txs,b?.txs),{suffix:"",compact:true})),
-        el("td",{class:"ta-r num"},a&&a.volume!==null?fmt(a.volume):NO_TD()),
-        el("td",{class:"ta-r hide-sm"},trendLine(g.id,"volume",a?.volume,wow(a?.volume,b?.volume),{suffix:"",compact:true}))));
+        el("td",{class:"ta-r num"},a&&a.volume!==null?fmt(a.volume):NO_TD())));
     });
     card.appendChild(el("div",{style:"overflow-x:auto"},el("table",{},
       el("thead",{},el("tr",{},
         el("th",{},"Game"),el("th",{},"Category"),
-        el("th",{class:"ta-r"},"Players"),el("th",{class:"ta-r hide-sm"},"WoW"),
-        el("th",{class:"ta-r"},"Activity"),el("th",{class:"ta-r hide-sm"},"WoW"),
-        el("th",{class:"ta-r"},"Volume"),el("th",{class:"ta-r hide-sm"},"WoW"))),
+        el("th",{class:"ta-r"},"Players"),
+        el("th",{class:"ta-r"},"Activity"),
+        el("th",{class:"ta-r"},"Volume"))),
       tb)));
   }
   v.appendChild(card);
@@ -1147,7 +1235,7 @@ function moverCard(){
   card.appendChild(el("div",{class:"card-head"},
     el("span",{class:"flame"},"Biggest mover")));
   if(!m){
-    card.appendChild(emptyState("Nothing to crown yet","We need two data points before ranking growth. Until then, this stays empty. We don't estimate."));
+    card.appendChild(el("div",{class:"mv-empty"},el("div",{class:"v"},"0.0%"),el("div",{class:"eyebrow"},"Player growth"),el("div",{class:"dim"},"Ranks after the next update")));
     return card;
   }
   const note = m.game.blurb || null;
@@ -1209,11 +1297,11 @@ PAGES.games = () => {
           g.blurb?el("div",{class:"dim",style:"font-size:11.5px;margin-top:6px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden"},g.blurb):null)),
       el("div",{class:"row"},
         el("div",{},el("span",{class:"eyebrow"},"Players"),
-          wSnap?el("div",{class:"v"},fmt(wSnap.wallets)):el("div",{class:"v muted-val"},""),
+          wSnap?el("div",{class:"v"},fmt(wSnap.wallets)):el("div",{class:"v zero"},"0"),
           wStale?el("div",{class:"dim",style:"font-size:10px;margin-top:2px"},"as of "+fmtShort(wSnap.week))
             :trendLine(g.id,"wallets",a?.wallets,wow(a?.wallets,b?.wallets),{suffix:"",compact:true})),
         el("div",{},el("span",{class:"eyebrow"},"Activity"),
-          tSnap?el("div",{class:"v"},fmt(tSnap.txs)):el("div",{class:"v muted-val"},""),
+          tSnap?el("div",{class:"v"},fmt(tSnap.txs)):el("div",{class:"v zero"},"0"),
           tStale?el("div",{class:"dim",style:"font-size:10px;margin-top:2px"},"as of "+fmtShort(tSnap.week))
             :trendLine(g.id,"txs",a?.txs,wow(a?.txs,b?.txs),{suffix:"",compact:true})))));
   }
@@ -1279,6 +1367,7 @@ PAGES.game = (sl) => {
   const walletsResolving = cur && cur.wallets===null && cur.txs!==null && cur.txs>0;
 
   /* ── Hero ── */
+  { const bn = bannerEl(g,"detail-banner"); if(bn) v.appendChild(bn); }
   v.appendChild(el("div",{class:"page-head"},
     el("div",{class:"detail-hero",style:"flex:1"},
       avatarEl(g),
@@ -1389,7 +1478,7 @@ PAGES.game = (sl) => {
           el("div",{class:"dim",style:"font-size:11.5px"},"anonymous page opens")),
         el("div",{},
           el("span",{class:"eyebrow"},"On-chain players"),
-          wallets!==null?el("div",{class:"v",style:"color:var(--purple)"},fmt(wallets)):el("div",{class:"v muted-val"},""),
+          wallets!==null?el("div",{class:"v",style:"color:var(--purple)"},fmt(wallets)):el("div",{class:"v zero"},"0"),
           el("div",{class:"dim",style:"font-size:11.5px"},"unique wallets"))),
       el("div",{class:"sep-note"},
         el("svg",{viewBox:"0 0 24 24",html:'<circle cx="12" cy="12" r="9"/><path d="M12 8v5m0 3.5v.01"/>'}),
@@ -1445,7 +1534,7 @@ PAGES.analytics = () => {
   v.appendChild(el("div",{class:"mt"},leaderboard("txs")));
   return v;
 };
-const NO_TD=()=>{const s=document.createElement("span");s.className="dim";s.style.fontSize="11px";s.textContent="no data";return s;};
+const NO_TD=()=>{const s=document.createElement("span");s.className="zero num";s.textContent="0";return s;};
 
 PAGES.retention = () => {
   const v=el("div",{});
@@ -1461,8 +1550,8 @@ PAGES.retention = () => {
   const card=el("div",{class:"card rv"},el("div",{class:"card-head"},
     el("h2",{},"Conversion by game"),el("span",{class:"tag spacer"},"consented sessions only")));
   if(!rows.length){
-    card.appendChild(emptyState("No conversion data yet",
-      "None of our tracked games have added the visitor-tracking snippet yet, or no one's opted in so far. Rather than guess, we simply show nothing until real data comes in."));
+    card.appendChild(el("div",{class:"kpis"},...[["Sessions","0"],["Converted","0"],["Conversion rate","0.0%"],["Games with snippet","0"]].map(([l,v])=>el("div",{class:"kpi"},el("span",{class:"eyebrow"},l),el("div",{class:"v zero"},v)))));
+    card.appendChild(el("div",{class:"card-note"},"Counting starts when a game adds the tracking snippet."));
   }else{
     const tb=el("tbody");
     rows.forEach(({g,s})=>{
@@ -1575,7 +1664,7 @@ PAGES.about = () => {
       el("p",{},"We never fill a missing period with a guess. If a pull fails, that period stays empty. You'll see a gap, not a made-up number.")),
     sec("What we never do",
       el("ul",{},
-        el("li",{},el("strong",{},"No estimated numbers. "),"If a figure isn't there, you see \"no data yet\", never a plausible-looking placeholder."),
+        el("li",{},el("strong",{},"No estimated numbers. "),"Games awaiting their first pull show 0. We never fill a gap with a plausible-looking number."),
         el("li",{},el("strong",{},"No blended scores. "),"Wallets and volume sit in two separate leaderboards. Combining them would hide which one actually moved."),
         el("li",{},el("strong",{},"No merging reach with on-chain. "),"Page visits and wallet counts sit side by side, labelled, never summed into one figure."),
         el("li",{},el("strong",{},"No personal data. "),"The optional tracking snippet stores no cookies, no IPs, and no addresses without explicit opt-in."))),
@@ -1674,7 +1763,7 @@ const App={
       (!html.getAttribute("data-theme") && typeof matchMedia==="function" && matchMedia("(prefers-color-scheme: light)").matches);
     const next = isLight ? "dark" : "light";
     html.setAttribute("data-theme",next);
-    localStorage.setItem("sg-theme",next);
+    try{localStorage.setItem("sg-theme",next)}catch(e){}
     syncThemeIcon();
   }
 };
