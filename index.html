@@ -676,12 +676,15 @@ const GAMES = [
   {name:"Pistols at Dawn", cat:"Action / PvP", status:"live", desc:"Commit-reveal PvP duels — pistol or sabre.", twitter:"Pistols_gg", website:"https://pistols.gg/", logo:"assets/logos/pistols-at-down.jpg", art:"assets/art/pistols.png"},
   {name:"Corsair", cat:"Action / PvP", status:"new", desc:"Pirate turn-based adventure with daily challenges.", twitter:"PlayCorsair", website:"https://corsair.game/", logo:"assets/logos/corsair.jpg", art:"assets/art/corsair.png"},
   {name:"Brove Royale", cat:"Action / PvP", status:"new", desc:"Battle royale by an independent community team.", twitter:"Brove_Royale", website:"https://brove.gg/", logo:"assets/logos/brove-royale.jpg", art:"assets/art/brove.png"},
+  {name:"Dark Bags", cat:"Action / PvP", status:"beta", desc:"Browser extraction shooter — loot in the dark, escape the storm.", twitter:"play_dark_bags", website:"https://t.co/q3tQozlOJL", logo:"assets/logos/darkbag.png", art:"assets/art/darkbagloot.png"},
   {name:"jKube", cat:"Puzzle / Casual", status:"live", desc:"Onchain Tetris with abilities & combos.", twitter:"jKube_game", website:"https://jkube.xyz/", logo:"assets/logos/zkube.png", art:"assets/art/jkube.jpg"},
   {name:"GM NFT", cat:"Puzzle / Casual", status:"live", desc:"Casual guessing around community NFTs.", twitter:"gmnft", website:"https://gssmynft.com/", logo:"assets/logos/gm-nft.jpg", art:"assets/art/gm-nft.jpg"},
   {name:"Nums", cat:"Puzzle / Casual", status:"live", desc:"Quick-fire number puzzle — easy to replay.", twitter:"numsgg", website:"https://nums.gg/", logo:"assets/logos/nums.jpg", art:"assets/art/nums.png"},
   {name:"StarkOrbs", cat:"Puzzle / Casual", status:"new", desc:"Match, connect, clear orbs across onchain levels.", twitter:"orbstark", website:"https://playstark.vercel.app/", logo:"assets/logos/starkorbs.jpg", art:"assets/art/starkorbs.png"},
   {name:"Hidden", cat:"Puzzle / Casual", status:"beta", desc:"Private 1v1 wagered games with STRK20 shielded stakes.", twitter:"hidden_games_", website:"https://hidden-starknet.vercel.app/", logo:"assets/logos/hidden.jpg", art:"assets/art/hidden.png"},
+  {name:"Escape Saylor", cat:"Puzzle / Casual", status:"live", desc:"Mobile chase game — outrun a billionaire. Parody.", twitter:"EscapeSaylor", website:"https://t.co/VUx9jwqIx2", logo:"assets/logos/saylor.png", art:"assets/art/escapesaylor.png"},
   {name:"ART/PEACE", cat:"Creative / Social", status:"live", desc:"Collaborative onchain pixel canvas.", twitter:"art_peace_sn", website:"https://art-peace.ne/", logo:"assets/logos/art-peace.jpg", art:"assets/art/art-peace.png"},
+  {name:"Realmofzee", cat:"Creative / Social", status:"new", desc:"Treasure hunt — hide or seek treasures, earn weekly rewards.", twitter:"realmofzeegame", logo:"assets/logos/realms.png", art:"assets/art/realmsofzee.png"},
   {name:"Axe Arcade", cat:"Cross-chain", status:"beta", desc:"Multiplayer survival with NFT trait gating.", twitter:"schizodio", website:"https://axe.schizod.io/", logo:"assets/logos/axe.jpg", art:"assets/art/axe.png"}
 ];
 
@@ -715,7 +718,7 @@ const imgTag = (q, cls, extra="") => q.length
   ? `<img class="${cls}" src="${q[0].replace(/"/g,"&quot;")}" data-q="${q.join("|").replace(/"/g,"&quot;")}" ${extra} alt="" onerror="imgNext(this)">`
   : "";
 
-const FEATURED_NAMES = ["Brove Royale","ZAP Football","Corsair","Loot Survivor","GM NFT"];
+const FEATURED_NAMES = ["Dark Bags","Escape Saylor","Realmofzee","ZAP Football","Corsair"];
 const FEATURED = FEATURED_NAMES.map(n => GAMES.find(g => g.name === n)).filter(Boolean);
 
 const esc = v => String(v).replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
